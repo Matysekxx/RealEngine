@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;
     public static final int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
     public static final int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
-
+    private static final int BOX_GRAVITY_DELAY = 6;
     private final RControl rControl;
     private final TextureManager textureManager;
     private final Renderer renderer;
@@ -35,7 +35,6 @@ public class GamePanel extends JPanel implements Runnable {
     private Thread gameThread;
     private boolean isPaused = false;
     private int boxGravityTick = 0;
-    private static final int BOX_GRAVITY_DELAY = 6;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -94,10 +93,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * Updates the game state for all relevant components.
-     *
-     * @param deltaTime Time elapsed since the last update in seconds (fixed timestep).
      */
-    private void update(float deltaTime) {
+    private void update() {
         boxGravityTick++;
         if (boxGravityTick >= BOX_GRAVITY_DELAY) {
             applyBoxGravity();
@@ -106,7 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (player.getY() > WORLD_HEIGHT) {
             respawnPlayer();
         }
-        player.update(deltaTime, map.getCollisionMap());
+        player.update((float) 0.016666668, map.getCollisionMap());
         camera.update();
     }
 
@@ -305,7 +302,7 @@ public class GamePanel extends JPanel implements Runnable {
 
             if (!isPaused) {
                 while (deltaAccumulator >= fixedDeltaTime) {
-                    update(fixedDeltaTime);
+                    update();
                     deltaAccumulator -= fixedDeltaTime;
                 }
                 repaint();

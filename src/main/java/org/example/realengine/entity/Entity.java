@@ -1,10 +1,11 @@
 package org.example.realengine.entity;
 
-import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Texture;
 import org.example.realengine.object.EObject;
 import org.example.realengine.physics.CollisionDetector;
-import org.example.realengine.physics.ICollision;
+
+import static org.example.realengine.game.GameConstants.TILE_SIZE;
+import static org.example.realengine.game.GameConstants.GRAVITY;
 
 /**
  * Základní třída pro všechny herní objekty (postavy, předměty atd.),
@@ -12,8 +13,7 @@ import org.example.realengine.physics.ICollision;
  * Poskytuje základní fyzikální chování, jako je gravitace, detekce kolizí s mapou,
  * a základní podporu pro platformy a žebříky.
  */
-public class Entity implements ICollision {
-    private static final int TILE_SIZE = GameConstants.TILE_SIZE;
+public abstract class Entity {
     protected float x, y;
     protected float vx = 0;
     protected float vy = 0;
@@ -23,7 +23,6 @@ public class Entity implements ICollision {
     protected boolean isOnLadder = false;
     protected Texture texture;
     protected boolean active = true;
-    protected String type = "generic";
     protected float health = 100;
     protected float maxHealth = 100;
     protected boolean movingLeft = false;
@@ -34,9 +33,9 @@ public class Entity implements ICollision {
     protected float moveSpeed = 3.0f;
     protected float climbSpeed = 2.0f;
     protected float jumpStrength = -10.0f;
-    protected float gravity = 0.5f;
-    protected float gravityScale = 1.0f;
+    protected float gravity = GRAVITY;
     protected float maxFallSpeed = 15.0f;
+    protected final String type;
 
     /**
      * Vytvoří novou entitu na zadaných souřadnicích.
@@ -44,9 +43,10 @@ public class Entity implements ICollision {
      * @param x Počáteční X souřadnice.
      * @param y Počáteční Y souřadnice.
      */
-    public Entity(float x, float y) {
+    public Entity(float x, float y, String type) {
         this.x = x;
         this.y = y;
+        this.type = type;
     }
 
     /**
@@ -57,17 +57,7 @@ public class Entity implements ICollision {
      * @param deltaTime    Čas uplynulý od posledního snímku (v sekundách nebo jiné jednotce).
      * @param collisionMap Dvourozměrné pole reprezentující kolizní mapu světa.
      */
-    public void update(float deltaTime, EObject[][] collisionMap) {
-        if (!active) return;
-
-        checkLadderStatus(collisionMap);
-
-        calculateMovement(deltaTime);
-
-        applyGravity(deltaTime);
-
-        handleCollisions(deltaTime, collisionMap);
-    }
+    public abstract void update(float deltaTime, EObject[][] collisionMap);
 
     /**
      * Zkontroluje, zda se entita nachází na dlaždici typu LADDER.
@@ -109,10 +99,8 @@ public class Entity implements ICollision {
      * Vypočítá zamýšlený pohyb entity na základě aktuálního stavu
      * (movingLeft, movingRight, jumping, isOnLadder, movingUp, movingDown).
      * Nastavuje `vx` a `vy`.
-     *
-     * @param deltaTime Časový krok.
      */
-    protected void calculateMovement(float deltaTime) {
+    protected void calculateMovement() {
         vx = 0;
         vy = isOnLadder ? 0 : vy;
 
@@ -142,22 +130,6 @@ public class Entity implements ICollision {
                 vy = jumpStrength;
                 isOnGround = false;
                 jumping = false;
-            }
-        }
-    }
-
-    /**
-     * Aplikuje gravitaci na vertikální rychlost entity (`vy`),
-     * POUZE pokud entita není na žebříku.
-     * Omezuje maximální rychlost pádu.
-     *
-     * @param deltaTime Časový krok.
-     */
-    protected void applyGravity(float deltaTime) {
-        if (!isOnLadder) {
-            vy += (gravity * gravityScale) * deltaTime;
-            if (vy > maxFallSpeed) {
-                vy = maxFallSpeed;
             }
         }
     }
@@ -211,15 +183,6 @@ public class Entity implements ICollision {
                 x >= other.x + other.width ||
                 y + height <= other.y ||
                 y >= other.y + other.height);
-    }
-
-    /**
-     * Metoda volaná, když tato entita koliduje s jinou entitou (detekováno externě).
-     * Základní implementace nic nedělá. Přepište v podtřídách pro specifické chování při kolizi.
-     *
-     * @param other Entita, se kterou došlo ke kolizi.
-     */
-    public void onCollision(Entity other) {
     }
 
     /**
@@ -469,20 +432,6 @@ public class Entity implements ICollision {
     }
 
     /**
-     * @return Násobitel gravitace (umožňuje měnit gravitaci pro jednotlivé entity).
-     */
-    public float getGravityScale() {
-        return gravityScale;
-    }
-
-    /**
-     * Nastaví násobitel gravitace. Musí být kladný. @param gravityScale Nový násobitel (větší než 0).
-     */
-    public void setGravityScale(float gravityScale) {
-        if (gravityScale > 0) this.gravityScale = gravityScale;
-    }
-
-    /**
      * @return Maximální rychlost pádu entity.
      */
     public float getMaxFallSpeed() {
@@ -494,20 +443,6 @@ public class Entity implements ICollision {
      */
     public void setMaxFallSpeed(float maxFallSpeed) {
         this.maxFallSpeed = maxFallSpeed;
-    }
-
-    /**
-     * @return Typ entity (řetězec, např. "player", "enemy", "item").
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Nastaví typ entity. @param type Nový typ.
-     */
-    protected void setType(String type) {
-        this.type = type;
     }
 
     /**
@@ -544,5 +479,9 @@ public class Entity implements ICollision {
      */
     protected boolean isValidMapPosition(EObject[][] map, int x, int y) {
         return map != null && x >= 0 && y >= 0 && x < map.length && y < map[0].length;
+    }
+
+    public String getType() {
+        return this.type;
     }
 }

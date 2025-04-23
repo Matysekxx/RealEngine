@@ -53,7 +53,6 @@ public class MapMenuPanel extends JPanel {
                                                           int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(
                         list, value, index, isSelected, cellHasFocus);
-
                 if (isSelected) {
                     label.setText("▶ " + value);
                     label.setBorder(BorderFactory.createCompoundBorder(

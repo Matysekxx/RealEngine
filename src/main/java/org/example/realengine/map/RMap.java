@@ -74,7 +74,7 @@ public class RMap {
         System.out.println("Created new RMap (" + width + "x" + height + ")");
     }
 
-    public static RMap loadFromFiles(@NotNull String... filePaths) {
+    public static RMap loadFromFiles(@NotNull String... filePaths) throws ImageNotFoundException {
         RMap map = new RMap(0, 0);
         for (String path : filePaths) {
             try {

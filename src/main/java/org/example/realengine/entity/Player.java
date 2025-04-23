@@ -6,28 +6,24 @@ import org.example.realengine.object.EObject;
 
 import java.awt.*;
 
+import static org.example.realengine.game.GameConstants.*;
+
 public class Player extends Entity {
-    private static final int BOX_PUSH_DELAY = 6;
     private final float autoMoveSpeed = 400.0f;
     private final float jumpVelocity = -900.0f;
     private float velocityX = 0;
     private float velocityY = 0;
-    private float gravity = 1700.0f;
     private boolean isOnGround = false;
     private boolean isMovingDown = false;
     private Point spawnPoint;
-    private boolean isOnLadder = false;
     private boolean isOnTrap = false;
-    private boolean isClimbing = false;
     private boolean wantsToClimbUp = false;
     private boolean wantsToClimbDown = false;
     private int boxPushTick = 0;
     private int teleportCooldown = 0;
-    private static final int TELEPORT_COOLDOWN_TICKS = 30;
 
     public Player(float x, float y) {
-        super(x, y);
-        this.type = "player";
+        super(x, y, "player");
         this.maxHealth = 100;
         this.health = this.maxHealth;
         this.width = 32;
@@ -48,27 +44,27 @@ public class Player extends Entity {
         velocityY += gravity * deltaTime;
         float potentialNextY = y + velocityY * deltaTime;
         int TILE_SIZE = GameConstants.TILE_SIZE;
-        final float GAP = TILE_SIZE / 30.0f;
+        final var GAP = TILE_SIZE / 30.0f;
         boxPushTick++;
 
         if (teleportCooldown > 0) {
             teleportCooldown--;
         }
 
-        boolean collisionDetectedX = handleBoxPush(collisionMap, TILE_SIZE, GAP);
+        boolean collisionDetectedX = handleBoxPush(collisionMap, GAP);
         if (!collisionDetectedX) {
-            collisionDetectedX = handleXCollision(collisionMap, potentialNextX, TILE_SIZE, GAP);
+            collisionDetectedX = handleXCollision(collisionMap, potentialNextX, GAP);
         }
         if (!collisionDetectedX) {
             x = potentialNextX;
         }
 
-        boolean collisionDetectedY = handleYCollision(collisionMap, potentialNextY, TILE_SIZE);
+        boolean collisionDetectedY = handleYCollision(collisionMap, potentialNextY);
         if (!collisionDetectedY) {
             y = potentialNextY;
         }
 
-        handleSpecialTiles(collisionMap, TILE_SIZE);
+        handleSpecialTiles(collisionMap);
 
         x = Math.max(0, Math.min(x, GamePanel.WORLD_WIDTH - width));
         y = Math.max(0, Math.min(y, GamePanel.WORLD_HEIGHT - height));
@@ -79,8 +75,8 @@ public class Player extends Entity {
             this.x = spawnPoint.x;
             this.y = spawnPoint.y;
         } else {
-            this.x = 2 * GameConstants.TILE_SIZE;
-            this.y = (GamePanel.MAX_WORLD_ROW - 5) * GameConstants.TILE_SIZE;
+            this.x = 2 * TILE_SIZE;
+            this.y = (GamePanel.MAX_WORLD_ROW - 5) * TILE_SIZE;
         }
         velocityX = 0;
         velocityY = 0;
@@ -136,7 +132,7 @@ public class Player extends Entity {
     }
 
 
-    private boolean handleBoxPush(EObject[][] collisionMap, int TILE_SIZE, float GAP) {
+    private boolean handleBoxPush(EObject[][] collisionMap, float GAP) {
         boolean collisionDetectedX = false;
         if (velocityX != 0 && boxPushTick >= BOX_PUSH_DELAY) {
             int dir = velocityX > 0 ? 1 : -1;
@@ -180,7 +176,7 @@ public class Player extends Entity {
     }
 
 
-    private boolean handleXCollision(EObject[][] collisionMap, float potentialNextX, int TILE_SIZE, float GAP) {
+    private boolean handleXCollision(EObject[][] collisionMap, float potentialNextX, float GAP) {
         boolean collisionDetectedX = false;
         if (velocityX != 0) {
             int topTileY = (int) (y / TILE_SIZE);
@@ -221,7 +217,7 @@ public class Player extends Entity {
         return collisionDetectedX;
     }
 
-    private boolean handleYCollision(EObject[][] collisionMap, float potentialNextY, int TILE_SIZE) {
+    private boolean handleYCollision(EObject[][] collisionMap, float potentialNextY) {
         boolean collisionDetectedY = false;
         isOnGround = false;
         if (velocityY < 0) {
@@ -246,7 +242,7 @@ public class Player extends Entity {
             int leftFootTileX = (int) (x / TILE_SIZE);
             int rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
             int bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
-    
+
             for (int tileX = leftFootTileX; tileX <= rightFootTileX; tileX++) {
                 if (collisionMap != null &&
                         tileX >= 0 && tileX < collisionMap.length &&
@@ -274,16 +270,15 @@ public class Player extends Entity {
         return collisionDetectedY;
     }
 
-    private void handleSpecialTiles(EObject[][] collisionMap, int TILE_SIZE) {
-        int centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
-        int centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
-    
-        isOnLadder = false;
+    private void handleSpecialTiles(EObject[][] collisionMap) {
+        var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
+        var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
+
+        boolean isOnLadder = false;
         isOnTrap = false;
-        isClimbing = false;
         boolean isOnHoney = false;
-    
-        EObject currentObject = null;
+
+        EObject currentObject;
         if (collisionMap != null &&
                 centerTileX >= 0 && centerTileX < collisionMap.length &&
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
@@ -302,9 +297,9 @@ public class Player extends Entity {
                 isOnGround = false;
             }
             if (teleportCooldown == 0 &&
-                (currentObject == EObject.TELEPORT_BLUE ||
-                 currentObject == EObject.TELEPORT_GREEN ||
-                 currentObject == EObject.TELEPORT_RED)) {
+                    (currentObject == EObject.TELEPORT_BLUE ||
+                            currentObject == EObject.TELEPORT_GREEN ||
+                            currentObject == EObject.TELEPORT_RED)) {
                 teleportToNext(collisionMap, currentObject, centerTileX, centerTileY, TILE_SIZE);
                 teleportCooldown = TELEPORT_COOLDOWN_TICKS;
             }
@@ -316,10 +311,8 @@ public class Player extends Entity {
             gravity = 0;
             if (wantsToClimbUp) {
                 velocityY = -autoMoveSpeed;
-                isClimbing = true;
             } else if (wantsToClimbDown) {
                 velocityY = autoMoveSpeed;
-                isClimbing = true;
             } else {
                 velocityY = 0;
             }

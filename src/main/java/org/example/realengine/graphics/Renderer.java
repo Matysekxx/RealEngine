@@ -11,16 +11,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import static org.example.realengine.game.GameConstants.TILE_SIZE;
+
 /**
  * Zodpovídá za vykreslování herního světa (mapy, entit) na obrazovku.
  * Používá {@link Camera} pro určení viditelné oblasti a {@link TextureManager} pro získání textur.
  */
 public class Renderer {
 
-    /**
-     * Výchozí velikost dlaždice v pixelech, používá se pro vykreslování mapy.
-     */
-    protected static final int TILE_SIZE = GameConstants.TILE_SIZE;
     /**
      * Správce textur pro získávání obrázků dlaždic a entit.
      */
@@ -38,13 +36,6 @@ public class Renderer {
      */
     public Renderer(@NotNull TextureManager textureManager) {
         this.textureManager = textureManager;
-    }
-
-    /**
-     * @return Výchozí velikost dlaždice používaná rendererem.
-     */
-    public static int getTileSize() {
-        return TILE_SIZE;
     }
 
     /**
@@ -95,16 +86,14 @@ public class Renderer {
         float camX = camera.getX();
         float camY = camera.getY();
 
-        int startTileX = Math.max(0, (int) (camX / TILE_SIZE));
-        int startTileY = Math.max(0, (int) (camY / TILE_SIZE));
-        int endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
-        int endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
+        var startTileX = Math.max(0, (int) (camX / TILE_SIZE));
+        var startTileY = Math.max(0, (int) (camY / TILE_SIZE));
+        var endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
+        var endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
 
-        int layerIndex = 0;
         for (ETile[][] layer : map.getLayers()) {
             if (layer != null) {
-                renderMapLayer(g, layer, startTileX, startTileY, endTileX, endTileY, camX, camY, layerIndex);
-                layerIndex++;
+                renderMapLayer(g, layer, startTileX, startTileY, endTileX, endTileY, camX, camY);
             }
         }
     }
@@ -122,7 +111,7 @@ public class Renderer {
      * @param camY       Y pozice kamery pro výpočet pozice na obrazovce.
      * @param layerIndex Index vykreslované vrstvy (pro informaci).
      */
-    protected void renderMapLayer(Graphics g, ETile[][] layer, int startX, int startY, int endX, int endY, float camX, float camY, int layerIndex) {
+    protected void renderMapLayer(Graphics g, ETile[][] layer, int startX, int startY, int endX, int endY, float camX, float camY) {
         for (int y = startY; y < endY; y++) {
             for (int x = startX; x < endX; x++) {
                 if (x < layer.length && y < layer[0].length) {
@@ -273,13 +262,10 @@ public class Renderer {
         g.setColor(new Color(255, 0, 0, 100));
         EObject[][] collisionMap = map.getCollisionMap();
         if (collisionMap != null) {
-            int startTileX = Math.max(0, (int) (camX / TILE_SIZE));
-            int startTileY = Math.max(0, (int) (camY / TILE_SIZE));
-            int endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
-            int endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
-
-            for (int y = startTileY; y < endTileY; y++) {
-                for (int x = startTileX; x < endTileX; x++) {
+            for (int y = Math.max(0, (int) (camY / TILE_SIZE));
+                 y < Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1); y++) {
+                for (int x = Math.max(0, (int) (camX / TILE_SIZE));
+                     x < Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1); x++) {
                     if (!collisionMap[x][y].isWalkable()) {
                         int screenX = (int) (x * TILE_SIZE - camX);
                         int screenY = (int) (y * TILE_SIZE - camY);

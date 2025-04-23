@@ -35,7 +35,7 @@ public final class TextureManager {
         addTexture(new Texture("ladder", Texture.createColorTexture("ladder", new Color(0xB8860B), TILE_SIZE, TILE_SIZE).getImage()));
         addTexture(new Texture("trap", Texture.createColorTexture("trap", new Color(0x8B0000), TILE_SIZE, TILE_SIZE).getImage()));
         addTexture(new Texture("spikes", Texture.createColorTexture("spikes", Color.GRAY, TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("spring",Texture.createColorTexture("spring", new Color(0xFF0000), TILE_SIZE, TILE_SIZE).getImage()));
+        addTexture(new Texture("spring", Texture.createColorTexture("spring", new Color(0xFF0000), TILE_SIZE, TILE_SIZE).getImage()));
         mapTileToTexture(ETile.LADDER, "ladder");
         mapTileToTexture(ETile.TRAP, "trap");
         mapTileToTexture(ETile.SPIKES, "spikes");
@@ -54,10 +54,7 @@ public final class TextureManager {
     }
 
     public void addTexture(Texture texture) {
-        if (texture == null) {
-            throw new NullPointerException("Cannot add a null texture to TextureManager.");
-        }
-        textureMap.put(texture.getId(), texture);
+        if (texture != null) textureMap.put(texture.getId(), texture);
     }
 
     public void mapTileToTexture(ETile tile, String textureId) {
@@ -116,7 +113,7 @@ public final class TextureManager {
         Texture texture = new Texture(textureId, resourcePath);
         if (texture.getImage() == Texture.getDefaultTextureImage()) {
             System.out.println("Resource loading failed, trying filesystem path");
-            String fullPath = System.getProperty("user.dir") + "/src/main/resources/" + resourcePath;
+            String fullPath = System.getProperty("user.dir") + "/src/main/resources/java" + resourcePath;
             try {
                 BufferedImage img = ImageIO.read(new File(fullPath));
                 if (img != null) {
