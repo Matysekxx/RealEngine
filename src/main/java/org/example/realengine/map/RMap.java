@@ -197,19 +197,7 @@ public class RMap {
         System.out.println("Added visual layer to map. Total layers: " + layers.size());
     }
 
-    /**
-     * Aktualizuje stav všech aktivních entit na mapě.
-     * Tato metoda by měla být volána v hlavní herní smyčce.
-     *
-     * @param deltaTime Čas uplynulý od posledního snímku.
-     */
-    public void updateEntities(float deltaTime) {
-        for (Entity entity : entities) {
-            if (entity != null && entity.isActive()) {
-                entity.update(deltaTime, collisionMap);
-            }
-        }
-    }
+
 
     /**
      * Přidá entitu na mapu.

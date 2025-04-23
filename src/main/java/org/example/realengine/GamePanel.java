@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable {
     public static final int MAX_SCREEN_COL = 26;
@@ -40,8 +41,11 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
-        textureManager = new TextureManager("");
+        textureManager = new TextureManager("textures/");
         renderer = new Renderer(textureManager);
+        try {
+            map = RMap.loadFromPng("maps/test.png");
+        }catch (IOException _){}
         map = new RMap(MAX_WORLD_COL, MAX_WORLD_ROW);
         createChallengeMap(map);
         Point playerSpawn = findSpawnPoint(map);
@@ -59,6 +63,8 @@ public class GamePanel extends JPanel implements Runnable {
         camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
         camera.follow(player);
         camera.setFollowOffsetX(-SCREEN_WIDTH / 4.0f);
+
+
     }
 
     /**
@@ -127,41 +133,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         renderer.renderScene(g2, map, camera);
 
-        EObject[][] collisionMap = map.getCollisionMap();
-        int camX = (int) camera.getX();
-        int camY = (int) camera.getY();
-        g2.setStroke(new BasicStroke(1));
-        for (int worldX = 0; worldX < map.getWidth(); worldX++) {
-            for (int worldY = 0; worldY < map.getHeight(); worldY++) {
-                if (worldX >= collisionMap.length || worldY >= collisionMap[worldX].length)
-                    continue;
-                EObject obj = collisionMap[worldX][worldY];
-                if (obj != null && obj != EObject.EMPTY && obj != EObject.PLAYER_SPAWN) {
-                    int screenX = worldX * TILE_SIZE - camX;
-                    int screenY = worldY * TILE_SIZE - camY;
-                    Color color = switch (obj) {
-                        case WALL -> new Color(70, 80, 100, 220);
-                        case HAZARD_LIQUID -> new Color(255, 140, 0, 180);
-                        case HONEY -> new Color(184, 134, 11, 200);
-                        case LADDER -> new Color(0, 191, 255, 200);
-                        case TRAP -> new Color(139, 0, 0, 200);
-                        case SPIKES -> new Color(180, 180, 180, 200);
-                        case BOX -> new Color(139, 69, 19, 200);
-                        case BORDER -> new Color(51, 51, 51, 200);
-                        case SPRING -> new Color(255, 0, 0);
-                        case CHECKPOINT -> new Color(255, 215, 0);
-                        case TELEPORT_BLUE -> new Color(0, 0, 255, 200);
-                        case TELEPORT_GREEN -> new Color(0, 255, 0, 200);
-                        case TELEPORT_RED -> new Color(255, 0, 51, 200);
-                        default -> new Color(255, 0, 255, 120);
-                    };
-                    g2.setColor(color);
-                    g2.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-                    g2.setColor(Color.BLACK);
-                    g2.drawRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-                }
-            }
-        }
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
         g2.drawString("Use arrow keys to move and jump", 10, 30);

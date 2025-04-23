@@ -1,6 +1,5 @@
 package org.example.realengine.graphics;
 
-import org.example.realengine.game.GameConstants;
 import org.example.realengine.map.ETile;
 import org.example.realengine.object.EObject;
 
@@ -12,49 +11,84 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Spravuje načítání, ukládání a poskytování textur {@link Texture}.
- * Udržuje mapu textur podle jejich ID a umožňuje mapovat typy dlaždic {@link ETile}
- * a objektů {@link EObject} na specifické textury.
- */
+import static org.example.realengine.game.GameConstants.TILE_SIZE;
+
 public final class TextureManager {
     private static final String DEFAULT_TEXTURE_ID = "default";
-    private static final int TILE_SIZE = GameConstants.TILE_SIZE;
     private final Map<String, Texture> textureMap = new HashMap<>();
     private final Map<ETile, String> tileTextureMap = new HashMap<>();
     private final Map<EObject, String> objectTextureMap = new HashMap<>();
-    private final String basePath;
+    private final String resourceBasePath;
 
-    public TextureManager(String basePath) {
-        this.basePath = basePath;
-        addTexture(new Texture("wall", Texture.createColorTexture("wall", Color.BLACK, TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("lava", Texture.createColorTexture("lava", new Color(0xFF9900), TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("spawn", Texture.createColorTexture("spawn", Color.YELLOW, TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("empty", Texture.createColorTexture("empty", Color.WHITE, TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("sky", Texture.createColorTexture("sky", new Color(0x87CEEB), TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("ladder", Texture.createColorTexture("ladder", new Color(0xB8860B), TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("trap", Texture.createColorTexture("trap", new Color(0x8B0000), TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("spikes", Texture.createColorTexture("spikes", Color.GRAY, TILE_SIZE, TILE_SIZE).getImage()));
-        addTexture(new Texture("spring", Texture.createColorTexture("spring", new Color(0xFF0000), TILE_SIZE, TILE_SIZE).getImage()));
-        mapTileToTexture(ETile.LADDER, "ladder");
-        mapTileToTexture(ETile.TRAP, "trap");
-        mapTileToTexture(ETile.SPIKES, "spikes");
-        mapObjectToTexture(EObject.LADDER, "ladder");
-        mapObjectToTexture(EObject.TRAP, "trap");
-        mapObjectToTexture(EObject.SPIKES, "spikes");
-        mapTileToTexture(ETile.WALL, "wall");
-        mapTileToTexture(ETile.LAVA, "lava");
-        mapTileToTexture(ETile.PLAYER_SPAWN, "spawn");
-        mapTileToTexture(ETile.EMPTY, "empty");
-        mapTileToTexture(ETile.SKY, "sky");
-        mapTileToTexture(ETile.SPRING, "spring");
-        mapTileToTexture(ETile.UNKNOWN, "sky");
+    public TextureManager(String resourceBasePath) {
+        this.resourceBasePath = resourceBasePath.endsWith("/") ? resourceBasePath : resourceBasePath + "/";
+        addTexture(Texture.createColorTexture(DEFAULT_TEXTURE_ID, Color.MAGENTA, TILE_SIZE, TILE_SIZE));
+        loadObjectTexturesFromResources();
+        setupDefaultMappings();
+    }
 
-        System.out.println("TextureManager initialized. Base path: '" + this.basePath + "'");
+    private void loadObjectTexturesFromResources() {
+        System.out.println("=== Starting object texture auto-load from resources: " + resourceBasePath + " ===");
+        int loadedCount = 0;
+        int failedCount = 0;
+
+        for (EObject object : EObject.values()) {
+            String textureId = object.name().toLowerCase();
+            String filename = textureId + ".png";
+            String filePath = resourceBasePath + filename;
+            File textureFile = new File(filePath);
+
+            try {
+                if (textureFile.exists() && textureFile.isFile()) {
+                    BufferedImage img = ImageIO.read(textureFile);
+                    if (img != null) {
+                        Texture texture = new Texture(textureId, img);
+                        addTexture(texture);
+                        mapObjectToTexture(object, textureId);
+                        System.out.println("Successfully loaded texture: " + filePath + " for " + object.name());
+                        loadedCount++;
+                    } else {
+                        System.err.println("WARN: Failed to decode image from file: " + filePath + " for " + object.name());
+                        mapObjectToTexture(object, DEFAULT_TEXTURE_ID);
+                        failedCount++;
+                    }
+                } else {
+                    System.err.println("WARN: Texture file not found: " + filePath + " for " + object.name() + ". Using default.");
+                    mapObjectToTexture(object, DEFAULT_TEXTURE_ID);
+                    failedCount++;
+                }
+            } catch (IOException e) {
+                System.err.println("ERROR: IOException while loading texture file: " + filePath + " for " + object.name() + " - " + e.getMessage());
+                mapObjectToTexture(object, DEFAULT_TEXTURE_ID);
+                failedCount++;
+            }
+        }
+        System.out.println("=== Object texture loading finished. Loaded: " + loadedCount + ", Failed/Default: " + failedCount + " ===");
+    }
+
+    private void setupDefaultMappings() {
+        if (!objectTextureMap.containsKey(EObject.EMPTY)) {
+            String emptyTextureId = "empty_fallback";
+            if (!textureMap.containsKey(emptyTextureId)) {
+                addTexture(Texture.createColorTexture(emptyTextureId, Color.WHITE, TILE_SIZE, TILE_SIZE));
+            }
+            mapObjectToTexture(EObject.EMPTY, emptyTextureId);
+            System.out.println("Mapped EObject.EMPTY to fallback texture: " + emptyTextureId);
+        }
+        if (!objectTextureMap.containsKey(EObject.WALL)) mapObjectToTexture(EObject.WALL, DEFAULT_TEXTURE_ID);
+        if (!objectTextureMap.containsKey(EObject.PLAYER_SPAWN)) mapObjectToTexture(EObject.PLAYER_SPAWN, DEFAULT_TEXTURE_ID);
+        mapTileToTexture(ETile.SKY, "sky_fallback");
+        if (!textureMap.containsKey("sky_fallback")) {
+             addTexture(Texture.createColorTexture("sky_fallback", new Color(0x87CEEB), TILE_SIZE, TILE_SIZE));
+        }
     }
 
     public void addTexture(Texture texture) {
-        if (texture != null) textureMap.put(texture.getId(), texture);
+        if (texture != null) {
+            textureMap.put(texture.getId(), texture);
+        } else {
+            System.err.println("WARN: Attempted to add a null texture.");
+        }
     }
 
     public void mapTileToTexture(ETile tile, String textureId) {
@@ -63,7 +97,7 @@ public final class TextureManager {
             return;
         }
         if (!textureMap.containsKey(textureId)) {
-            System.err.println("WARN: Cannot map tile " + tile.name() + " to non-existent texture ID: " + textureId + ". Using default mapping if available.");
+            System.err.println("WARN: Cannot map tile " + tile.name() + " to non-existent texture ID: " + textureId + ". Using default mapping.");
             tileTextureMap.put(tile, DEFAULT_TEXTURE_ID);
         } else {
             tileTextureMap.put(tile, textureId);
@@ -76,7 +110,7 @@ public final class TextureManager {
             return;
         }
         if (!textureMap.containsKey(textureId)) {
-            System.err.println("WARN: Cannot map object " + object.name() + " to non-existent texture ID: " + textureId + ". Using default mapping if available.");
+            System.err.println("WARN: Cannot map object " + object.name() + " to non-existent texture ID: " + textureId + ". Using default mapping.");
             objectTextureMap.put(object, DEFAULT_TEXTURE_ID);
         } else {
             objectTextureMap.put(object, textureId);
@@ -89,8 +123,17 @@ public final class TextureManager {
     }
 
     public BufferedImage getTextureForObject(EObject object) {
+        if (object == null) {
+             System.err.println("WARN: Requested texture for null EObject. Returning default texture.");
+             return getTexture(DEFAULT_TEXTURE_ID).getImage();
+        }
         String textureId = objectTextureMap.getOrDefault(object, DEFAULT_TEXTURE_ID);
-        return getTexture(textureId).getImage();
+        Texture texture = getTexture(textureId);
+        if (texture == null) {
+             System.err.println("CRITICAL WARN: Default texture missing! ID: " + DEFAULT_TEXTURE_ID);
+             return Texture.createColorTexture("emergency_default", Color.MAGENTA, TILE_SIZE, TILE_SIZE).getImage();
+        }
+        return texture.getImage();
     }
 
     public Texture getTexture(String id) {
@@ -98,102 +141,11 @@ public final class TextureManager {
             System.err.println("WARN: Requested texture with null ID. Returning default texture.");
             return textureMap.get(DEFAULT_TEXTURE_ID);
         }
-        return textureMap.getOrDefault(id, textureMap.get(DEFAULT_TEXTURE_ID));
-    }
-
-    public Texture loadTexture(String textureId, String relativePath) {
-        if (textureId == null || textureId.isEmpty() || relativePath == null || relativePath.isEmpty()) {
-            System.err.println("WARN: Attempted to load texture with null/empty ID or path.");
-            return getTexture(DEFAULT_TEXTURE_ID);
+        Texture texture = textureMap.get(id);
+        if (texture == null) {
+             System.err.println("WARN: Texture not found for ID: " + id + ". Returning default texture.");
+             return textureMap.get(DEFAULT_TEXTURE_ID);
         }
-
-
-        String resourcePath = (basePath.isEmpty() ? "" : basePath + "/") + relativePath;
-        System.out.println("Attempting to load texture from resources: " + resourcePath);
-        Texture texture = new Texture(textureId, resourcePath);
-        if (texture.getImage() == Texture.getDefaultTextureImage()) {
-            System.out.println("Resource loading failed, trying filesystem path");
-            String fullPath = System.getProperty("user.dir") + "/src/main/resources/java" + resourcePath;
-            try {
-                BufferedImage img = ImageIO.read(new File(fullPath));
-                if (img != null) {
-                    texture = new Texture(textureId, img);
-                    System.out.println("Successfully loaded texture from filesystem: " + fullPath);
-                }
-            } catch (IOException e) {
-                System.err.println("Failed to load texture from filesystem: " + fullPath);
-            }
-        }
-
-        addTexture(texture);
         return texture;
-    }
-
-    public void autoLoadTileTextures() {
-        System.out.println("=== Starting texture auto-load ===");
-        System.out.println("Working directory: " + System.getProperty("user.dir"));
-        System.out.println("Resource base path: '" + basePath + "'");
-
-        int loadedCount = 0;
-        int fallbackCount = 0;
-
-        for (ETile tile : ETile.values()) {
-            if (tile == ETile.UNKNOWN) continue;
-
-            String textureId = tile.name().toLowerCase();
-            String filename = textureId + ".png";
-
-            Texture loadedTexture = loadTexture(textureId, "textures/" + filename);
-
-            if (loadedTexture.getImage() != Texture.getDefaultTextureImage()) {
-                mapTileToTexture(tile, textureId);
-                loadedCount++;
-            } else {
-                System.err.println("WARN: Auto-load failed for tile: " + filename + ". Creating color fallback.");
-                String fallbackId = textureId + "_fallback_color";
-
-                if (!textureMap.containsKey(fallbackId)) {
-                    Color color = tile.getColor();
-                    Texture fallbackTexture = Texture.createColorTexture(fallbackId, color, TILE_SIZE, TILE_SIZE);
-                    addTexture(fallbackTexture);
-                }
-                mapTileToTexture(tile, fallbackId);
-                fallbackCount++;
-            }
-        }
-
-        System.out.println("=== Texture loading results ===");
-        System.out.println("Successfully loaded: " + loadedCount);
-        System.out.println("Fallback textures: " + fallbackCount);
-    }
-
-    public void autoLoadObjectTextures(String subDirectory) {
-        String objectTexturePath = basePath.isEmpty() ? "" : (basePath.endsWith("/") ? basePath : basePath + "/");
-        if (subDirectory != null && !subDirectory.isEmpty()) {
-            objectTexturePath += subDirectory.endsWith("/") ? subDirectory : subDirectory + "/";
-        }
-
-        System.out.println("Attempting to auto-load object textures from path: " + objectTexturePath);
-        int loadedCount = 0;
-
-        for (EObject object : EObject.values()) {
-            String textureId = object.name().toLowerCase();
-            String filename = textureId + ".png";
-            String fullPath = objectTexturePath + filename;
-
-            Texture texture = new Texture(textureId, fullPath);
-            addTexture(texture);
-
-            if (texture.getImage() != Texture.getDefaultTextureImage()) {
-                mapObjectToTexture(object, textureId);
-                loadedCount++;
-            } else {
-                if (textureMap.containsKey(DEFAULT_TEXTURE_ID)) {
-                    mapObjectToTexture(object, DEFAULT_TEXTURE_ID);
-                }
-                System.err.println("WARN: Auto-load failed for object texture: " + fullPath + ". Using default.");
-            }
-        }
-        System.out.println("Auto-loaded " + loadedCount + " object textures successfully.");
     }
 }

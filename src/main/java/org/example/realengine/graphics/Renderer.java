@@ -52,14 +52,9 @@ public class Renderer {
             System.err.println("WARN: Attempting to render scene with null Graphics, RMap, or Camera.");
             return;
         }
-
         renderBackground(g, camera);
         renderMap(g, map, camera);
         renderEntities(g, map.getEntities(), camera);
-
-        if (debugMode) {
-            renderDebugInfo(g, map, camera);
-        }
     }
 
     /**
@@ -70,7 +65,7 @@ public class Renderer {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     protected void renderBackground(Graphics g, Camera camera) {
-        g.setColor(Color.DARK_GRAY);
+        g.setColor(ETile.SKY.getColor());
         g.fillRect(0, 0, camera.getScreenWidth(), camera.getScreenHeight());
     }
 
@@ -86,44 +81,34 @@ public class Renderer {
         float camX = camera.getX();
         float camY = camera.getY();
 
-        var startTileX = Math.max(0, (int) (camX / TILE_SIZE));
-        var startTileY = Math.max(0, (int) (camY / TILE_SIZE));
-        var endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
-        var endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
+        int startTileX = Math.max(0, (int) (camX / TILE_SIZE));
+        int startTileY = Math.max(0, (int) (camY / TILE_SIZE));
+        int endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
+        int endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
 
-        for (ETile[][] layer : map.getLayers()) {
-            if (layer != null) {
-                renderMapLayer(g, layer, startTileX, startTileY, endTileX, endTileY, camX, camY);
-            }
+        EObject[][] collisionMap = map.getCollisionMap();
+        if (collisionMap == null) {
+            System.err.println("WARN: Collision map is null in Renderer.renderMap");
+            return;
         }
-    }
 
-    /**
-     * Vykreslí jednu specifickou vrstvu mapy.
-     *
-     * @param g          Grafický kontext.
-     * @param layer      Pole dlaždic reprezentující vrstvu.
-     * @param startX     Počáteční X index dlaždice k vykreslení.
-     * @param startY     Počáteční Y index dlaždice k vykreslení.
-     * @param endX       Koncový (exclusive) X index dlaždice k vykreslení.
-     * @param endY       Koncový (exclusive) Y index dlaždice k vykreslení.
-     * @param camX       X pozice kamery pro výpočet pozice na obrazovce.
-     * @param camY       Y pozice kamery pro výpočet pozice na obrazovce.
-     * @param layerIndex Index vykreslované vrstvy (pro informaci).
-     */
-    protected void renderMapLayer(Graphics g, ETile[][] layer, int startX, int startY, int endX, int endY, float camX, float camY) {
-        for (int y = startY; y < endY; y++) {
-            for (int x = startX; x < endX; x++) {
-                if (x < layer.length && y < layer[0].length) {
-                    ETile tile = layer[x][y];
-                    if (tile != null) {
-                        Texture textureObj = textureManager.getTexture(tile.name());
-
-                        if (textureObj != null) {
-                            BufferedImage texture = textureObj.getImage();
-                            int screenX = (int) (x * TILE_SIZE - camX);
-                            int screenY = (int) (y * TILE_SIZE - camY);
+        for (int y = startTileY; y < endTileY; y++) {
+            for (int x = startTileX; x < endTileX; x++) {
+                if (x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight()) {
+                    EObject object = collisionMap[x][y];
+                    if (object != null && object != EObject.EMPTY) {
+                        int screenX = (int) (x * TILE_SIZE - camX);
+                        int screenY = (int) (y * TILE_SIZE - camY);
+                        BufferedImage texture = textureManager.getTextureForObject(object);
+                        Texture defaultTexture = textureManager.getTexture("default");
+                        if (texture != null && (defaultTexture == null || texture != defaultTexture.getImage())) {
                             g.drawImage(texture, screenX, screenY, TILE_SIZE, TILE_SIZE, null);
+                        } else {
+                            Color color = object.getColor();
+                            if (color != null) {
+                                g.setColor(color);
+                                g.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+                            }
                         }
                     }
                 }
@@ -177,10 +162,6 @@ public class Renderer {
                 g.setColor(Color.BLACK);
                 g.drawRect(screenX, screenY, entity.getWidth() - 1, entity.getHeight() - 1);
             }
-
-            if (debugMode && entity.getHealth() < entity.getMaxHealth()) {
-                renderHealthBar(g, entity, screenX, screenY);
-            }
             if (debugMode) {
                 g.setColor(Color.YELLOW);
                 g.drawRect(screenX, screenY, entity.getWidth(), entity.getHeight());
@@ -204,97 +185,4 @@ public class Renderer {
             default -> Color.GRAY;
         };
     }
-
-
-    /**
-     * Pomocná metoda pro vykreslení ukazatele zdraví nad entitou.
-     *
-     * @param g       Grafický kontext.
-     * @param entity  Entita, jejíž zdraví se má zobrazit.
-     * @param screenX X souřadnice entity na obrazovce.
-     * @param screenY Y souřadnice entity na obrazovce.
-     */
-    protected void renderHealthBar(Graphics g, Entity entity, int screenX, int screenY) {
-        int barWidth = Math.max(10, entity.getWidth());
-        int barHeight = 4;
-        int yOffset = -8;
-
-        int barX = screenX + (entity.getWidth() - barWidth) / 2;
-        int barY = screenY + yOffset;
-
-        g.setColor(Color.RED);
-        g.fillRect(barX, barY, barWidth, barHeight);
-
-        float healthPercentage = entity.getHealth() / entity.getMaxHealth();
-        int greenWidth = (int) (barWidth * healthPercentage);
-
-        g.setColor(Color.GREEN);
-        g.fillRect(barX, barY, greenWidth, barHeight);
-
-        g.setColor(Color.BLACK);
-        g.drawRect(barX, barY, barWidth, barHeight);
-    }
-
-    /**
-     * Vykreslí debug informace přes herní scénu.
-     * Může zahrnovat mřížku, kolizní mapu, pozici kamery, FPS atd.
-     *
-     * @param g      Grafický kontext.
-     * @param map    Aktuální mapa.
-     * @param camera Aktuální kamera.
-     */
-    protected void renderDebugInfo(Graphics g, RMap map, Camera camera) {
-        float camX = camera.getX();
-        float camY = camera.getY();
-
-        g.setColor(new Color(255, 255, 255, 50));
-        int startGridX = (int) (camX / TILE_SIZE) * TILE_SIZE;
-        int startGridY = (int) (camY / TILE_SIZE) * TILE_SIZE;
-        for (int x = startGridX; x < camX + camera.getScreenWidth(); x += TILE_SIZE) {
-            int screenX = (int) (x - camX);
-            g.drawLine(screenX, 0, screenX, camera.getScreenHeight());
-        }
-        for (int y = startGridY; y < camY + camera.getScreenHeight(); y += TILE_SIZE) {
-            int screenY = (int) (y - camY);
-            g.drawLine(0, screenY, camera.getScreenWidth(), screenY);
-        }
-
-        g.setColor(new Color(255, 0, 0, 100));
-        EObject[][] collisionMap = map.getCollisionMap();
-        if (collisionMap != null) {
-            for (int y = Math.max(0, (int) (camY / TILE_SIZE));
-                 y < Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1); y++) {
-                for (int x = Math.max(0, (int) (camX / TILE_SIZE));
-                     x < Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1); x++) {
-                    if (!collisionMap[x][y].isWalkable()) {
-                        int screenX = (int) (x * TILE_SIZE - camX);
-                        int screenY = (int) (y * TILE_SIZE - camY);
-                        g.drawRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-                    }
-                }
-            }
-        }
-
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        g.drawString(String.format("Cam: %.1f, %.1f", camX, camY), 10, 20);
-        g.drawString(String.format("Tiles: %d, %d", (int) (camX / TILE_SIZE), (int) (camY / TILE_SIZE)), 10, 35);
-    }
-
-    /**
-     * @return `true`, pokud je zapnutý režim vykreslování debug informací.
-     */
-    public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Zapne nebo vypne režim vykreslování debug informací.
-     *
-     * @param debugMode `true` pro zapnutí, `false` pro vypnutí.
-     */
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-    }
-
 }

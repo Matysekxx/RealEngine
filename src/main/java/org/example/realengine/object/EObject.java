@@ -66,6 +66,15 @@ public enum EObject {
     }
 
     /**
+     * Returns the color associated with this object type.
+     *
+     * @return The Color instance.
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
      * Checks if this object type is generally walkable.
      * Specific entities might have different interactions (e.g., falling through platforms).
      *
