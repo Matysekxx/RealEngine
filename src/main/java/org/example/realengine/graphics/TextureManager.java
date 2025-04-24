@@ -26,6 +26,8 @@ public final class TextureManager {
         addTexture(Texture.createColorTexture(DEFAULT_TEXTURE_ID, Color.MAGENTA, TILE_SIZE, TILE_SIZE));
         loadObjectTexturesFromResources();
         setupDefaultMappings();
+
+        
     }
 
     private void loadObjectTexturesFromResources() {
