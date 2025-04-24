@@ -2,36 +2,25 @@ package org.example.realengine.graphics;
 
 import org.example.realengine.entity.Entity;
 import org.example.realengine.map.ETile;
+import org.example.realengine.map.MapElementManager;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
 /**
  * Zodpovídá za vykreslování herního světa (mapy, entit) na obrazovku.
- * Používá {@link Camera} pro určení viditelné oblasti a {@link TextureManager} pro získání textur.
+ * Používá {@link Camera} pro určení viditelné oblasti a {@link MapElementManager} pro získání textur.
  */
 public class Render {
-
-    /**
-     * Správce textur pro získávání obrázků dlaždic a entit.
-     */
-    private final TextureManager textureManager;
-
-    /**
-     * Vytvoří nový Renderer s daným správcem textur.
-     *
-     * @param textureManager Správce textur, který bude renderer používat. Nesmí být `null`.
-     * @throws NullPointerException pokud je `textureManager` `null`.
-     */
-    public Render(@NotNull TextureManager textureManager) {
-        this.textureManager = textureManager;
-    }
+    private static final MapElementManager manager = new MapElementManager();
+    private static final Map<EObject, ETile> tiles = manager.getObjectToTileMap();
+    private final boolean texturesOn = true;
 
     /**
      * Hlavní metoda pro vykreslení celé herní scény.
@@ -60,8 +49,7 @@ public class Render {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     protected void renderBackground(Graphics g, Camera camera) {
-        g.setColor(ETile.SKY.getColor());
-        g.fillRect(0, 0, camera.getScreenWidth(), camera.getScreenHeight());
+        g.drawImage(ETile.SKY.texture, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**
@@ -91,19 +79,16 @@ public class Render {
             for (int x = startTileX; x < endTileX; x++) {
                 if (x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight()) {
                     EObject object = collisionMap[x][y];
-                    if (object != null && object != EObject.EMPTY) {
+                    if (object != null && object != EObject.EMPTY && object != EObject.PLAYER_SPAWN) {
                         int screenX = (int) (x * TILE_SIZE - camX);
                         int screenY = (int) (y * TILE_SIZE - camY);
-                        BufferedImage texture = textureManager.getTextureForObject(object);
-                        Texture defaultTexture = textureManager.getTexture("default");
-                        if (texture != null && (defaultTexture == null || texture != defaultTexture.getImage())) {
+                        BufferedImage texture = tiles.get(object).texture;
+                        if (texturesOn) {
                             g.drawImage(texture, screenX, screenY, TILE_SIZE, TILE_SIZE, null);
                         } else {
-                            Color color = object.getColor();
-                            if (color != null) {
-                                g.setColor(color);
-                                g.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-                            }
+                            Color color = tiles.get(object).getColor();
+                            g.setColor(color);
+                            g.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
                         }
                     }
                 }
@@ -146,17 +131,11 @@ public class Render {
 
         if (screenX + entity.getWidth() >= 0 && screenX <= camera.getScreenWidth() &&
                 screenY + entity.getHeight() >= 0 && screenY <= camera.getScreenHeight()) {
+            g.setColor(getColorForEntityType(entity.getType()));
+            g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
+            g.setColor(Color.BLACK);
+            g.drawRect(screenX, screenY, entity.getWidth() - 1, entity.getHeight() - 1);
 
-            Texture texture = entity.getTexture();
-            if (texture != null) {
-                g.drawImage(texture.getImage(), screenX, screenY,
-                        entity.getWidth(), entity.getHeight(), null);
-            } else {
-                g.setColor(getColorForEntityType(entity.getType()));
-                g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
-                g.setColor(Color.BLACK);
-                g.drawRect(screenX, screenY, entity.getWidth() - 1, entity.getHeight() - 1);
-            }
         }
     }
 

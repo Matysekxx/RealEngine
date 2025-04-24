@@ -2,8 +2,6 @@ package org.example.realengine.object;
 
 import org.example.realengine.map.RMap;
 
-import java.awt.*;
-
 /**
  * Enum representing different types of collision objects in the game.
  * Each object defines whether it is walkable and whether it is harmful.
@@ -13,65 +11,50 @@ public enum EObject {
     /**
      * Impassable wall or general obstacle.
      */
-    WALL(false, false, new Color(0x000000)),
+    WALL(false, false),
     /**
      * Impassable map border (for objects outside the defined area).
      */
-    BORDER(false, false, new Color(0x333333)),
+    BORDER(false, false),
     /**
      * Impassable box, potentially pushable (base is impassable).
      */
-    BOX(false, false, new Color(0x8B4513)),
+    BOX(false, false),
     /**
      * Empty space, completely passable.
      */
-    EMPTY(true, false, new Color(0xFFFFFF)),
+    EMPTY(true, false),
     /**
      * Ladder, allows vertical movement. Passable.
      */
-    LADDER(true, false, new Color(0x00BFFF)),
+    LADDER(true, false),
 
-    HONEY(true, false, new Color(0xB8860B)),
-    CHECKPOINT(true, false, new Color(255, 215, 0)),
+    SLIME(true, false),
+    CHECKPOINT(true, false),
     /**
      * Player starting position. Passable.
      */
-    PLAYER_SPAWN(true, false, new Color(0xFFFF00)),
+    PLAYER_SPAWN(true, false),
     /**
      * Trap (e.g., pitfall). Passable but harmful.
      */
-    TRAP(true, true, new Color(0x8B0000)),
-    /**
-     * Spikes. Impassable and harmful.
-     */
-    SPIKES(false, true, new Color(0xAAAAAA)),
+    TRAP(true, true),
     /**
      * Lava/acid. Passable but harmful.
      */
-    HAZARD_LIQUID(true, true, new Color(0xFF9900)),
+    HAZARD_LIQUID(true, true),
 
-    TELEPORT_BLUE(true, false, new Color(0x0000FF)),
-    TELEPORT_GREEN(true, false, new Color(0x00FF00)),
-    TELEPORT_RED(true, false, new Color(0xFF0000)),
-    SPRING(false, false, new Color(0xFF0000));
+    TELEPORT_BLUE(true, false),
+    TELEPORT_RED(true, false),
+    TELEPORT_PURPLE(true, false ),
+    SPRING(false, false),;
 
     private final boolean walkable;
     private final boolean harmful;
-    private final Color color;
 
-    EObject(boolean walkable, boolean harmful, Color color) {
+    EObject(boolean walkable, boolean harmful) {
         this.walkable = walkable;
         this.harmful = harmful;
-        this.color = color;
-    }
-
-    /**
-     * Returns the color associated with this object type.
-     *
-     * @return The Color instance.
-     */
-    public Color getColor() {
-        return color;
     }
 
     /**

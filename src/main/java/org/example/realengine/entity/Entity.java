@@ -1,6 +1,5 @@
 package org.example.realengine.entity;
 
-import org.example.realengine.graphics.Texture;
 import org.example.realengine.object.EObject;
 import org.example.realengine.physics.CollisionDetector;
 
@@ -21,7 +20,6 @@ public abstract class Entity {
     protected int height = 16;
     protected boolean isOnGround = false;
     protected boolean isOnLadder = false;
-    protected Texture texture;
     protected boolean active = true;
     protected float health = 100;
     protected float maxHealth = 100;
@@ -297,21 +295,6 @@ public abstract class Entity {
     public void setHeight(int height) {
         this.height = height;
     }
-
-    /**
-     * @return Textura přiřazená k entitě. Může být `null`.
-     */
-    public Texture getTexture() {
-        return texture;
-    }
-
-    /**
-     * Nastaví texturu entity. @param texture Nová textura.
-     */
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
     /**
      * @return `true`, pokud je entita aktivní (aktualizuje se, vykresluje, koliduje), jinak `false`.
      */

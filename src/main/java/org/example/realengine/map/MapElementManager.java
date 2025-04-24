@@ -15,6 +15,10 @@ public class MapElementManager {
     private final Map<ETile, EObject> tileToObjectMap = new HashMap<>();
     private final Map<EObject, ETile> objectToTileMap = new HashMap<>();
 
+    public Map<EObject, ETile> getObjectToTileMap() {
+        return objectToTileMap;
+    }
+
     /**
      * Vytvoří novou instanci správce mapových elementů s výchozím mapováním.
      */
@@ -29,18 +33,22 @@ public class MapElementManager {
         for (ETile tile : ETile.values()) {
             registerTile(tile);
         }
-        mapTileToObject(ETile.WALL, EObject.WALL);
-        mapTileToObject(ETile.LAVA, EObject.HAZARD_LIQUID);
+        mapTileToObject(ETile.STONE, EObject.WALL);
+        mapTileToObject(ETile.LAVA_UP, EObject.HAZARD_LIQUID);
+        mapTileToObject(ETile.LAVA_DOWN, EObject.HAZARD_LIQUID);
         mapTileToObject(ETile.PLAYER_SPAWN, EObject.PLAYER_SPAWN);
         mapTileToObject(ETile.EMPTY, EObject.EMPTY);
         mapTileToObject(ETile.SKY, EObject.EMPTY);
         mapTileToObject(ETile.UNKNOWN, EObject.EMPTY);
-        mapTileToObject(ETile.HONEY, EObject.HONEY);
-        mapTileToObject(ETile.LADDER, EObject.LADDER);
+        mapTileToObject(ETile.SLIME, EObject.SLIME);
+        mapTileToObject(ETile.VINE, EObject.LADDER);
+        mapTileToObject(ETile.PLANT, EObject.LADDER);
         mapTileToObject(ETile.TRAP, EObject.TRAP);
-        mapTileToObject(ETile.SPIKES, EObject.SPIKES);
         mapTileToObject(ETile.BOX, EObject.BOX);
         mapTileToObject(ETile.SPRING, EObject.SPRING);
+        mapTileToObject(ETile.TELEPORT_BLUE, EObject.TELEPORT_BLUE);
+        mapTileToObject(ETile.TELEPORT_PURPLE, EObject.TELEPORT_PURPLE);
+        mapTileToObject(ETile.TELEPORT_RED, EObject.TELEPORT_RED);
     }
 
     /**

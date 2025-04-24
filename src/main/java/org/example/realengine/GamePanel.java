@@ -5,7 +5,6 @@ import org.example.realengine.entity.Player;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
 import org.example.realengine.graphics.Render;
-import org.example.realengine.graphics.TextureManager;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +25,6 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
     private static final int BOX_GRAVITY_DELAY = 6;
     private final RControl rControl;
-    private final TextureManager textureManager;
     private final Render render;
     private final Camera camera;
     private final Player player;
@@ -41,8 +39,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
-        textureManager = new TextureManager("textures/");
-        render = new Render(textureManager);
+        render = new Render();
         try {
             map = RMap.loadFromPng("maps/test.png");
         }catch (IOException _){}
@@ -183,7 +180,7 @@ public class GamePanel extends JPanel implements Runnable {
         fillArea(targetMap, 26, groundY - 8, 1, 8, EObject.LADDER);
         fillArea(targetMap, 27, groundY - 8, 15, 1, EObject.WALL);
         targetMap.setObjectAt(28, groundY - 9, EObject.BOX);
-        fillArea(targetMap, 35, groundY - 9, 4, 1, EObject.HONEY);
+        fillArea(targetMap, 35, groundY - 9, 4, 1, EObject.SLIME);
         targetMap.setObjectAt(43, groundY - 1, EObject.SPRING);
         fillArea(targetMap, 47, groundY - 7, 6, 1, EObject.WALL);
         targetMap.setObjectAt(60, groundY - 1, EObject.WALL);

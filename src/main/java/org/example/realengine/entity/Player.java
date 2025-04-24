@@ -248,7 +248,7 @@ public class Player extends Entity {
                         tileX >= 0 && tileX < collisionMap.length &&
                         bottomTileY >= 0 && bottomTileY < collisionMap[0].length &&
                         collisionMap[tileX][bottomTileY] != null) {
-                    if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID || collisionMap[tileX][bottomTileY] == EObject.SPIKES) {
+                    if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
                         respawn();
                         return true;
                     } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown && !isOnTrap) {
@@ -279,14 +279,17 @@ public class Player extends Entity {
         boolean isOnHoney = false;
 
         EObject currentObject;
+        EObject objectUnder;
         if (collisionMap != null &&
                 centerTileX >= 0 && centerTileX < collisionMap.length &&
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
             currentObject = collisionMap[centerTileX][centerTileY];
+            objectUnder = collisionMap[centerTileX][centerTileY-1];
+
             if (currentObject == EObject.LADDER) {
                 isOnLadder = true;
             }
-            if (currentObject == EObject.HONEY) {
+            if (currentObject == EObject.SLIME) {
                 isOnHoney = true;
             }
             if (currentObject == EObject.TRAP) {
@@ -298,7 +301,7 @@ public class Player extends Entity {
             }
             if (teleportCooldown == 0 &&
                     (currentObject == EObject.TELEPORT_BLUE ||
-                            currentObject == EObject.TELEPORT_GREEN ||
+                            currentObject == EObject.TELEPORT_PURPLE ||
                             currentObject == EObject.TELEPORT_RED)) {
                 teleportToNext(collisionMap, currentObject, centerTileX, centerTileY, TILE_SIZE);
                 teleportCooldown = TELEPORT_COOLDOWN_TICKS;
