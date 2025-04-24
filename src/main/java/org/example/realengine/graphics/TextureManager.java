@@ -20,6 +20,7 @@ public final class TextureManager {
     private final Map<EObject, String> objectTextureMap = new HashMap<>();
     private final String resourceBasePath;
 
+
     public TextureManager(String resourceBasePath) {
         this.resourceBasePath = resourceBasePath.endsWith("/") ? resourceBasePath : resourceBasePath + "/";
         addTexture(Texture.createColorTexture(DEFAULT_TEXTURE_ID, Color.MAGENTA, TILE_SIZE, TILE_SIZE));

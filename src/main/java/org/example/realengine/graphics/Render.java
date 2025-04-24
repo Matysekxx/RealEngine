@@ -1,7 +1,6 @@
 package org.example.realengine.graphics;
 
 import org.example.realengine.entity.Entity;
-import org.example.realengine.game.GameConstants;
 import org.example.realengine.map.ETile;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
@@ -17,16 +16,12 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
  * Zodpovídá za vykreslování herního světa (mapy, entit) na obrazovku.
  * Používá {@link Camera} pro určení viditelné oblasti a {@link TextureManager} pro získání textur.
  */
-public class Renderer {
+public class Render {
 
     /**
      * Správce textur pro získávání obrázků dlaždic a entit.
      */
     private final TextureManager textureManager;
-    /**
-     * Příznak pro zapnutí/vypnutí vykreslování debug informací.
-     */
-    private boolean debugMode = false;
 
     /**
      * Vytvoří nový Renderer s daným správcem textur.
@@ -34,7 +29,7 @@ public class Renderer {
      * @param textureManager Správce textur, který bude renderer používat. Nesmí být `null`.
      * @throws NullPointerException pokud je `textureManager` `null`.
      */
-    public Renderer(@NotNull TextureManager textureManager) {
+    public Render(@NotNull TextureManager textureManager) {
         this.textureManager = textureManager;
     }
 
@@ -81,10 +76,10 @@ public class Renderer {
         float camX = camera.getX();
         float camY = camera.getY();
 
-        int startTileX = Math.max(0, (int) (camX / TILE_SIZE));
-        int startTileY = Math.max(0, (int) (camY / TILE_SIZE));
-        int endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
-        int endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
+        var startTileX = Math.max(0, (int) (camX / TILE_SIZE));
+        var startTileY = Math.max(0, (int) (camY / TILE_SIZE));
+        var endTileX = Math.min(map.getWidth(), (int) ((camX + camera.getScreenWidth()) / TILE_SIZE) + 1);
+        var endTileY = Math.min(map.getHeight(), (int) ((camY + camera.getScreenHeight()) / TILE_SIZE) + 1);
 
         EObject[][] collisionMap = map.getCollisionMap();
         if (collisionMap == null) {
@@ -161,10 +156,6 @@ public class Renderer {
                 g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
                 g.setColor(Color.BLACK);
                 g.drawRect(screenX, screenY, entity.getWidth() - 1, entity.getHeight() - 1);
-            }
-            if (debugMode) {
-                g.setColor(Color.YELLOW);
-                g.drawRect(screenX, screenY, entity.getWidth(), entity.getHeight());
             }
         }
     }

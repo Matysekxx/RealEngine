@@ -4,7 +4,7 @@ import org.example.realengine.control.RControl;
 import org.example.realengine.entity.Player;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
-import org.example.realengine.graphics.Renderer;
+import org.example.realengine.graphics.Render;
 import org.example.realengine.graphics.TextureManager;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
@@ -27,7 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     private static final int BOX_GRAVITY_DELAY = 6;
     private final RControl rControl;
     private final TextureManager textureManager;
-    private final Renderer renderer;
+    private final Render render;
     private final Camera camera;
     private final Player player;
     private final int FPS = 60;
@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         textureManager = new TextureManager("textures/");
-        renderer = new Renderer(textureManager);
+        render = new Render(textureManager);
         try {
             map = RMap.loadFromPng("maps/test.png");
         }catch (IOException _){}
@@ -131,7 +131,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        renderer.renderScene(g2, map, camera);
+        render.renderScene(g2, map, camera);
 
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
