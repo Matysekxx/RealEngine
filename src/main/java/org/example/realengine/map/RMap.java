@@ -1,7 +1,6 @@
 package org.example.realengine.map;
 
 import org.example.realengine.entity.Entity;
-import org.example.realengine.graphics.ImageNotFoundException;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,54 +70,6 @@ public class RMap {
             }
         }
         System.out.println("Created new RMap (" + width + "x" + height + ")");
-    }
-
-    public static RMap loadFromFiles(@NotNull String... filePaths) throws ImageNotFoundException {
-        RMap map = new RMap(0, 0);
-        for (String path : filePaths) {
-            try {
-                BufferedImage image = ImageIO.read(new File(path));
-                map.setLayer(processImage(image));
-            } catch (IOException e) {
-                throw new ImageNotFoundException(path);
-            }
-        }
-        return map;
-    }
-
-    public static RMap loadFromResources(@NotNull String... resourcePaths) {
-        RMap map = new RMap(0, 0);
-        for (String path : resourcePaths) {
-            try {
-                URL url = RMap.class.getClassLoader().getResource(path);
-                if (url != null) map.setLayer(processImage(ImageIO.read(url)));
-            } catch (IOException e) {
-                System.err.println("Failed to load: " + path);
-            }
-        }
-        return map;
-    }
-
-    private static ETile[][] processImage(@NotNull BufferedImage image) {
-        return createETiles(image, image.getWidth(), image.getHeight());
-    }
-
-    /**
-     * Načte mapu z obrázku a vytvoří kolizní mapu.
-     *
-     * @param imagePath Cesta k obrázku.
-     * @return Nově vytvořená mapa.
-     * @throws IOException Pokud se nepodaří načíst obrázek.
-     */
-    public static RMap loadMapFromImage(String imagePath) throws IOException {
-        BufferedImage image = ImageIO.read(new File(imagePath));
-        int width = image.getWidth();
-        int height = image.getHeight();
-        RMap map = new RMap(width, height);
-        ETile[][] visualLayer = createETiles(image, width, height);
-        map.setLayer(visualLayer);
-        map.collisionMap = elementManager.createCollisionMapFromImage(image);
-        return map;
     }
 
     private static ETile[][] createETiles(BufferedImage image, int width, int height) {

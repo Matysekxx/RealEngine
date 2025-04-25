@@ -1,4 +1,4 @@
-package org.example.realengine;
+package org.example.realengine.demo;
 
 import org.example.realengine.control.RControl;
 import org.example.realengine.entity.Player;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable {
     public static final int MAX_SCREEN_COL = 26;
@@ -28,7 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final Render render;
     private final Camera camera;
     private final Player player;
-    private static final int FPS = 60;
+    static final int FPS = 50;
     private RMap map;
     private Point spawnPoint;
     private Thread gameThread;
@@ -190,6 +189,42 @@ public class GamePanel extends JPanel implements Runnable {
         fillArea(targetMap, 65, groundY - 5, 2, 1, EObject.WALL);
     }
 
+    @Override
+    public void run() {
+        double drawInterval = 1000000000.0 / FPS;
+        double deltaAccumulator = 0;
+        long lastTime = System.nanoTime();
+        final float fixedDeltaTime = 1.0f / FPS;
+
+        while (gameThread != null) {
+            long currentTime = System.nanoTime();
+            deltaAccumulator += (currentTime - lastTime) / 1000000000.0;
+            lastTime = currentTime;
+            deltaAccumulator = Math.min(deltaAccumulator, fixedDeltaTime * 5);
+
+            if (!isPaused) {
+                while (deltaAccumulator >= fixedDeltaTime) {
+                    update();
+                    deltaAccumulator -= fixedDeltaTime;
+                }
+                repaint();
+            }
+
+            try {
+                long timeNow = System.nanoTime();
+                long sleepTime = (lastTime + (long) drawInterval - timeNow) / 1000000;
+
+                if (sleepTime > 0) {
+                    Thread.sleep(sleepTime);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.err.println("Game loop interrupted!");
+                break;
+            }
+        }
+    }
+
     /**
      * Loads a new map, replacing the current one. Updates camera bounds and player position.
      *
@@ -251,41 +286,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        double drawInterval = 1000000000.0 / FPS;
-        double deltaAccumulator = 0;
-        long lastTime = System.nanoTime();
-        final float fixedDeltaTime = 1.0f / FPS;
 
-        while (gameThread != null) {
-            long currentTime = System.nanoTime();
-            deltaAccumulator += (currentTime - lastTime) / 1000000000.0;
-            lastTime = currentTime;
-            deltaAccumulator = Math.min(deltaAccumulator, fixedDeltaTime * 5);
-
-            if (!isPaused) {
-                while (deltaAccumulator >= fixedDeltaTime) {
-                    update();
-                    deltaAccumulator -= fixedDeltaTime;
-                }
-                repaint();
-            }
-
-            try {
-                long timeNow = System.nanoTime();
-                long sleepTime = (lastTime + (long) drawInterval - timeNow) / 1000000;
-
-                if (sleepTime > 0) {
-                    Thread.sleep(sleepTime);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.err.println("Game loop interrupted!");
-                break;
-            }
-        }
-    }
 
     private void applyBoxGravity() {
         EObject[][] collisionMap = map.getCollisionMap();
@@ -303,5 +304,3 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 }
-
-

@@ -48,6 +48,8 @@ public class MapElementManager {
         mapTileToObject(ETile.PLANT, EObject.LADDER);
         mapTileToObject(ETile.TRAP, EObject.TRAP);
         mapTileToObject(ETile.BOX, EObject.BOX);
+        mapTileToObject(ETile.GRASS, EObject.WALL);
+        mapTileToObject(ETile.DIRT, EObject.WALL);
         mapTileToObject(ETile.SPRING, EObject.SPRING);
         mapTileToObject(ETile.TELEPORT_BLUE, EObject.TELEPORT_BLUE);
         mapTileToObject(ETile.TELEPORT_PURPLE, EObject.TELEPORT_PURPLE);
@@ -142,6 +144,7 @@ public class MapElementManager {
      * @param tileLayer Vrstva vizuálních dlaždic.
      * @return 2D pole EObject.
      */
+    @Deprecated
     public EObject[][] createCollisionMapFromLayer(ETile[][] tileLayer) {
         if (tileLayer == null || tileLayer.length == 0) {
             throw new IllegalArgumentException("Input tile layer cannot be null or empty.");

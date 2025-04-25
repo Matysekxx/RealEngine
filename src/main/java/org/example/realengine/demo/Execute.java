@@ -1,4 +1,4 @@
-package org.example.realengine;
+package org.example.realengine.demo;
 
 import javax.swing.*;
 

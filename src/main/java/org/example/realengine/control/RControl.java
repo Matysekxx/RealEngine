@@ -1,6 +1,6 @@
 package org.example.realengine.control;
 
-import org.example.realengine.GamePanel;
+import org.example.realengine.demo.GamePanel;
 import org.example.realengine.entity.Entity;
 import org.example.realengine.entity.Player;
 import org.jetbrains.annotations.NotNull;

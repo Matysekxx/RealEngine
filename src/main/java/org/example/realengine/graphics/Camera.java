@@ -107,7 +107,7 @@ public class Camera {
         this.worldWidth = newWorldWidth;
         this.worldHeight = newWorldHeight;
         clampCamera();
-        //System.out.println("Camera world dimensions updated to: " + newWorldWidth + "x" + newWorldHeight);
+        System.out.println("Camera world dimensions updated to: " + newWorldWidth + "x" + newWorldHeight);
     }
 
     private void clampCamera() {

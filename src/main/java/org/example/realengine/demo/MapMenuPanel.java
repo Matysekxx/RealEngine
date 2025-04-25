@@ -1,4 +1,4 @@
-package org.example.realengine;
+package org.example.realengine.demo;
 
 import org.example.realengine.map.RMap;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,24 +46,7 @@ public class MapMenuPanel extends JPanel {
         mapList.setSelectionBackground(new Color(60, 60, 120));
         mapList.setSelectionForeground(Color.YELLOW);
         mapList.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mapList.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                          int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel label = (JLabel) super.getListCellRendererComponent(
-                        list, value, index, isSelected, cellHasFocus);
-                if (isSelected) {
-                    label.setText("▶ " + value);
-                    label.setBorder(BorderFactory.createCompoundBorder(
-                            BorderFactory.createMatteBorder(1, 0, 1, 0, new Color(255, 215, 0, 100)),
-                            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
-                } else {
-                    label.setText("  " + value);
-                    label.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
-                }
-                return label;
-            }
-        });
+        mapList.setCellRenderer(new ListCellRenderer());
         mapList.setSelectionModel(new DefaultListSelectionModel() {
             @Override
             public void setSelectionInterval(int index0, int index1) {
@@ -124,28 +106,12 @@ public class MapMenuPanel extends JPanel {
         loadMapList();
     }
 
-    @NotNull
     private JPanel getPanel() {
-        JPanel titlePanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                int w = getWidth();
-                int h = getHeight();
-                Color color1 = new Color(40, 40, 80);
-                Color color2 = new Color(20, 20, 50);
-                GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, w, h);
-            }
-        };
+        JPanel titlePanel = new TitlePanel();
         titlePanel.setLayout(new BorderLayout());
         return titlePanel;
     }
 
-    @NotNull
     private JPanel getJPanel() {
         JPanel instructionsPanel = getInstructionsPanel();
         JLabel instructionsLabel = new JLabel("↑↓ - Select | ENTER - Load | ESC - Back");
@@ -155,23 +121,8 @@ public class MapMenuPanel extends JPanel {
         return instructionsPanel;
     }
 
-    @NotNull
     private JPanel getInstructionsPanel() {
-        JPanel instructionsPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                int w = getWidth();
-                int h = getHeight();
-                Color color1 = new Color(20, 20, 50);
-                Color color2 = new Color(40, 40, 80);
-                GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, w, h);
-            }
-        };
+        JPanel instructionsPanel = new InstructionsPanel();
         instructionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
         return instructionsPanel;
     }

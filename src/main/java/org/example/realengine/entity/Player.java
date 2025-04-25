@@ -1,6 +1,6 @@
 package org.example.realengine.entity;
 
-import org.example.realengine.GamePanel;
+import org.example.realengine.demo.GamePanel;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.object.EObject;
 
