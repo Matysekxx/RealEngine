@@ -28,7 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final Render render;
     private final Camera camera;
     private final Player player;
-    private final int FPS = 60;
+    private static final int FPS = 60;
     private RMap map;
     private Point spawnPoint;
     private Thread gameThread;
@@ -40,17 +40,14 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        try {
-            map = RMap.loadFromPng("maps/test.png");
-        }catch (IOException _){}
         map = new RMap(MAX_WORLD_COL, MAX_WORLD_ROW);
         createChallengeMap(map);
-        Point playerSpawn = findSpawnPoint(map);
-        if (playerSpawn == null) {
+        spawnPoint = findSpawnPoint(map);
+        if (spawnPoint == null) {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
-            playerSpawn = new Point(2 * TILE_SIZE, (MAX_WORLD_ROW - 5) * TILE_SIZE);
+            spawnPoint = new Point(2 * TILE_SIZE, (MAX_WORLD_ROW - 5) * TILE_SIZE);
         }
-        player = new Player(playerSpawn.x, playerSpawn.y);
+        player = new Player(spawnPoint.x, spawnPoint.y);
         player.setWidth(TILE_SIZE);
         player.setHeight(TILE_SIZE);
         map.addEntity(player);
@@ -73,17 +70,15 @@ public class GamePanel extends JPanel implements Runnable {
     private Point findSpawnPoint(RMap mapToSearch) {
         EObject[][] collisionLayer = mapToSearch.getCollisionMap();
         if (collisionLayer == null) return null;
-        int tileSize = TILE_SIZE;
         for (int y = 0; y < mapToSearch.getHeight(); y++) {
             for (int x = 0; x < mapToSearch.getWidth(); x++) {
-                if (x < collisionLayer.length && y < collisionLayer[x].length) {
+                if (x < collisionLayer.length && y < collisionLayer[x].length)
                     if (collisionLayer[x][y] == EObject.PLAYER_SPAWN) {
-                        return new Point(x * tileSize, y * tileSize);
+                        return new Point(x*TILE_SIZE, y*TILE_SIZE);
                     }
-                }
             }
         }
-        throw new IllegalArgumentException("Spawn point not found");
+        return null;
     }
 
     /**
@@ -209,12 +204,13 @@ public class GamePanel extends JPanel implements Runnable {
         int newWorldHeight = newMap.getHeight() * TILE_SIZE;
         camera.setWorldDimensions(newWorldWidth, newWorldHeight);
         spawnPoint = findSpawnPoint(this.map);
+        /*
         if (spawnPoint == null) {
-            System.err.println("CRITICAL: PLAYER_SPAWN not found in map: " + newMap.getName() + ". Using default spawn.");
-            spawnPoint = new Point(2 * TILE_SIZE, (newMap.getHeight() - 5) * TILE_SIZE);
-            spawnPoint.x = Math.max(0, Math.min(spawnPoint.x, newWorldWidth - TILE_SIZE));
-            spawnPoint.y = Math.max(0, Math.min(spawnPoint.y, newWorldHeight - TILE_SIZE));
+            System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
+            spawnPoint = new Point(2 * TILE_SIZE, 3 * TILE_SIZE);
         }
+
+         */
         player.setSpawnPoint(spawnPoint);
         resetPlayer(spawnPoint);
         this.map.addEntity(player);

@@ -30,10 +30,6 @@ public non-sealed class Player extends Entity {
         this.height = 32;
     }
 
-    public Point getSpawnPoint() {
-        return spawnPoint;
-    }
-
     public void setSpawnPoint(Point spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
@@ -189,7 +185,7 @@ public non-sealed class Player extends Entity {
                             nextTileX >= 0 && nextTileX < collisionMap.length &&
                             tileY >= 0 && tileY < collisionMap[0].length &&
                             collisionMap[nextTileX][tileY] != null &&
-                            !collisionMap[nextTileX][tileY].isWalkable()) {
+                            collisionMap[nextTileX][tileY].isSolid()) {
                         if (collisionMap[nextTileX][tileY] != EObject.BOX) {
                             collisionDetectedX = true;
                             x = nextTileX * TILE_SIZE - width;
@@ -205,7 +201,7 @@ public non-sealed class Player extends Entity {
                             nextTileX >= 0 && nextTileX < collisionMap.length &&
                             tileY >= 0 && tileY < collisionMap[0].length &&
                             collisionMap[nextTileX][tileY] != null &&
-                            !collisionMap[nextTileX][tileY].isWalkable()) {
+                            collisionMap[nextTileX][tileY].isSolid()) {
                         collisionDetectedX = true;
                         x = (nextTileX + 1) * TILE_SIZE + GAP;
                         velocityX = 0;

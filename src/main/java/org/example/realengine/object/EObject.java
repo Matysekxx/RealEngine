@@ -16,7 +16,7 @@ public enum EObject {
      * Impassable map border (for objects outside the defined area).
      */
     BORDER(false, false),
-    /**
+   /**
      * Impassable box, potentially pushable (base is impassable).
      */
     BOX(false, false),

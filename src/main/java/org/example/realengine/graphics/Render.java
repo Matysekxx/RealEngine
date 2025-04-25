@@ -8,6 +8,7 @@ import org.example.realengine.object.EObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -82,11 +83,13 @@ public class Render {
                     if (object != null && object != EObject.EMPTY && object != EObject.PLAYER_SPAWN) {
                         int screenX = (int) (x * TILE_SIZE - camX);
                         int screenY = (int) (y * TILE_SIZE - camY);
-                        BufferedImage texture = tiles.get(object).texture;
                         if (texturesOn) {
+                            BufferedImage texture;
+                            if (map.getDescription().equals("isLoaded")) texture = map.getLayer()[x][y].texture;
+                            else texture = tiles.get(object).texture;
                             g.drawImage(texture, screenX, screenY, TILE_SIZE, TILE_SIZE, null);
                         } else {
-                            Color color = tiles.get(object).getColor();
+                            Color color = tiles.get(object).color;
                             g.setColor(color);
                             g.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
                         }

@@ -19,6 +19,10 @@ public class MapElementManager {
         return objectToTileMap;
     }
 
+    public Map<ETile, EObject> getTileToObjectMap() {
+        return tileToObjectMap;
+    }
+
     /**
      * Vytvoří novou instanci správce mapových elementů s výchozím mapováním.
      */
@@ -48,6 +52,11 @@ public class MapElementManager {
         mapTileToObject(ETile.TELEPORT_BLUE, EObject.TELEPORT_BLUE);
         mapTileToObject(ETile.TELEPORT_PURPLE, EObject.TELEPORT_PURPLE);
         mapTileToObject(ETile.TELEPORT_RED, EObject.TELEPORT_RED);
+        mapTileToObject(ETile.WOOD, EObject.WALL);
+        mapTileToObject(ETile.SNOW, EObject.SLIME);
+        mapTileToObject(ETile.SAND, EObject.WALL);
+        mapTileToObject(ETile.BRICK, EObject.WALL);
+
     }
 
     /**
@@ -78,7 +87,7 @@ public class MapElementManager {
      * @return Odpovídající ETile nebo ETile.UNKNOWN.
      */
     public ETile getTileFromRGB(int rgb) {
-        return rgbToTileMap.getOrDefault(rgb & 0xFFFFFF, ETile.EMPTY);
+        return rgbToTileMap.getOrDefault(rgb, ETile.EMPTY);
     }
 
     /**
@@ -162,9 +171,9 @@ public class MapElementManager {
                 int rgb = image.getRGB(x, y);
                 ETile tile = getTileFromRGB(rgb);
                 collisionMap[x][y] = getObjectFromTile(tile);
-                //System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb & 0xFFFFFF, tile.name());
+                //System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb, tile.name());
                 if (tile == ETile.UNKNOWN) {
-                    //System.out.printf("Unknown color at (%d,%d): #%06X\n", x, y, rgb & 0xFFFFFF);
+                    System.out.printf("Unknown color at (%d,%d): #%06X\n", x, y, rgb);
                 }
             }
         }

@@ -26,10 +26,6 @@ public class RMap {
      */
     private static final MapElementManager elementManager = new MapElementManager();
     /**
-     * Seznam vizuálních vrstev mapy. Každá vrstva je 2D pole dlaždic.
-     */
-    private final List<ETile[][]> layers = new ArrayList<>();
-    /**
      * Seznam entit aktuálně přítomných na mapě (načtených nebo přidaných později).
      */
     private final List<Entity> entities = new ArrayList<>();
@@ -42,6 +38,10 @@ public class RMap {
      */
     private final int height;
     /**
+     * Seznam vizuálních vrstev mapy. Každá vrstva je 2D pole dlaždic.
+     */
+    private ETile[][] layer;
+    /**
      * Kolizní mapa určující pevné a průchozí oblasti.
      */
     private EObject[][] collisionMap;
@@ -49,8 +49,7 @@ public class RMap {
      * Název mapy (volitelné).
      */
     private String name = "Unnamed Map";
-    private String description;
-
+    private String description = "default";
     /**
      * Vytvoří novou prázdnou mapu se zadanými rozměry.
      * Inicializuje prázdnou kolizní mapu (všechny objekty jsou {@link EObject#EMPTY}).
@@ -79,7 +78,7 @@ public class RMap {
         for (String path : filePaths) {
             try {
                 BufferedImage image = ImageIO.read(new File(path));
-                map.addLayer(processImage(image));
+                map.setLayer(processImage(image));
             } catch (IOException e) {
                 throw new ImageNotFoundException(path);
             }
@@ -92,7 +91,7 @@ public class RMap {
         for (String path : resourcePaths) {
             try {
                 URL url = RMap.class.getClassLoader().getResource(path);
-                if (url != null) map.addLayer(processImage(ImageIO.read(url)));
+                if (url != null) map.setLayer(processImage(ImageIO.read(url)));
             } catch (IOException e) {
                 System.err.println("Failed to load: " + path);
             }
@@ -117,7 +116,7 @@ public class RMap {
         int height = image.getHeight();
         RMap map = new RMap(width, height);
         ETile[][] visualLayer = createETiles(image, width, height);
-        map.addLayer(visualLayer);
+        map.setLayer(visualLayer);
         map.collisionMap = elementManager.createCollisionMapFromImage(image);
         return map;
     }
@@ -150,9 +149,10 @@ public class RMap {
         ETile[][] tileLayer = manager.createTileLayerFromImage(image);
         EObject[][] collisionData = manager.createCollisionMapFromImage(image);
         RMap map = new RMap(width, height);
-        map.addLayer(tileLayer);
+        map.setLayer(tileLayer);
         map.setCollisionMap(collisionData);
         map.setName(new File(imagePath).getName().replaceFirst("[.][^.]+$", ""));
+        map.setDescription("isLoaded");
         return map;
     }
 
@@ -179,6 +179,10 @@ public class RMap {
         return ImageIO.read(imgFile);
     }
 
+    public ETile[][] getLayer() {
+        return layer;
+    }
+
     /**
      * Přidá novou vizuální vrstvu dlaždic do mapy.
      * Vrstva musí mít stejné rozměry jako mapa.
@@ -188,15 +192,14 @@ public class RMap {
      * @throws NullPointerException     pokud je `layer` `null`.
      * @throws IllegalArgumentException pokud rozměry vrstvy nesouhlasí s rozměry mapy.
      */
-    public void addLayer(@NotNull ETile[][] layer) {
+    public void setLayer(@NotNull ETile[][] layer) {
         if (layer.length != width || layer.length == 0 || layer[0].length != height) {
             throw new IllegalArgumentException("Layer dimensions (" + layer.length + "x" + (layer.length > 0 ? layer[0].length : 0)
                     + ") do not match map dimensions (" + width + "x" + height + ").");
         }
-        layers.add(layer);
-        System.out.println("Added visual layer to map. Total layers: " + layers.size());
+        System.err.println("layer is loaded");
+        this.layer = layer;
     }
-
 
 
     /**
@@ -262,45 +265,6 @@ public class RMap {
         if (x >= 0 && x < width && y >= 0 && y < height) {
             collisionMap[x][y] = (object != null) ? object : EObject.EMPTY;
         }
-    }
-
-    /**
-     * Získá dlaždici {@link ETile} na daných souřadnicích ve specifikované vizuální vrstvě.
-     *
-     * @param layerIndex Index vrstvy (0 pro první přidanou vrstvu atd.).
-     * @param x          Souřadnice X (sloupec).
-     * @param y          Souřadnice Y (řádek).
-     * @return Typ dlaždice na daných souřadnicích nebo `null`, pokud jsou index vrstvy nebo souřadnice neplatné.
-     */
-    public ETile getTileAt(int layerIndex, int x, int y) {
-        if (layerIndex < 0 || layerIndex >= layers.size() ||
-                x < 0 || x >= width || y < 0 || y >= height) {
-            return null;
-        }
-        return layers.get(layerIndex)[x][y];
-    }
-
-    /**
-     * Nastaví dlaždici {@link ETile} na daných souřadnicích ve specifikované vizuální vrstvě.
-     * Umožňuje dynamickou úpravu vzhledu mapy během hry.
-     *
-     * @param layerIndex Index vrstvy (0 pro první přidanou vrstvu atd.).
-     * @param x          Souřadnice X (sloupec).
-     * @param y          Souřadnice Y (řádek).
-     * @param tile       Typ dlaždice, která se má nastavit. Může být `null` pro prázdnou dlaždici.
-     */
-    public void setTileAt(int layerIndex, int x, int y, ETile tile) {
-        if (layerIndex >= 0 && layerIndex < layers.size() &&
-                x >= 0 && x < width && y >= 0 && y < height) {
-            layers.get(layerIndex)[x][y] = tile;
-        }
-    }
-
-    /**
-     * @return Seznam všech vizuálních vrstev mapy.
-     */
-    public List<ETile[][]> getLayers() {
-        return layers;
     }
 
     /**
