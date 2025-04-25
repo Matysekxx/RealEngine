@@ -15,7 +15,6 @@ import java.util.Map;
  */
 public enum ETile {
     STONE(0x000000, "textures/stone.png"),
-    //TODO: udelat textury
     HARD_BLOCK(0x000000, "textures/hardblock.png"),
     LAVA_UP(0xFF9900, "textures/lava_up.png"),
     WOOD(0x000000, "textures/wood.png"),
