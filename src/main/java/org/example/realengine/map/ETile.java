@@ -15,13 +15,17 @@ import java.util.Map;
  */
 public enum ETile {
     STONE(0x000000, "textures/stone.png"),
-    HARD_BLOCK(0x000000, "textures/hardblock.png"),
     LAVA_UP(0xFF9900, "textures/lava_up.png"),
-    WOOD(0x000000, "textures/wood.png"),
-    WATER(0x000000, "textures/water.png"),
-    SNOW(0x000000, "textures/snow.png"),
-    SAND(0x000000, "textures/sand.png"),
-    BRICK(0x000000, "textures/brick.png"),
+    /*
+    HARD_BLOCK(0, "textures/hardblock.png"),
+
+    WOOD(0, "textures/wood.png"),
+    WATER(0, "textures/water.png"),
+    SNOW(0, "textures/snow.png"),
+    SAND(0, "textures/sand.png"),
+    BRICK(0, "textures/brick.png"),
+
+     */
     PLAYER_SPAWN(0xFFFF00, "textures/sky.png"),
     EMPTY(0xFFFFFF, "textures/sky.png"),
     SKY(0x87CEEB, "textures/sky.png"),
