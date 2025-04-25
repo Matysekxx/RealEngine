@@ -179,10 +179,8 @@ public class MapMenuPanel extends JPanel {
     public void loadMapList() {
         listModel.clear();
         mapPaths.clear();
-        File customMapsDir = new File("f:\\RealEngine\\maps");
-        if (!customMapsDir.exists()) {
-            customMapsDir.mkdirs();
-        }
+        File customMapsDir = new File("maps");
+        if (!customMapsDir.exists()) customMapsDir.mkdirs();
         loadMapsFromDirectory(customMapsDir);
         if (listModel.isEmpty()) {
             listModel.addElement("No maps found");
@@ -223,11 +221,6 @@ public class MapMenuPanel extends JPanel {
     private void returnToGame() {
         parentFrame.getContentPane().remove(this);
         parentFrame.getContentPane().add(gamePanel);
-        gamePanel.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
-                new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB),
-                new Point(0, 0),
-                "invisible"));
-
         gamePanel.requestFocus();
         gamePanel.resumeGame();
         parentFrame.revalidate();

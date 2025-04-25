@@ -8,7 +8,7 @@ import java.awt.*;
 
 import static org.example.realengine.game.GameConstants.*;
 
-public class Player extends Entity {
+public non-sealed class Player extends Entity {
     private final float autoMoveSpeed = 400.0f;
     private final float jumpVelocity = -900.0f;
     private float velocityX = 0;

@@ -34,8 +34,8 @@ public class MapElementManager {
             registerTile(tile);
         }
         mapTileToObject(ETile.STONE, EObject.WALL);
+        mapTileToObject(ETile.HARD_BLOCK, EObject.WALL);
         mapTileToObject(ETile.LAVA_UP, EObject.HAZARD_LIQUID);
-        mapTileToObject(ETile.LAVA_DOWN, EObject.HAZARD_LIQUID);
         mapTileToObject(ETile.PLAYER_SPAWN, EObject.PLAYER_SPAWN);
         mapTileToObject(ETile.EMPTY, EObject.EMPTY);
         mapTileToObject(ETile.SKY, EObject.EMPTY);

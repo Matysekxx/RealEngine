@@ -12,7 +12,7 @@ import static org.example.realengine.game.GameConstants.GRAVITY;
  * Poskytuje základní fyzikální chování, jako je gravitace, detekce kolizí s mapou,
  * a základní podporu pro platformy a žebříky.
  */
-public abstract class Entity {
+public sealed abstract class Entity permits Player {
     protected float x, y;
     protected float vx = 0;
     protected float vy = 0;
