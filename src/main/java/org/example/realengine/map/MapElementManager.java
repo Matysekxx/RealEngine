@@ -10,7 +10,7 @@ import java.util.Map;
  * Třída pro jednotnou správu mapových elementů (ETile a EObject).
  * Umožňuje konverzi mezi barvami a elementy a mezi různými typy elementů.
  */
-public class MapElementManager {
+public final class MapElementManager {
     private final Map<Integer, ETile> rgbToTileMap = new HashMap<>();
     private final Map<ETile, EObject> tileToObjectMap = new HashMap<>();
     private final Map<EObject, ETile> objectToTileMap = new HashMap<>();
@@ -46,7 +46,11 @@ public class MapElementManager {
         mapTileToObject(ETile.SLIME, EObject.SLIME);
         mapTileToObject(ETile.VINE, EObject.LADDER);
         mapTileToObject(ETile.PLANT, EObject.LADDER);
-        mapTileToObject(ETile.TRAP, EObject.TRAP);
+        mapTileToObject(ETile.BACKGROUND_GRASS, EObject.BACKGROUND_OBJECT);
+        mapTileToObject(ETile.BACKGROUND_DIRT, EObject.BACKGROUND_OBJECT);
+        mapTileToObject(ETile.BACKGROUND_STONE, EObject.BACKGROUND_OBJECT);
+        mapTileToObject(ETile.BACKGROUND_LAVA, EObject.BACKGROUND_OBJECT);
+        mapTileToObject(ETile.SPIKE, EObject.SPIKE);
         mapTileToObject(ETile.BOX, EObject.BOX);
         mapTileToObject(ETile.GRASS, EObject.WALL);
         mapTileToObject(ETile.DIRT, EObject.WALL);
@@ -54,11 +58,13 @@ public class MapElementManager {
         mapTileToObject(ETile.TELEPORT_BLUE, EObject.TELEPORT_BLUE);
         mapTileToObject(ETile.TELEPORT_PURPLE, EObject.TELEPORT_PURPLE);
         mapTileToObject(ETile.TELEPORT_RED, EObject.TELEPORT_RED);
+        mapTileToObject(ETile.HARD_BLOCK, EObject.WALL);
         mapTileToObject(ETile.WOOD, EObject.WALL);
         mapTileToObject(ETile.SNOW, EObject.SLIME);
         mapTileToObject(ETile.SAND, EObject.WALL);
         mapTileToObject(ETile.BRICK, EObject.WALL);
-
+        mapTileToObject(ETile.END1, EObject.END);
+        mapTileToObject(ETile.END2, EObject.END);
     }
 
     /**

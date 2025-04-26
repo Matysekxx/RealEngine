@@ -11,50 +11,51 @@ public enum EObject {
     /**
      * Impassable wall or general obstacle.
      */
-    WALL(false, false),
+    WALL(false),
     /**
      * Impassable map border (for objects outside the defined area).
      */
-    BORDER(false, false),
+    BORDER(false),
    /**
      * Impassable box, potentially pushable (base is impassable).
      */
-    BOX(false, false),
+    BOX(false),
     /**
      * Empty space, completely passable.
      */
-    EMPTY(true, false),
+    EMPTY(true),
     /**
      * Ladder, allows vertical movement. Passable.
      */
-    LADDER(true, false),
+    LADDER(true),
 
-    SLIME(true, false),
-    CHECKPOINT(true, false),
+    SLIME(true),
+    CHECKPOINT(true),
     /**
      * Player starting position. Passable.
      */
-    PLAYER_SPAWN(true, false),
+    PLAYER_SPAWN(true),
     /**
      * Trap (e.g., pitfall). Passable but harmful.
      */
-    TRAP(true, true),
+    BACKGROUND_OBJECT(true),
     /**
      * Lava/acid. Passable but harmful.
      */
-    HAZARD_LIQUID(true, true),
+    HAZARD_LIQUID(true),
+    SPIKE(true),
 
-    TELEPORT_BLUE(true, false),
-    TELEPORT_RED(true, false),
-    TELEPORT_PURPLE(true, false ),
-    SPRING(false, false),;
+    TELEPORT_BLUE(true),
+    TELEPORT_RED(true),
+    TELEPORT_PURPLE(true),
+    SPRING(false),
+    END(true);
 
     private final boolean walkable;
-    private final boolean harmful;
 
-    EObject(boolean walkable, boolean harmful) {
+
+    EObject(boolean walkable) {
         this.walkable = walkable;
-        this.harmful = harmful;
     }
 
     /**
@@ -65,15 +66,6 @@ public enum EObject {
      */
     public boolean isWalkable() {
         return walkable;
-    }
-
-    /**
-     * Checks if this object type causes harm on contact.
-     *
-     * @return true if the object is harmful, false otherwise.
-     */
-    public boolean isHarmful() {
-        return harmful;
     }
 
     /**

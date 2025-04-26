@@ -3,6 +3,7 @@ package org.example.realengine.control;
 import org.example.realengine.demo.GamePanel;
 import org.example.realengine.entity.Entity;
 import org.example.realengine.entity.Player;
+import org.example.realengine.map.RMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -14,9 +15,11 @@ import java.awt.event.MouseListener;
 public class RControl implements MouseListener, KeyListener {
 
     private Entity controlledEntity;
+    private RMap map;
 
-    public RControl(@NotNull Entity entity) {
+    public RControl(@NotNull Entity entity, RMap map) {
         this.controlledEntity = entity;
+        this.map = map;
     }
 
     @Override

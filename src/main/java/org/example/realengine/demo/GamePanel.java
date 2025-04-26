@@ -20,8 +20,8 @@ public class GamePanel extends JPanel implements Runnable {
     private static final int TILE_SIZE = GameConstants.TILE_SIZE;
     public static final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL;
     public static final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;
-    public static final int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
-    public static final int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
+    public static int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
+    public static int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
     private static final int BOX_GRAVITY_DELAY = 6;
     private final RControl rControl;
     private final Render render;
@@ -50,14 +50,12 @@ public class GamePanel extends JPanel implements Runnable {
         player.setWidth(TILE_SIZE);
         player.setHeight(TILE_SIZE);
         map.addEntity(player);
-        rControl = new RControl(player);
+        rControl = new RControl(player,map);
         this.addKeyListener(rControl);
         this.setFocusable(true);
         camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
         camera.follow(player);
         camera.setFollowOffsetX(-SCREEN_WIDTH / 4.0f);
-
-
     }
 
     /**
@@ -237,15 +235,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.map = newMap;
         int newWorldWidth = newMap.getWidth() * TILE_SIZE;
         int newWorldHeight = newMap.getHeight() * TILE_SIZE;
+        WORLD_HEIGHT = newWorldHeight;
+        WORLD_WIDTH = newWorldWidth;
         camera.setWorldDimensions(newWorldWidth, newWorldHeight);
         spawnPoint = findSpawnPoint(this.map);
-        /*
-        if (spawnPoint == null) {
-            System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
-            spawnPoint = new Point(2 * TILE_SIZE, 3 * TILE_SIZE);
-        }
-
-         */
         player.setSpawnPoint(spawnPoint);
         resetPlayer(spawnPoint);
         this.map.addEntity(player);

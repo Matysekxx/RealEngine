@@ -5,10 +5,12 @@ import org.example.realengine.game.GameConstants;
 import org.example.realengine.object.EObject;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 import static org.example.realengine.game.GameConstants.*;
 
 public non-sealed class Player extends Entity {
+    private final static float GAP = TILE_SIZE /30.0f;
     private final float autoMoveSpeed = 400.0f;
     private final float jumpVelocity = -900.0f;
     private float velocityX = 0;
@@ -16,11 +18,18 @@ public non-sealed class Player extends Entity {
     private boolean isOnGround = false;
     private boolean isMovingDown = false;
     private Point spawnPoint;
-    private boolean isOnTrap = false;
     private boolean wantsToClimbUp = false;
     private boolean wantsToClimbDown = false;
     private int boxPushTick = 0;
     private int teleportCooldown = 0;
+    private static final Robot robot;
+    static {
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Player(float x, float y) {
         super(x, y, "player");
@@ -40,16 +49,15 @@ public non-sealed class Player extends Entity {
         velocityY += gravity * deltaTime;
         float potentialNextY = y + velocityY * deltaTime;
         int TILE_SIZE = GameConstants.TILE_SIZE;
-        final var GAP = TILE_SIZE / 30.0f;
         boxPushTick++;
 
         if (teleportCooldown > 0) {
             teleportCooldown--;
         }
 
-        boolean collisionDetectedX = handleBoxPush(collisionMap, GAP);
+        boolean collisionDetectedX = handleBoxPush(collisionMap);
         if (!collisionDetectedX) {
-            collisionDetectedX = handleXCollision(collisionMap, potentialNextX, GAP);
+            collisionDetectedX = handleXCollision(collisionMap, potentialNextX);
         }
         if (!collisionDetectedX) {
             x = potentialNextX;
@@ -100,7 +108,11 @@ public non-sealed class Player extends Entity {
     }
 
     public void setMovingDown(boolean movingDown) {
-        this.isMovingDown = movingDown;
+        if (!movingDown) {
+            this.isMovingDown = false;
+            return;
+        }
+        this.isMovingDown = this.isOnLadder;
     }
 
     public float getVelocityX() {
@@ -128,7 +140,7 @@ public non-sealed class Player extends Entity {
     }
 
 
-    private boolean handleBoxPush(EObject[][] collisionMap, float GAP) {
+    private boolean handleBoxPush(EObject[][] collisionMap) {
         boolean collisionDetectedX = false;
         if (velocityX != 0 && boxPushTick >= BOX_PUSH_DELAY) {
             int dir = velocityX > 0 ? 1 : -1;
@@ -172,11 +184,11 @@ public non-sealed class Player extends Entity {
     }
 
 
-    private boolean handleXCollision(EObject[][] collisionMap, float potentialNextX, float GAP) {
+    private boolean handleXCollision(EObject[][] collisionMap, float potentialNextX) {
         boolean collisionDetectedX = false;
         if (velocityX != 0) {
-            int topTileY = (int) (y / TILE_SIZE);
-            int bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
+            var topTileY = (int) (y / TILE_SIZE);
+            var bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
             int nextTileX;
             if (velocityX > 0) {
                 nextTileX = (int) ((potentialNextX + width) / TILE_SIZE);
@@ -186,7 +198,7 @@ public non-sealed class Player extends Entity {
                             tileY >= 0 && tileY < collisionMap[0].length &&
                             collisionMap[nextTileX][tileY] != null &&
                             collisionMap[nextTileX][tileY].isSolid()) {
-                        if (collisionMap[nextTileX][tileY] != EObject.BOX) {
+                        if (collisionMap[nextTileX][tileY] == EObject.BOX) {
                             collisionDetectedX = true;
                             x = nextTileX * TILE_SIZE - width;
                             velocityX = 0;
@@ -203,7 +215,7 @@ public non-sealed class Player extends Entity {
                             collisionMap[nextTileX][tileY] != null &&
                             collisionMap[nextTileX][tileY].isSolid()) {
                         collisionDetectedX = true;
-                        x = (nextTileX + 1) * TILE_SIZE + GAP;
+                        x = (nextTileX + 1) * TILE_SIZE;
                         velocityX = 0;
                         break;
                     }
@@ -247,7 +259,7 @@ public non-sealed class Player extends Entity {
                     if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
                         respawn();
                         return true;
-                    } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown && !isOnTrap) {
+                    } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown) {
                         if (collisionMap[tileX][bottomTileY] == EObject.SPRING) {
                             velocityY = jumpVelocity * 1.25f;
                             isOnGround = false;
@@ -271,25 +283,27 @@ public non-sealed class Player extends Entity {
         var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
 
         boolean isOnLadder = false;
-        isOnTrap = false;
         boolean isOnHoney = false;
 
         EObject currentObject;
-        EObject objectUnder;
         if (collisionMap != null &&
                 centerTileX >= 0 && centerTileX < collisionMap.length &&
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
             currentObject = collisionMap[centerTileX][centerTileY];
-            objectUnder = collisionMap[centerTileX][centerTileY-1];
-
+            if (currentObject == EObject.END) {
+                robot.keyPress(KeyEvent.VK_L);
+            }
             if (currentObject == EObject.LADDER) {
                 isOnLadder = true;
             }
             if (currentObject == EObject.SLIME) {
                 isOnHoney = true;
             }
-            if (currentObject == EObject.TRAP) {
-                isOnTrap = true;
+            if (currentObject == EObject.SPIKE) {
+                respawn();
+            }
+            if (currentObject == EObject.END) {
+                robot.keyPress(KeyEvent.VK_L);
             }
             if (currentObject == EObject.SPRING && isOnGround && velocityY == 0) {
                 velocityY = jumpVelocity * 1.5f;
@@ -308,9 +322,10 @@ public non-sealed class Player extends Entity {
         }
         if (isOnLadder) {
             gravity = 0;
+            boolean canClimbDown = isCanClimbDown(collisionMap);
             if (wantsToClimbUp) {
                 velocityY = -autoMoveSpeed;
-            } else if (wantsToClimbDown) {
+            } else if (wantsToClimbDown && canClimbDown) {
                 velocityY = autoMoveSpeed;
             } else {
                 velocityY = 0;
@@ -322,6 +337,19 @@ public non-sealed class Player extends Entity {
             velocityX = 0;
             velocityY = 0;
         }
+    }
+
+    private boolean isCanClimbDown(EObject[][] collisionMap) {
+        boolean canClimbDown = false;
+        int belowTileY = (int) ((y + height) / TILE_SIZE);
+        int belowTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
+        if (collisionMap != null && belowTileX >= 0 && belowTileX < collisionMap.length && belowTileY >= 0 && belowTileY < collisionMap[0].length) {
+            EObject below = collisionMap[belowTileX][belowTileY];
+            if (below != null && !below.isSolid()) {
+                canClimbDown = true;
+            }
+        }
+        return canClimbDown;
     }
 
     private void teleportToNext(EObject[][] collisionMap, EObject teleportType, int fromX, int fromY, int TILE_SIZE) {

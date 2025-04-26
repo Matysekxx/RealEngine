@@ -80,6 +80,9 @@ public class Render {
             for (int x = startTileX; x < endTileX; x++) {
                 if (x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight()) {
                     EObject object = collisionMap[x][y];
+                    if (object == null) {
+                        System.err.println("WARN: Object is null in Renderer.renderMap");
+                    }
                     if (object != null && object != EObject.EMPTY && object != EObject.PLAYER_SPAWN) {
                         int screenX = (int) (x * TILE_SIZE - camX);
                         int screenY = (int) (y * TILE_SIZE - camY);
