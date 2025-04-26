@@ -16,8 +16,8 @@ import java.io.IOException;
 public class GamePanel extends JPanel implements Runnable {
     public static final int MAX_SCREEN_COL = 26;
     public static final int MAX_SCREEN_ROW = 16;
-    public static final int MAX_WORLD_COL = 80;
-    public static final int MAX_WORLD_ROW = 20;
+    public static final int MAX_WORLD_COL = 180;
+    public static final int MAX_WORLD_ROW = 14;
     private static final int TILE_SIZE = GameConstants.TILE_SIZE;
     public static final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL;
     public static final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;
@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        map = RMap.loadFromPng("resources/default.png");
+        map = RMap.loadFromPng("resources/defaultmap.png");
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
@@ -242,7 +242,6 @@ public class GamePanel extends JPanel implements Runnable {
         player.setSpawnPoint(spawnPoint);
         resetPlayer(spawnPoint);
         this.map.addEntity(player);
-        System.out.println("Loaded map: " + this.map.getName() + " (" + this.map.getWidth() + "x" + this.map.getHeight() + ")");
     }
 
     private void resetPlayer(Point playerSpawn) {

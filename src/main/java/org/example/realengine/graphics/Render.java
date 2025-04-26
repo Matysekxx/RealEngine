@@ -20,6 +20,7 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
 public class Render {
     private static final MapElementManager manager = new MapElementManager();
     private static final Map<EObject, ETile> tiles = manager.getObjectToTileMap();
+    private static final Map<String, EBackground> backgrounds = EBackground.getMap();
     private final boolean texturesOn = true;
 
     /**
@@ -36,7 +37,7 @@ public class Render {
             System.err.println("WARN: Attempting to render scene with null Graphics, RMap, or Camera.");
             return;
         }
-        renderBackground(g, camera);
+        renderBackground(g, camera, map);
         renderMap(g, map, camera);
         renderEntities(g, map.getEntities(), camera);
     }
@@ -48,8 +49,8 @@ public class Render {
      * @param g      Grafický kontext.
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
-    protected void renderBackground(Graphics g, Camera camera) {
-        g.drawImage(ETile.SKY.texture, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+    protected void renderBackground(Graphics g, Camera camera, RMap map) {
+        g.drawImage(EBackground.GRASS_LAND.getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**

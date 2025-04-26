@@ -8,7 +8,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,10 +19,6 @@ import java.util.List;
  * Poskytuje také statické metody pro načítání map z obrázků, včetně vytváření entit ze spawn pointů.
  */
 public class RMap {
-    /**
-     * Správce mapových elementů pro konverzi mezi ETile a EObject.
-     */
-    private static final MapElementManager elementManager = new MapElementManager();
     /**
      * Seznam entit aktuálně přítomných na mapě (načtených nebo přidaných později).
      */
@@ -44,11 +39,7 @@ public class RMap {
      * Kolizní mapa určující pevné a průchozí oblasti.
      */
     private EObject[][] collisionMap;
-    /**
-     * Název mapy (volitelné).
-     */
-    private String name = "Unnamed Map";
-    private String description = "default";
+    private String path;
     /**
      * Vytvoří novou prázdnou mapu se zadanými rozměry.
      * Inicializuje prázdnou kolizní mapu (všechny objekty jsou {@link EObject#EMPTY}).
@@ -100,10 +91,9 @@ public class RMap {
         ETile[][] tileLayer = manager.createTileLayerFromImage(image);
         EObject[][] collisionData = manager.createCollisionMapFromImage(image);
         RMap map = new RMap(width, height);
+        map.setPath(imagePath);
         map.setLayer(tileLayer);
         map.setCollisionMap(collisionData);
-        map.setName(new File(imagePath).getName().replaceFirst("[.][^.]+$", ""));
-        map.setDescription("isLoaded");
         return map;
     }
 
@@ -256,28 +246,12 @@ public class RMap {
         return height;
     }
 
-    /**
-     * @return Název mapy.
-     */
-    public String getName() {
-        return name;
+    public String getPath() {
+        return path;
     }
 
-    /**
-     * Nastaví název mapy.
-     *
-     * @param name Nový název mapy.
-     */
-    public void setName(String name) {
-        this.name = (name != null && !name.isEmpty()) ? name : "Unnamed Map";
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPath(String path) {
+        this.path = path;
     }
 }
 
