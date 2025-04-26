@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable {
     public static final int MAX_SCREEN_COL = 26;
@@ -34,13 +35,12 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean isPaused = false;
     private int boxGravityTick = 0;
 
-    public GamePanel() {
+    public GamePanel() throws IOException {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        map = new RMap(MAX_WORLD_COL, MAX_WORLD_ROW);
-        createChallengeMap(map);
+        map = RMap.loadFromPng("resources/default.png");
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");

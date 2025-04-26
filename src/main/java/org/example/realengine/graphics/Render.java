@@ -8,7 +8,6 @@ import org.example.realengine.object.EObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -88,8 +87,7 @@ public class Render {
                         int screenY = (int) (y * TILE_SIZE - camY);
                         if (texturesOn) {
                             BufferedImage texture;
-                            if (map.getDescription().equals("isLoaded")) texture = map.getLayer()[x][y].texture;
-                            else texture = tiles.get(object).texture;
+                            texture = map.getLayer()[x][y].texture;
                             g.drawImage(texture, screenX, screenY, TILE_SIZE, TILE_SIZE, null);
                         } else {
                             Color color = tiles.get(object).color;
