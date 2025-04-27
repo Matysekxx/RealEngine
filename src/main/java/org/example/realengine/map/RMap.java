@@ -1,6 +1,7 @@
 package org.example.realengine.map;
 
 import org.example.realengine.entity.Entity;
+import org.example.realengine.graphics.EBackground;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,20 +98,7 @@ public class RMap {
         return map;
     }
 
-    /**
-     * Načte mapu z PNG souboru.
-     *
-     * @param filePath Cesta k PNG souboru
-     * @return Nová instance RMap
-     * @throws IOException Pokud dojde k chybě při načítání souboru nebo formát není podporován
-     */
-    public static RMap loadFromFiles(String filePath) throws IOException {
-        if (filePath != null && filePath.toLowerCase().endsWith(".png")) {
-            return loadFromPng(filePath);
-        } else {
-            throw new IOException("Unsupported file format or null path: " + filePath);
-        }
-    }
+
 
     private static BufferedImage loadImage(String path) throws IOException {
         File imgFile = new File(path);

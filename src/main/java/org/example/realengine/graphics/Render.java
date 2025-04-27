@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
@@ -61,8 +62,7 @@ public class Render {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     public void renderBackground(Graphics g, Camera camera, RMap map) {
-        System.err.println(map.getPath());
-        if (map.getPath() != null) g.drawImage(EBackground.CAVE.background, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+        g.drawImage(EBackground.GRASS_LAND.background, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**

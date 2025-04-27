@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,17 +93,6 @@ public class MapMenuPanel extends JPanel {
                 }
             }
         });
-        mapList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    int selectedIndex = mapList.getSelectedIndex();
-                    if (selectedIndex >= 0 && selectedIndex < mapPaths.size()) {
-                        loadSelectedMap(mapPaths.get(selectedIndex));
-                    }
-                }
-            }
-        });
-
         loadMapList();
     }
 
@@ -158,10 +148,10 @@ public class MapMenuPanel extends JPanel {
 
     private void loadSelectedMap(String mapPath) {
         try {
-            RMap newMap = RMap.loadFromFiles(mapPath);
+            RMap newMap = RMap.loadFromPng(mapPath);
             gamePanel.loadMap(newMap);
             returnToGame();
-        } catch (Exception e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(this,
                     "Failed to load map: " + e.getMessage(),
                     "Map Loading Error",

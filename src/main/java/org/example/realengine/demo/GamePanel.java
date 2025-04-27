@@ -4,6 +4,7 @@ import org.example.realengine.control.RControl;
 import org.example.realengine.entity.Player;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
+import org.example.realengine.graphics.EBackground;
 import org.example.realengine.graphics.Render;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
@@ -40,7 +41,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        map = RMap.loadFromPng("maps/defaultmap.png");
+        this.map = RMap.loadFromPng("resources/defaultmap.png");
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
@@ -207,6 +208,9 @@ public class GamePanel extends JPanel implements Runnable {
         this.map.addEntity(player);
     }
 
+    //TODO: udelat metodu na nastaveni backgroundu
+    private void setBackGroundToMap() {}
+
     private void resetPlayer(Point playerSpawn) {
         if (playerSpawn == null) {
             playerSpawn = new Point(2 * TILE_SIZE, (MAX_WORLD_ROW - 5) * TILE_SIZE);
@@ -240,8 +244,6 @@ public class GamePanel extends JPanel implements Runnable {
             frame.repaint();
         }
     }
-
-
 
     private void applyBoxGravity() {
         EObject[][] collisionMap = map.getCollisionMap();
