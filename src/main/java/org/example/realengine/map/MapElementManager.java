@@ -63,7 +63,7 @@ public final class MapElementManager {
         mapTileToObject(ETile.SNOW, EObject.SLIME);
         mapTileToObject(ETile.SAND, EObject.WALL);
         mapTileToObject(ETile.BRICK, EObject.WALL);
-        mapTileToObject(ETile.COULD, EObject.PLATFORM);
+        mapTileToObject(ETile.COULD, EObject.WALL);
         mapTileToObject(ETile.END1, EObject.END);
         mapTileToObject(ETile.END2, EObject.END);
     }
