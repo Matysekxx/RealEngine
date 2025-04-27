@@ -5,4 +5,5 @@ public final class GameConstants {
     public static int TILE_SIZE = 48;
     public static final int TELEPORT_COOLDOWN_TICKS = 30;
     public static final float GRAVITY = 1700.0f;
+    public static float GAP = TILE_SIZE /30.0f;
 }

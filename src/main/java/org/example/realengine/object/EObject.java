@@ -29,6 +29,8 @@ public enum EObject {
      */
     LADDER(true),
 
+    PLATFORM(false),
+
     SLIME(true),
     CHECKPOINT(true),
     /**

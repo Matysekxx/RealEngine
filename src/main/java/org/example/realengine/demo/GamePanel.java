@@ -150,43 +150,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    private void createChallengeMap(RMap targetMap) {
-        clearMap(targetMap);
-        int groundY = MAX_WORLD_ROW - 3;
-        int mapBottomHeight = MAX_WORLD_ROW - groundY;
-
-        fillArea(targetMap, 0, groundY, 15, mapBottomHeight, EObject.WALL);
-        fillArea(targetMap, 15, groundY, 3, mapBottomHeight, EObject.HAZARD_LIQUID);
-        fillArea(targetMap, 18, groundY, 12, mapBottomHeight, EObject.WALL);
-        fillArea(targetMap, 30, groundY, 4, mapBottomHeight, EObject.HAZARD_LIQUID);
-        fillArea(targetMap, 34, groundY, 10, mapBottomHeight, EObject.WALL);
-        fillArea(targetMap, 44, groundY, 3, mapBottomHeight, EObject.HAZARD_LIQUID);
-        fillArea(targetMap, 47, groundY, 10, mapBottomHeight, EObject.WALL);
-        fillArea(targetMap, 57, groundY, 3, mapBottomHeight, EObject.HAZARD_LIQUID);
-        fillArea(targetMap, 60, groundY, MAX_WORLD_COL - 60, mapBottomHeight, EObject.WALL);
-        targetMap.setObjectAt(2, groundY - 1, EObject.PLAYER_SPAWN);
-        targetMap.setObjectAt(8, groundY - 4, EObject.BOX);
-        targetMap.setObjectAt(22, groundY - 4, EObject.BOX);
-        targetMap.setObjectAt(24, groundY - 4, EObject.BOX);
-        fillArea(targetMap, 26, groundY - 8, 1, 8, EObject.EMPTY);
-        fillArea(targetMap, 26, groundY - 8, 1, 8, EObject.LADDER);
-        fillArea(targetMap, 27, groundY - 8, 15, 1, EObject.WALL);
-        targetMap.setObjectAt(28, groundY - 9, EObject.BOX);
-        fillArea(targetMap, 35, groundY - 9, 4, 1, EObject.SLIME);
-        targetMap.setObjectAt(43, groundY - 1, EObject.SPRING);
-        fillArea(targetMap, 47, groundY - 7, 6, 1, EObject.WALL);
-        targetMap.setObjectAt(60, groundY - 1, EObject.WALL);
-        targetMap.setObjectAt(60, groundY - 2, EObject.WALL);
-        targetMap.setObjectAt(60, groundY - 3, EObject.WALL);
-        fillArea(targetMap, 62, groundY - 4, 3, 1, EObject.WALL);
-        fillArea(targetMap, 68, groundY - 6, 4, 1, EObject.WALL);
-        targetMap.setObjectAt(70, groundY - 7, EObject.BOX);
-        fillArea(targetMap, 74, groundY - 7, 1, 7, EObject.EMPTY);
-        fillArea(targetMap, 74, groundY - 7, 1, 7, EObject.LADDER);
-        fillArea(targetMap, 75, groundY - 7, 3, 1, EObject.WALL);
-        fillArea(targetMap, 65, groundY - 5, 2, 1, EObject.WALL);
-    }
-
     @Override
     public void run() {
         double drawInterval = 1000000000.0 / FPS;

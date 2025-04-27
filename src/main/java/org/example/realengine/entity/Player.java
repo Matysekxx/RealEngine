@@ -1,8 +1,8 @@
 package org.example.realengine.entity;
 
 import org.example.realengine.demo.GamePanel;
-import org.example.realengine.game.GameConstants;
 import org.example.realengine.object.EObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 import static org.example.realengine.game.GameConstants.*;
 
 public non-sealed class Player extends Entity {
-    private final static float GAP = TILE_SIZE /30.0f;
+
     private final float autoMoveSpeed = 400.0f;
     private final float jumpVelocity = -900.0f;
     private float velocityX = 0;
@@ -48,7 +48,6 @@ public non-sealed class Player extends Entity {
         float potentialNextX = x + velocityX * deltaTime;
         velocityY += gravity * deltaTime;
         float potentialNextY = y + velocityY * deltaTime;
-        int TILE_SIZE = GameConstants.TILE_SIZE;
         boxPushTick++;
 
         if (teleportCooldown > 0) {
@@ -225,17 +224,16 @@ public non-sealed class Player extends Entity {
         return collisionDetectedX;
     }
 
-    private boolean handleYCollision(EObject[][] collisionMap, float potentialNextY) {
+    private boolean handleYCollision(@NotNull EObject[][] collisionMap, float potentialNextY) {
         boolean collisionDetectedY = false;
         isOnGround = false;
         if (velocityY < 0) {
-            int leftHeadTileX = (int) (x / TILE_SIZE);
-            int rightHeadTileX = (int) ((x + width - 1) / TILE_SIZE);
-            int topTileY = (int) (potentialNextY / TILE_SIZE);
+            var leftHeadTileX = (int) (x / TILE_SIZE);
+            var rightHeadTileX = (int) ((x + width - 1) / TILE_SIZE);
+            var topTileY = (int) (potentialNextY / TILE_SIZE);
 
             for (int tileX = leftHeadTileX; tileX <= rightHeadTileX; tileX++) {
-                if (collisionMap != null &&
-                        tileX >= 0 && tileX < collisionMap.length &&
+                if (tileX >= 0 && tileX < collisionMap.length &&
                         topTileY >= 0 && topTileY < collisionMap[0].length &&
                         collisionMap[tileX][topTileY] != null &&
                         !collisionMap[tileX][topTileY].isWalkable()) {
@@ -247,13 +245,12 @@ public non-sealed class Player extends Entity {
             }
         }
         if (velocityY >= 0) {
-            int leftFootTileX = (int) (x / TILE_SIZE);
-            int rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
-            int bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
+            var leftFootTileX = (int) (x / TILE_SIZE);
+            var rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
+            var bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
 
             for (int tileX = leftFootTileX; tileX <= rightFootTileX; tileX++) {
-                if (collisionMap != null &&
-                        tileX >= 0 && tileX < collisionMap.length &&
+                if (tileX >= 0 && tileX < collisionMap.length &&
                         bottomTileY >= 0 && bottomTileY < collisionMap[0].length &&
                         collisionMap[tileX][bottomTileY] != null) {
                     if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
@@ -322,7 +319,7 @@ public non-sealed class Player extends Entity {
         }
         if (isOnLadder) {
             gravity = 0;
-            boolean canClimbDown = isCanClimbDown(collisionMap);
+            boolean canClimbDown = canClimbDown(collisionMap);
             if (wantsToClimbUp) {
                 velocityY = -autoMoveSpeed;
             } else if (wantsToClimbDown && canClimbDown) {
@@ -339,7 +336,7 @@ public non-sealed class Player extends Entity {
         }
     }
 
-    private boolean isCanClimbDown(EObject[][] collisionMap) {
+    private boolean canClimbDown(EObject[][] collisionMap) {
         boolean canClimbDown = false;
         int belowTileY = (int) ((y + height) / TILE_SIZE);
         int belowTileX = (int) ((x + (float) width / 2) / TILE_SIZE);

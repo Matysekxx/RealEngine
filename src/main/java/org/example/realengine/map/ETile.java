@@ -62,6 +62,9 @@ public enum ETile {
     /** #AFAEFF - světle fialová */
     SPIKE(new Color(0xAFAEFF), "textures/spike.png"),
 
+    /** #F0F0F9 */
+    COULD(new Color(0xF0F0F9), "textures/could.png"),
+
     /** #67201A - tmavě hnědá (barva hlíny) */
     DIRT(new Color(0x67201a), "textures/dirt.png"),
 
