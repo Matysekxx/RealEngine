@@ -21,7 +21,7 @@ public enum ETile {
     HARD_BLOCK(new Color(0x808000), "textures/hard_block.png"),
 
     /** #FF9900 - oranžová */
-    LAVA_UP(new Color(0xFF9900), "textures/lava_up.png"),
+    LAVA(new Color(0xFF9900), "textures/lava_up.png"),
 
     /** #963204 - tmavě hnědá */
     WOOD(new Color(0x963204), "textures/wood.png"),
@@ -63,7 +63,7 @@ public enum ETile {
     SPIKE(new Color(0xAFAEFF), "textures/spike.png"),
 
     /** #E6CBFF */
-    COULD(new Color(0xE6CBFF), "textures/could.png"),
+    CLOUD(new Color(0xE6CBFF), "textures/cloud.png"),
 
     /** #67201A - tmavě hnědá (barva hlíny) */
     DIRT(new Color(0x67201a), "textures/dirt.png"),

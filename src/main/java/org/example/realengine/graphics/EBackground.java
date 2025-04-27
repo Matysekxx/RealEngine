@@ -13,26 +13,13 @@ public enum EBackground {
     CAVE("resources/cave.png");
 
 
-    private BufferedImage background;
-
-    private static Map<String, EBackground> map = new HashMap<>();
-
-    static {
-        map.put("maps/map_1.png", GRASS_LAND);
-        map.put("resources/defaultmap.png", DEFAULT);
-    }
+    public BufferedImage background;
 
     EBackground(String background) {
         try {
             this.background = ImageIO.read(new File(background));
-        } catch (IOException _) {}
-    }
-
-    public BufferedImage getBackground() {
-        return background;
-    }
-
-    public static Map<String, EBackground> getMap() {
-        return map;
+        } catch (IOException _) {
+            System.err.println("Error loading background: " + background);
+        }
     }
 }

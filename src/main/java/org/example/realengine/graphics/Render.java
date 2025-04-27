@@ -8,6 +8,7 @@ import org.example.realengine.object.EObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,18 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
 public class Render {
     private static final MapElementManager manager = new MapElementManager();
     private static final Map<EObject, ETile> tiles = manager.getObjectToTileMap();
-    private static final Map<String, EBackground> backgrounds = EBackground.getMap();
     private final boolean texturesOn = true;
+
+    public static final HashMap<String, EBackground> levelToBackground = new HashMap<>();
+
+    static {
+        levelToBackground.put("maps/defaultmap.png", EBackground.DEFAULT);
+        levelToBackground.put("maps/map_1.png", EBackground.GRASS_LAND);
+        levelToBackground.put("maps/map_2.png", EBackground.GRASS_LAND);
+        levelToBackground.put("maps/map_3.png", EBackground.CAVE);
+        levelToBackground.put("maps/map_4.png", EBackground.CAVE);
+    }
+
 
     /**
      * Hlavní metoda pro vykreslení celé herní scény.
@@ -49,8 +60,9 @@ public class Render {
      * @param g      Grafický kontext.
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
-    protected void renderBackground(Graphics g, Camera camera, RMap map) {
-        g.drawImage(EBackground.GRASS_LAND.getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+    public void renderBackground(Graphics g, Camera camera, RMap map) {
+        System.err.println(map.getPath());
+        if (map.getPath() != null) g.drawImage(EBackground.CAVE.background, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**

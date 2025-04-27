@@ -39,7 +39,7 @@ public class RMap {
      * Kolizní mapa určující pevné a průchozí oblasti.
      */
     private EObject[][] collisionMap;
-    private String path;
+    private String path = "maps/defaultmap.png";
     /**
      * Vytvoří novou prázdnou mapu se zadanými rozměry.
      * Inicializuje prázdnou kolizní mapu (všechny objekty jsou {@link EObject#EMPTY}).
@@ -85,8 +85,8 @@ public class RMap {
         if (image == null) {
             throw new IOException("Failed to load image: " + imagePath);
         }
-        int width = image.getWidth();
-        int height = image.getHeight();
+        var width = image.getWidth();
+        var height = image.getHeight();
         MapElementManager manager = new MapElementManager();
         ETile[][] tileLayer = manager.createTileLayerFromImage(image);
         EObject[][] collisionData = manager.createCollisionMapFromImage(image);

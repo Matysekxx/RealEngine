@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        map = RMap.loadFromPng("resources/defaultmap.png");
+        map = RMap.loadFromPng("maps/defaultmap.png");
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");

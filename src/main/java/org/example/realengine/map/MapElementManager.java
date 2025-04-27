@@ -38,7 +38,7 @@ public final class MapElementManager {
             registerTile(tile);
         }
         mapTileToObject(ETile.STONE, EObject.WALL);
-        mapTileToObject(ETile.LAVA_UP, EObject.HAZARD_LIQUID);
+        mapTileToObject(ETile.LAVA, EObject.HAZARD_LIQUID);
         mapTileToObject(ETile.PLAYER_SPAWN, EObject.PLAYER_SPAWN);
         mapTileToObject(ETile.EMPTY, EObject.EMPTY);
         mapTileToObject(ETile.SKY, EObject.EMPTY);
@@ -63,7 +63,7 @@ public final class MapElementManager {
         mapTileToObject(ETile.SNOW, EObject.SLIME);
         mapTileToObject(ETile.SAND, EObject.WALL);
         mapTileToObject(ETile.BRICK, EObject.WALL);
-        mapTileToObject(ETile.COULD, EObject.WALL);
+        mapTileToObject(ETile.CLOUD, EObject.PLATFORM);
         mapTileToObject(ETile.END1, EObject.END);
         mapTileToObject(ETile.END2, EObject.END);
     }
@@ -181,7 +181,7 @@ public final class MapElementManager {
                 int rgb = image.getRGB(x, y);
                 ETile tile = getTileFromRGB(rgb);
                 collisionMap[x][y] = getObjectFromTile(tile);
-                //System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb, tile.name());
+                System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb, tile.name());
                 if (tile == ETile.UNKNOWN) {
                     System.out.printf("Unknown color at (%d,%d): #%06X\n", x, y, rgb);
                 }
