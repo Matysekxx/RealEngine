@@ -4,11 +4,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public enum EBackground {
-    DEFAULT("resources/default.png"),
     GRASS_LAND("resources/grassland.png"),
     CAVE("resources/cave.png");
 

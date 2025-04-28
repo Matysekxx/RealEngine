@@ -117,7 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
      * @param g Graphics context (automatically provided by Swing).
      */
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paint(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
@@ -207,9 +207,6 @@ public class GamePanel extends JPanel implements Runnable {
         resetPlayer(spawnPoint);
         this.map.addEntity(player);
     }
-
-    //TODO: udelat metodu na nastaveni backgroundu
-    private void setBackGroundToMap() {}
 
     private void resetPlayer(Point playerSpawn) {
         if (playerSpawn == null) {

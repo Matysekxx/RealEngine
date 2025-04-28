@@ -1,7 +1,6 @@
 package org.example.realengine.map;
 
 import org.example.realengine.entity.Entity;
-import org.example.realengine.graphics.EBackground;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +40,7 @@ public class RMap {
      */
     private EObject[][] collisionMap;
     private String path = "maps/defaultmap.png";
+
     /**
      * Vytvoří novou prázdnou mapu se zadanými rozměry.
      * Inicializuje prázdnou kolizní mapu (všechny objekty jsou {@link EObject#EMPTY}).

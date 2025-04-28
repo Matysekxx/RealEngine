@@ -296,7 +296,7 @@ public non-sealed class Player extends Entity {
             if (currentObject == EObject.SLIME) {
                 isOnHoney = true;
             }
-            if (currentObject == EObject.SPIKE) {
+            if (currentObject == EObject.SPIKE || currentObject == EObject.HAZARD_LIQUID) {
                 respawn();
             }
             if (currentObject == EObject.END) {

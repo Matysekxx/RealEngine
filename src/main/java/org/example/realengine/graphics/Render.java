@@ -24,17 +24,6 @@ public class Render {
     private static final Map<EObject, ETile> tiles = manager.getObjectToTileMap();
     private final boolean texturesOn = true;
 
-    public static final HashMap<String, EBackground> levelToBackground = new HashMap<>();
-
-    static {
-        levelToBackground.put("maps/defaultmap.png", EBackground.DEFAULT);
-        levelToBackground.put("maps/map_1.png", EBackground.GRASS_LAND);
-        levelToBackground.put("maps/map_2.png", EBackground.GRASS_LAND);
-        levelToBackground.put("maps/map_3.png", EBackground.CAVE);
-        levelToBackground.put("maps/map_4.png", EBackground.CAVE);
-    }
-
-
     /**
      * Hlavní metoda pro vykreslení celé herní scény.
      * Vykreslí pozadí, mapu a všechny entity viditelné kamerou.
@@ -62,7 +51,17 @@ public class Render {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     public void renderBackground(Graphics g, Camera camera, RMap map) {
-        g.drawImage(EBackground.GRASS_LAND.background, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+        g.drawImage(EBackground.values()[getBackgroundIndex(map.getPath())].background, 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+    }
+
+    //TODO: predelat na HashMapu
+    private int getBackgroundIndex(String path) {
+        if (path.equals("C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_1.png") ||
+                path.equals("C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_2.png")) {
+            return 0;
+        } else if (path.equals("C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_3.png") ||
+                path.equals("C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_4.png")) return 1;
+        else return 0;
     }
 
     /**
