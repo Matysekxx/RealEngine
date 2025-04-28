@@ -190,19 +190,17 @@ public non-sealed class Player extends Entity {
             var bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
             int nextTileX;
             if (velocityX > 0) {
-                nextTileX = (int) ((potentialNextX + width) / TILE_SIZE);
+                nextTileX = (int) ((potentialNextX + width - 1) / TILE_SIZE);
                 for (int tileY = topTileY; tileY <= bottomTileY; tileY++) {
                     if (collisionMap != null &&
                             nextTileX >= 0 && nextTileX < collisionMap.length &&
                             tileY >= 0 && tileY < collisionMap[0].length &&
                             collisionMap[nextTileX][tileY] != null &&
                             collisionMap[nextTileX][tileY].isSolid()) {
-                        if (collisionMap[nextTileX][tileY] == EObject.BOX) {
-                            collisionDetectedX = true;
-                            x = nextTileX * TILE_SIZE - width;
-                            velocityX = 0;
-                            break;
-                        }
+                        collisionDetectedX = true;
+                        x = nextTileX * TILE_SIZE - width;
+                        velocityX = 0;
+                        break;
                     }
                 }
             } else {

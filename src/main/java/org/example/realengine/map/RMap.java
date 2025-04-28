@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
  * Reprezentuje herní mapu.
  * Obsahuje jednu nebo více vizuálních vrstev dlaždic {@link ETile}

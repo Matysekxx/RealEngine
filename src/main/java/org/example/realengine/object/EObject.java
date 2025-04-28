@@ -50,7 +50,7 @@ public enum EObject {
     TELEPORT_BLUE(true),
     TELEPORT_RED(true),
     TELEPORT_PURPLE(true),
-    SPRING(false),
+    SPRING(true),
     END(true);
 
     private final boolean walkable;
