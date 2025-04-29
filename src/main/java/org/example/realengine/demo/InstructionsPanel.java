@@ -3,18 +3,20 @@ package org.example.realengine.demo;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel zobrazující instrukce pro ovládání hry s gradientním pozadím.
+ * Dědí z JPanel a poskytuje statickou metodu pro vykreslení pozadí.
+ */
 public final class InstructionsPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        paintBackground(g, new Color(20, 20, 50));
+    }
+
+    static void paintBackground(Graphics g, Color color) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        int w = getWidth();
-        int h = getHeight();
-        Color color1 = new Color(20, 20, 50);
-        Color color2 = new Color(40, 40, 80);
-        GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
-        g2d.setPaint(gp);
-        g2d.fillRect(0, 0, w, h);
+        g2d.setColor(color);
+        g2d.fillRect(0, 0, g2d.getClipBounds().width, g2d.getClipBounds().height);
     }
 }

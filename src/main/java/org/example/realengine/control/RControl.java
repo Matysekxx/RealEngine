@@ -15,11 +15,9 @@ import java.awt.event.MouseListener;
 public class RControl implements MouseListener, KeyListener {
 
     private Entity controlledEntity;
-    private RMap map;
 
-    public RControl(@NotNull Entity entity, RMap map) {
+    public RControl(@NotNull Entity entity) {
         this.controlledEntity = entity;
-        this.map = map;
     }
 
     @Override

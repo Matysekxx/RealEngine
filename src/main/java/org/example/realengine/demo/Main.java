@@ -1,12 +1,10 @@
 package org.example.realengine.demo;
 
+/**
+ * Hlavní třída aplikace, která spouští hru.
+ */
 public class Main {
-    /**
-     * The main method that starts the game execution.
-     *
-     * @param args Command line arguments (not used).
-     */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Execute.execute();
     }
 }

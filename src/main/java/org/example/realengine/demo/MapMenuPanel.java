@@ -14,21 +14,39 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapMenuPanel extends JPanel {
+/**
+ * Panel menu pro výběr a načítání map ve hře.
+ * Umožňuje uživateli procházet dostupné mapy, vybírat je a načítat do herního panelu.
+ * Dědí z JPanel a obsahuje vlastní logiku pro zobrazení seznamu map a ovládání pomocí klávesnice.
+ */
+public final class MapMenuPanel extends JPanel {
     private final JFrame parentFrame;
     private final GamePanel gamePanel;
-    private final JList<String> mapList;
-    private final DefaultListModel<String> listModel;
+    private JList<String> mapList;
+    private DefaultListModel<String> listModel;
     private final List<String> mapPaths = new ArrayList<>();
 
     public MapMenuPanel(JFrame parentFrame, GamePanel gamePanel) {
         this.parentFrame = parentFrame;
         this.gamePanel = gamePanel;
-
         setLayout(new BorderLayout());
         setBackground(new Color(20, 20, 50));
         setPreferredSize(parentFrame.getSize());
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        JPanel titlePanel = createTitlePanel();
+        JScrollPane scrollPane = createMapListScrollPane();
+        JPanel instructionsPanel = createInstructionsPanel();
+        add(titlePanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(instructionsPanel, BorderLayout.SOUTH);
+        setFocusable(true);
+        addKeyListener(new MapMenuControl());
+        loadMapList();
+    }
+
+    private JPanel createTitlePanel() {
+        TitlePanel titlePanel = new TitlePanel();
+        titlePanel.setLayout(new BorderLayout());
         JLabel titleLabel = new JLabel("MAPS");
         titleLabel.setFont(new Font("Verdana", Font.BOLD, 32));
         titleLabel.setForeground(Color.YELLOW);
@@ -36,9 +54,11 @@ public class MapMenuPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 2, 0, Color.YELLOW),
                 BorderFactory.createEmptyBorder(20, 0, 20, 0)));
-        JPanel titlePanel = getPanel();
         titlePanel.add(titleLabel, BorderLayout.CENTER);
+        return titlePanel;
+    }
 
+    private JScrollPane createMapListScrollPane() {
         listModel = new DefaultListModel<>();
         mapList = new JList<>(listModel);
         mapList.setFont(new Font("Verdana", Font.PLAIN, 22));
@@ -47,44 +67,44 @@ public class MapMenuPanel extends JPanel {
         mapList.setSelectionBackground(new Color(60, 60, 120));
         mapList.setSelectionForeground(Color.YELLOW);
         mapList.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mapList.setCellRenderer(new ListCellRenderer());
-        mapList.setSelectionModel(new DefaultListSelectionModel() {
-            @Override
-            public void setSelectionInterval(int index0, int index1) {
-                if (!getValueIsAdjusting()) {
-                    super.setSelectionInterval(index0, index1);
-                }
-            }
-        });
-
         JScrollPane scrollPane = new JScrollPane(mapList);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         scrollPane.setBackground(new Color(20, 20, 50));
         scrollPane.getViewport().setBackground(new Color(30, 30, 60));
-        JPanel instructionsPanel = getJPanel();
+        return scrollPane;
+    }
 
-        add(titlePanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(instructionsPanel, BorderLayout.SOUTH);
-        setFocusable(true);
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                if (keyCode == KeyEvent.VK_ESCAPE || keyCode == KeyEvent.VK_L) {
-                    returnToGame();
-                } else if (keyCode == KeyEvent.VK_ENTER) {
+    private JPanel createInstructionsPanel() {
+        JPanel instructionsPanel = new InstructionsPanel();
+        instructionsPanel.setLayout(new BorderLayout());
+        JLabel instructionsLabel = new JLabel("↑↓ - Select | ENTER - Load | ESC - Back");
+        instructionsLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+        instructionsLabel.setForeground(Color.YELLOW);
+        instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
+        instructionsLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        instructionsPanel.add(instructionsLabel, BorderLayout.CENTER);
+        return instructionsPanel;
+    }
+
+    //TODO: presunout vnorenou tridu mimo tridu MapMenuPanel
+    private class MapMenuControl extends KeyAdapter {
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ESCAPE, KeyEvent.VK_L -> returnToGame();
+                case KeyEvent.VK_ENTER -> {
                     int selectedIndex = mapList.getSelectedIndex();
                     if (selectedIndex >= 0 && selectedIndex < mapPaths.size()) {
                         loadSelectedMap(mapPaths.get(selectedIndex));
                     }
-                } else if (keyCode == KeyEvent.VK_UP) {
+                }
+                case KeyEvent.VK_UP -> {
                     int selectedIndex = mapList.getSelectedIndex();
                     if (selectedIndex > 0) {
                         mapList.setSelectedIndex(selectedIndex - 1);
                         mapList.ensureIndexIsVisible(selectedIndex - 1);
                     }
-                } else if (keyCode == KeyEvent.VK_DOWN) {
+                }
+                case KeyEvent.VK_DOWN -> {
                     int selectedIndex = mapList.getSelectedIndex();
                     if (selectedIndex < mapList.getModel().getSize() - 1) {
                         mapList.setSelectedIndex(selectedIndex + 1);
@@ -92,36 +112,14 @@ public class MapMenuPanel extends JPanel {
                     }
                 }
             }
-        });
-        loadMapList();
-    }
-
-    private JPanel getPanel() {
-        JPanel titlePanel = new TitlePanel();
-        titlePanel.setLayout(new BorderLayout());
-        return titlePanel;
-    }
-
-    private JPanel getJPanel() {
-        JPanel instructionsPanel = getInstructionsPanel();
-        JLabel instructionsLabel = new JLabel("↑↓ - Select | ENTER - Load | ESC - Back");
-        instructionsLabel.setFont(new Font("Verdana", Font.BOLD, 20));
-        instructionsLabel.setForeground(Color.YELLOW);
-        instructionsPanel.add(instructionsLabel);
-        return instructionsPanel;
-    }
-
-    private JPanel getInstructionsPanel() {
-        JPanel instructionsPanel = new InstructionsPanel();
-        instructionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        return instructionsPanel;
+        }
     }
 
     public void loadMapList() {
         listModel.clear();
         mapPaths.clear();
         File customMapsDir = new File("maps");
-        if (!customMapsDir.exists()) customMapsDir.mkdirs();
+        if (!customMapsDir.exists()) throw new RuntimeException("maps directory does not exist");
         loadMapsFromDirectory(customMapsDir);
         if (listModel.isEmpty()) {
             listModel.addElement("No maps found");
@@ -152,10 +150,7 @@ public class MapMenuPanel extends JPanel {
             gamePanel.loadMap(newMap);
             returnToGame();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Failed to load map: " + e.getMessage(),
-                    "Map Loading Error",
-                    JOptionPane.ERROR_MESSAGE);
+            System.err.println("Failed to load map: " + mapPath);
         }
     }
 

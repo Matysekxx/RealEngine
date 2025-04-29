@@ -39,7 +39,7 @@ public class Render {
      * @param map    Herní mapa {@link RMap}, která se má vykreslit.
      * @param camera Kamera {@link Camera} určující pohled na scénu.
      */
-    public void renderScene(Graphics2D g, RMap map, Camera camera) {
+    public void renderScene(final Graphics g, final RMap map, final Camera camera) {
         if (g == null || map == null || camera == null) {
             System.err.println("WARN: Attempting to render scene with null Graphics, RMap, or Camera.");
             return;
@@ -56,7 +56,7 @@ public class Render {
      * @param g      Grafický kontext.
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
-    public void renderBackground(Graphics g, Camera camera, RMap map) {
+    public void renderBackground(final Graphics g, final Camera camera, final RMap map) {
         g.drawImage(backgrounds.getOrDefault(map.getPath(), EBackground.GRASS_LAND).getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
@@ -68,7 +68,7 @@ public class Render {
      * @param map    Mapa k vykreslení.
      * @param camera Kamera určující viditelnou oblast.
      */
-    public void renderMap(Graphics g, RMap map, Camera camera) {
+    public void renderMap(final Graphics g, final RMap map, final Camera camera) {
         float camX = camera.getX();
         float camY = camera.getY();
 
@@ -115,7 +115,7 @@ public class Render {
      * @param entities Seznam entit k vykreslení.
      * @param camera   Kamera určující viditelnou oblast.
      */
-    public void renderEntities(Graphics g, List<Entity> entities, Camera camera) {
+    public void renderEntities(final Graphics g, final List<Entity> entities, final Camera camera) {
         if (entities == null) return;
 
         for (Entity entity : entities) {
@@ -134,12 +134,12 @@ public class Render {
      * @param entity Entita k vykreslení.
      * @param camera Kamera určující viditelnou oblast.
      */
-    public void renderEntity(Graphics g, Entity entity, Camera camera) {
+    public void renderEntity(final Graphics g, final Entity entity, final Camera camera) {
         float camX = camera.getX();
         float camY = camera.getY();
 
-        int screenX = (int) (entity.getX() - camX);
-        int screenY = (int) (entity.getY() - camY);
+        var screenX = (int) (entity.getX() - camX);
+        var screenY = (int) (entity.getY() - camY);
 
         if (screenX + entity.getWidth() >= 0 && screenX <= camera.getScreenWidth() &&
                 screenY + entity.getHeight() >= 0 && screenY <= camera.getScreenHeight()) {

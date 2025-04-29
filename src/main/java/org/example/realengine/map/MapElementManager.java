@@ -73,14 +73,14 @@ public final class MapElementManager {
      *
      * @param tile Dlaždice k registraci.
      */
-    public void registerTile(ETile tile) {
+    public void registerTile(final ETile tile) {
         if (tile != null) {
             rgbToTileMap.put(tile.getRGB(), tile);
         }
     }
 
 
-    public void mapTileToObject(ETile tile, EObject object) {
+    public void mapTileToObject(final ETile tile, final EObject object) {
         if (tile != null && object != null) {
             tileToObjectMap.put(tile, object);
             if (!objectToTileMap.containsKey(object)) {
@@ -105,7 +105,7 @@ public final class MapElementManager {
      * @param tile Vizuální dlaždice.
      * @return Odpovídající kolizní objekt nebo EObject.EMPTY.
      */
-    public EObject getObjectFromTile(ETile tile) {
+    public EObject getObjectFromTile(final ETile tile) {
         if (tile == null) return EObject.EMPTY;
         return tileToObjectMap.getOrDefault(tile, EObject.EMPTY);
     }
@@ -117,7 +117,7 @@ public final class MapElementManager {
      * @param object Kolizní objekt.
      * @return Odpovídající vizuální dlaždice nebo ETile.UNKNOWN.
      */
-    public ETile getTileFromObject(EObject object) {
+    public ETile getTileFromObject(final EObject object) {
         if (object == null) return ETile.UNKNOWN;
         return objectToTileMap.getOrDefault(object, ETile.UNKNOWN);
     }
@@ -128,7 +128,7 @@ public final class MapElementManager {
      * @param image Obrázek mapy.
      * @return 2D pole ETile.
      */
-    public ETile[][] createTileLayerFromImage(BufferedImage image) {
+    public ETile[][] createTileLayerFromImage(final BufferedImage image) {
         if (image == null) {
             throw new IllegalArgumentException("Input image cannot be null.");
         }
@@ -143,29 +143,6 @@ public final class MapElementManager {
             }
         }
         return layer;
-    }
-
-    /**
-     * Vytvoří kolizní mapu (EObject[][]) z vrstvy vizuálních dlaždic (ETile[][]).
-     *
-     * @param tileLayer Vrstva vizuálních dlaždic.
-     * @return 2D pole EObject.
-     */
-    @Deprecated
-    public EObject[][] createCollisionMapFromLayer(ETile[][] tileLayer) {
-        if (tileLayer == null || tileLayer.length == 0) {
-            throw new IllegalArgumentException("Input tile layer cannot be null or empty.");
-        }
-        int width = tileLayer.length;
-        int height = tileLayer[0].length;
-        EObject[][] collisionMap = new EObject[width][height];
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                collisionMap[x][y] = getObjectFromTile(tileLayer[x][y]);
-            }
-        }
-        return collisionMap;
     }
 
     public EObject[][] createCollisionMapFromImage(BufferedImage image) {

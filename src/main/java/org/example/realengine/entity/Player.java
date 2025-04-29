@@ -360,5 +360,3 @@ public non-sealed class Player extends Entity {
         }
     }
 }
-
-

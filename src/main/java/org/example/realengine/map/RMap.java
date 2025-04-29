@@ -65,7 +65,7 @@ public class RMap {
         System.out.println("Created new RMap (" + width + "x" + height + ")");
     }
 
-    private static ETile[][] createETiles(BufferedImage image, int width, int height) {
+    private static ETile[][] createETiles(final BufferedImage image, int width, int height) {
         ETile[][] visualLayer = new ETile[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -82,7 +82,7 @@ public class RMap {
      * @return Nová instance RMap.
      * @throws IOException Pokud dojde k chybě při načítání souboru.
      */
-    public static RMap loadFromPng(String imagePath) throws IOException {
+    public static RMap loadFromPng(final String imagePath) throws IOException {
         BufferedImage image = loadImage(imagePath);
         if (image == null) {
             throw new IOException("Failed to load image: " + imagePath);
@@ -101,7 +101,7 @@ public class RMap {
 
 
 
-    private static BufferedImage loadImage(String path) throws IOException {
+    private static BufferedImage loadImage(final String path) throws IOException {
         File imgFile = new File(path);
         if (!imgFile.exists()) {
             throw new IOException("Image file not found: " + path);
@@ -122,7 +122,7 @@ public class RMap {
      * @throws NullPointerException     pokud je `layer` `null`.
      * @throws IllegalArgumentException pokud rozměry vrstvy nesouhlasí s rozměry mapy.
      */
-    public void setLayer(@NotNull ETile[][] layer) {
+    public void setLayer(@NotNull final ETile[][] layer) {
         if (layer.length != width || layer.length == 0 || layer[0].length != height) {
             throw new IllegalArgumentException("Layer dimensions (" + layer.length + "x" + (layer.length > 0 ? layer[0].length : 0)
                     + ") do not match map dimensions (" + width + "x" + height + ").");
@@ -212,7 +212,7 @@ public class RMap {
      * @throws NullPointerException     pokud je `map` `null`.
      * @throws IllegalArgumentException pokud rozměry mapy nesouhlasí s rozměry RMap.
      */
-    public void setCollisionMap(@NotNull EObject[][] map) {
+    public void setCollisionMap(@NotNull final EObject[][] map) {
         if (map.length != width || map.length == 0 || map[0].length != height) {
             throw new IllegalArgumentException("Collision map dimensions (" + map.length + "x" + (map.length > 0 ? map[0].length : 0)
                     + ") do not match RMap dimensions (" + width + "x" + height + ").");

@@ -4,7 +4,6 @@ import org.example.realengine.control.RControl;
 import org.example.realengine.entity.Player;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
-import org.example.realengine.graphics.EBackground;
 import org.example.realengine.graphics.Render;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
@@ -14,6 +13,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * Hlavní herní panel, který zajišťuje vykreslování, logiku hry a správu herního cyklu.
+ * Dědí z JPanel a implementuje Runnable pro běh herní smyčky v samostatném vlákně.
+ * Obsahuje správu mapy, hráče, kamery a zpracování vstupů.
+ */
 public class GamePanel extends JPanel implements Runnable {
     public static final int MAX_SCREEN_COL = 26;
     public static final int MAX_SCREEN_ROW = 16;
@@ -29,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final Render render;
     private final Camera camera;
     private final Player player;
-    static final int FPS = 50;
+    private static final int FPS = 60;
     private RMap map;
     private Point spawnPoint;
     private Thread gameThread;
@@ -51,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.setWidth(TILE_SIZE);
         player.setHeight(TILE_SIZE);
         map.addEntity(player);
-        rControl = new RControl(player,map);
+        rControl = new RControl(player);
         this.addKeyListener(rControl);
         this.setFocusable(true);
         camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
@@ -125,13 +129,14 @@ public class GamePanel extends JPanel implements Runnable {
 
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
-        g2.drawString("Use arrow keys to move and jump", 10, 30);
+        g2.drawString("Use arrow or wsad to move and jump", 10, 30);
         g2.dispose();
     }
 
     /**
      * Helper method to clear the entire map
      */
+    @Deprecated
     private void clearMap(RMap targetMap) {
         for (int x = 0; x < GamePanel.MAX_WORLD_COL; x++) {
             for (int y = 0; y < GamePanel.MAX_WORLD_ROW; y++) {
@@ -143,6 +148,7 @@ public class GamePanel extends JPanel implements Runnable {
     /**
      * Helper method to fill an area with a specific object
      */
+    @Deprecated
     private void fillArea(RMap targetMap, int startX, int startY, int width, int height, EObject object) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
