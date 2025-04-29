@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * Poskytuje statické metody pro detekci a řešení kolizí
  * mezi entitami a herní mapou.
  */
+@Deprecated
 public final class CollisionDetector {
 
     /**

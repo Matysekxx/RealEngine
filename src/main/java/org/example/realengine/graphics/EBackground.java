@@ -10,13 +10,17 @@ public enum EBackground {
     CAVE("resources/cave.png");
 
 
-    public BufferedImage background;
+    private final BufferedImage background;
 
     EBackground(String background) {
         try {
             this.background = ImageIO.read(new File(background));
         } catch (IOException _) {
-            System.err.println("Error loading background: " + background);
+            throw new RuntimeException("Error loading background: " + background);
         }
+    }
+
+    public BufferedImage getBackground() {
+        return background;
     }
 }

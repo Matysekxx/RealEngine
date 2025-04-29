@@ -23,6 +23,7 @@ public non-sealed class Player extends Entity {
     private int boxPushTick = 0;
     private int teleportCooldown = 0;
     private static final Robot robot;
+
     static {
         try {
             robot = new Robot();
@@ -140,11 +141,11 @@ public non-sealed class Player extends Entity {
 
 
     private boolean handleBoxPush(EObject[][] collisionMap) {
-        boolean collisionDetectedX = false;
-        if (velocityX != 0 && boxPushTick >= BOX_PUSH_DELAY) {
+        var collisionDetectedX = false;
+        if (velocityX != 0 && boxPushTick >= BOX_PUSH_DELAY && isOnGround) {
             int dir = velocityX > 0 ? 1 : -1;
-            int playerTileX = (int) ((x + (dir > 0 ? width : 0)) / TILE_SIZE);
-            int playerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
+            var playerTileX = (int) ((x + (dir > 0 ? width : 0)) / TILE_SIZE);
+            var playerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
             int nextTileX = playerTileX + dir;
             if (nextTileX >= 0 && nextTileX < collisionMap.length &&
                     playerTileY >= 0 && playerTileY < collisionMap[0].length &&
