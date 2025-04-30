@@ -40,7 +40,7 @@ public final class MapMenuPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(instructionsPanel, BorderLayout.SOUTH);
         setFocusable(true);
-        addKeyListener(new MapMenuControl());
+        addKeyListener(new MapMenuControl(mapList, mapPaths, this));
         loadMapList();
     }
 
@@ -86,35 +86,6 @@ public final class MapMenuPanel extends JPanel {
         return instructionsPanel;
     }
 
-    //TODO: presunout vnorenou tridu mimo tridu MapMenuPanel
-    private class MapMenuControl extends KeyAdapter {
-        public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_ESCAPE, KeyEvent.VK_L -> returnToGame();
-                case KeyEvent.VK_ENTER -> {
-                    int selectedIndex = mapList.getSelectedIndex();
-                    if (selectedIndex >= 0 && selectedIndex < mapPaths.size()) {
-                        loadSelectedMap(mapPaths.get(selectedIndex));
-                    }
-                }
-                case KeyEvent.VK_UP -> {
-                    int selectedIndex = mapList.getSelectedIndex();
-                    if (selectedIndex > 0) {
-                        mapList.setSelectedIndex(selectedIndex - 1);
-                        mapList.ensureIndexIsVisible(selectedIndex - 1);
-                    }
-                }
-                case KeyEvent.VK_DOWN -> {
-                    int selectedIndex = mapList.getSelectedIndex();
-                    if (selectedIndex < mapList.getModel().getSize() - 1) {
-                        mapList.setSelectedIndex(selectedIndex + 1);
-                        mapList.ensureIndexIsVisible(selectedIndex + 1);
-                    }
-                }
-            }
-        }
-    }
-
     public void loadMapList() {
         listModel.clear();
         mapPaths.clear();
@@ -144,7 +115,7 @@ public final class MapMenuPanel extends JPanel {
         }
     }
 
-    private void loadSelectedMap(String mapPath) {
+    void loadSelectedMap(String mapPath) {
         try {
             RMap newMap = RMap.loadFromPng(mapPath);
             gamePanel.loadMap(newMap);
@@ -154,7 +125,7 @@ public final class MapMenuPanel extends JPanel {
         }
     }
 
-    private void returnToGame() {
+    void returnToGame() {
         parentFrame.getContentPane().remove(this);
         parentFrame.getContentPane().add(gamePanel);
         gamePanel.requestFocus();

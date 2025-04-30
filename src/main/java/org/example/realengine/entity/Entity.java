@@ -1,7 +1,6 @@
 package org.example.realengine.entity;
 
 import org.example.realengine.object.EObject;
-import org.example.realengine.physics.CollisionDetector;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 import static org.example.realengine.game.GameConstants.GRAVITY;
@@ -12,6 +11,7 @@ import static org.example.realengine.game.GameConstants.GRAVITY;
  * Poskytuje základní fyzikální chování, jako je gravitace, detekce kolizí s mapou,
  * a základní podporu pro platformy a žebříky.
  */
+//TODO: predelat tridu Entity
 public sealed abstract class Entity permits Player {
     protected float x, y;
     protected float vx = 0;
@@ -129,41 +129,6 @@ public sealed abstract class Entity permits Player {
                 isOnGround = false;
                 jumping = false;
             }
-        }
-    }
-
-    /**
-     * Zkontroluje a vyřeší kolize entity s kolizní mapou.
-     * Upraví pozici (`x`, `y`) a rychlost (`vx`, `vy`) entity tak, aby nepronikla pevnými objekty.
-     * Nastaví příznak `isOnGround`.
-     *
-     * @param deltaTime    Časový krok.
-     * @param collisionMap Kolizní mapa světa.
-     */
-    protected void handleCollisions(float deltaTime, EObject[][] collisionMap) {
-        if (collisionMap == null) {
-            x += vx * deltaTime;
-            y += vy * deltaTime;
-            isOnGround = false;
-            return;
-        }
-
-        CollisionDetector.CollisionResult result = CollisionDetector.checkMapCollision(
-                x, y, vx * deltaTime, vy * deltaTime, width, height, collisionMap
-        );
-
-        x = result.adjustedX;
-        y = result.adjustedY;
-
-        isOnGround = result.collidedBottom || isOnLadder;
-
-        if (result.collidedTop || result.collidedBottom) {
-            if (!isOnLadder) {
-                vy = 0;
-            }
-        }
-        if (result.collidedLeft || result.collidedRight) {
-            vx = 0;
         }
     }
 

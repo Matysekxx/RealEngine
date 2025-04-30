@@ -69,7 +69,7 @@ public class GamePanel extends JPanel implements Runnable {
      * @param mapToSearch The RMap to search within.
      * @return A Point representing the top-left pixel coordinates of the spawn tile, or null if not found.
      */
-    private Point findSpawnPoint(RMap mapToSearch) {
+    private Point findSpawnPoint(final RMap mapToSearch) {
         EObject[][] collisionLayer = mapToSearch.getCollisionMap();
         if (collisionLayer == null) return null;
         for (int y = 0; y < mapToSearch.getHeight(); y++) {
