@@ -137,30 +137,6 @@ public class GamePanel extends JPanel implements Runnable {
         g2.dispose();
     }
 
-    /**
-     * Helper method to clear the entire map
-     */
-    @Deprecated
-    private void clearMap(RMap targetMap) {
-        for (int x = 0; x < GamePanel.MAX_WORLD_COL; x++) {
-            for (int y = 0; y < GamePanel.MAX_WORLD_ROW; y++) {
-                targetMap.setObjectAt(x, y, EObject.EMPTY);
-            }
-        }
-    }
-
-    /**
-     * Helper method to fill an area with a specific object
-     */
-    @Deprecated
-    private void fillArea(RMap targetMap, int startX, int startY, int width, int height, EObject object) {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                targetMap.setObjectAt(startX + x, startY + y, object);
-            }
-        }
-    }
-
     @Override
     public void run() {
         double drawInterval = 1000000000.0 / FPS;
@@ -218,9 +194,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setAudio() {
+        audio = Audio.musicMap.getOrDefault(this.map.getPath(), Audio.DEFAULT_AUDIO);
+        audio.startAudio();
+    }
+
+    public void stopAudio() {
         if (audio != null) audio.stopMusic();
-        audio = new Audio(Audio.musicMap.getOrDefault(this.map.getPath(), "resources/audio/02. Title.wav"));
-        audio.playMusic();
     }
 
     private void resetPlayer(Point playerSpawn) {

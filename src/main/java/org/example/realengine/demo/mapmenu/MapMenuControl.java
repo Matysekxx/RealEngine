@@ -19,7 +19,8 @@ public final class MapMenuControl extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE, KeyEvent.VK_L -> mapMenuPanel.returnToGame();
+            case KeyEvent.VK_L -> mapMenuPanel.returnToGame();
+            case KeyEvent.VK_ESCAPE -> System.exit(0);//TODO: nastaveni hry
             case KeyEvent.VK_ENTER -> {
                 int selectedIndex = mapList.getSelectedIndex();
                 if (selectedIndex >= 0 && selectedIndex < mapPaths.size()) {

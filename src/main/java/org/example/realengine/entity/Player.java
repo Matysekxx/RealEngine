@@ -11,17 +11,6 @@ import static org.example.realengine.game.GameConstants.*;
 
 public non-sealed class Player extends Entity {
 
-    private final float autoMoveSpeed = 400.0f;
-    private final float jumpVelocity = -900.0f;
-    private float velocityX = 0;
-    private float velocityY = 0;
-    private boolean isOnGround = false;
-    private boolean isMovingDown = false;
-    private Point spawnPoint;
-    private boolean wantsToClimbUp = false;
-    private boolean wantsToClimbDown = false;
-    private int boxPushTick = 0;
-    private int teleportCooldown = 0;
     private static final Robot robot;
 
     static {
@@ -32,9 +21,15 @@ public non-sealed class Player extends Entity {
         }
     }
 
+    private Point spawnPoint;
+    private boolean wantsToClimbUp = false;
+    private boolean wantsToClimbDown = false;
+    private int boxPushTick = 0;
+    private int teleportCooldown = 0;
+
     public Player(float x, float y) {
-        super(x, y, "player");
-        this.maxHealth = 100;
+        super(x, y, 16, 16, "player");
+        this.maxHealth = 3;
         this.health = this.maxHealth;
         this.width = 32;
         this.height = 32;
@@ -46,6 +41,11 @@ public non-sealed class Player extends Entity {
 
     @Override
     public void update(float deltaTime, EObject[][] collisionMap) {
+        if (jumping) {
+            velocityY = jumpVelocity;
+            isOnGround = false;
+            jumping = false;
+        }
         float potentialNextX = x + velocityX * deltaTime;
         velocityY += gravity * deltaTime;
         float potentialNextY = y + velocityY * deltaTime;
@@ -74,7 +74,8 @@ public non-sealed class Player extends Entity {
         y = Math.max(0, Math.min(y, GamePanel.WORLD_HEIGHT - height));
     }
 
-    private void respawn() {
+    @Override
+    public void onDead() {
         if (spawnPoint != null) {
             this.x = spawnPoint.x;
             this.y = spawnPoint.y;
@@ -84,51 +85,6 @@ public non-sealed class Player extends Entity {
         }
         velocityX = 0;
         velocityY = 0;
-    }
-
-    public void jump() {
-        if (isOnGround) {
-            velocityY = jumpVelocity;
-            isOnGround = false;
-        }
-    }
-
-    public void setMovingUp(boolean moving) {
-        if (moving) jump();
-    }
-
-    public void setMovingLeft(boolean moving) {
-        if (moving) velocityX = -autoMoveSpeed;
-        else if (velocityX < 0) velocityX = 0;
-    }
-
-    public void setMovingRight(boolean moving) {
-        if (moving) velocityX = autoMoveSpeed;
-        else if (velocityX > 0) velocityX = 0;
-    }
-
-    public void setMovingDown(boolean movingDown) {
-        if (!movingDown) {
-            this.isMovingDown = false;
-            return;
-        }
-        this.isMovingDown = this.isOnLadder;
-    }
-
-    public float getVelocityX() {
-        return velocityX;
-    }
-
-    public void setVelocityX(float velocityX) {
-        this.velocityX = velocityX;
-    }
-
-    public float getVelocityY() {
-        return velocityY;
-    }
-
-    public void setVelocityY(float velocityY) {
-        this.velocityY = velocityY;
     }
 
     public void setClimbingUp(boolean climbingUp) {
@@ -183,98 +139,8 @@ public non-sealed class Player extends Entity {
         return collisionDetectedX;
     }
 
-
-    private boolean handleXCollision(EObject[][] collisionMap, float potentialNextX) {
-        boolean collisionDetectedX = false;
-        if (velocityX != 0) {
-            var topTileY = (int) (y / TILE_SIZE);
-            var bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
-            int nextTileX;
-            if (velocityX > 0) {
-                nextTileX = (int) ((potentialNextX + width - 1) / TILE_SIZE);
-                for (int tileY = topTileY; tileY <= bottomTileY; tileY++) {
-                    if (collisionMap != null &&
-                            nextTileX >= 0 && nextTileX < collisionMap.length &&
-                            tileY >= 0 && tileY < collisionMap[0].length &&
-                            collisionMap[nextTileX][tileY] != null &&
-                            collisionMap[nextTileX][tileY].isSolid()) {
-                        collisionDetectedX = true;
-                        x = nextTileX * TILE_SIZE - width;
-                        velocityX = 0;
-                        break;
-                    }
-                }
-            } else {
-                nextTileX = (int) (potentialNextX / TILE_SIZE);
-                for (int tileY = topTileY; tileY <= bottomTileY; tileY++) {
-                    if (collisionMap != null &&
-                            nextTileX >= 0 && nextTileX < collisionMap.length &&
-                            tileY >= 0 && tileY < collisionMap[0].length &&
-                            collisionMap[nextTileX][tileY] != null &&
-                            collisionMap[nextTileX][tileY].isSolid()) {
-                        collisionDetectedX = true;
-                        x = (nextTileX + 1) * TILE_SIZE;
-                        velocityX = 0;
-                        break;
-                    }
-                }
-            }
-        }
-        return collisionDetectedX;
-    }
-
-    private boolean handleYCollision(@NotNull EObject[][] collisionMap, float potentialNextY) {
-        boolean collisionDetectedY = false;
-        isOnGround = false;
-        if (velocityY < 0) {
-            var leftHeadTileX = (int) (x / TILE_SIZE);
-            var rightHeadTileX = (int) ((x + width - 1) / TILE_SIZE);
-            var topTileY = (int) (potentialNextY / TILE_SIZE);
-
-            for (int tileX = leftHeadTileX; tileX <= rightHeadTileX; tileX++) {
-                if (tileX >= 0 && tileX < collisionMap.length &&
-                        topTileY >= 0 && topTileY < collisionMap[0].length &&
-                        collisionMap[tileX][topTileY] != null &&
-                        !collisionMap[tileX][topTileY].isWalkable()) {
-                    collisionDetectedY = true;
-                    velocityY = 0;
-                    y = (topTileY + 1) * TILE_SIZE;
-                    break;
-                }
-            }
-        }
-        if (velocityY >= 0) {
-            var leftFootTileX = (int) (x / TILE_SIZE);
-            var rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
-            var bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
-
-            for (int tileX = leftFootTileX; tileX <= rightFootTileX; tileX++) {
-                if (tileX >= 0 && tileX < collisionMap.length &&
-                        bottomTileY >= 0 && bottomTileY < collisionMap[0].length &&
-                        collisionMap[tileX][bottomTileY] != null) {
-                    if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
-                        respawn();
-                        return true;
-                    } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown) {
-                        if (collisionMap[tileX][bottomTileY] == EObject.SPRING) {
-                            velocityY = jumpVelocity * 1.25f;
-                            isOnGround = false;
-                            collisionDetectedY = true;
-                        } else {
-                            collisionDetectedY = true;
-                            isOnGround = true;
-                            velocityY = 0;
-                            y = bottomTileY * TILE_SIZE - height;
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        return collisionDetectedY;
-    }
-
-    private void handleSpecialTiles(EObject[][] collisionMap) {
+    @Override
+    public void handleSpecialTiles(EObject[][] collisionMap) {
         var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
         var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
 
@@ -296,7 +162,7 @@ public non-sealed class Player extends Entity {
                 isOnHoney = true;
             }
             if (currentObject == EObject.SPIKE || currentObject == EObject.HAZARD_LIQUID) {
-                respawn();
+                onDead();
             }
             if (currentObject == EObject.END) {
                 robot.keyPress(KeyEvent.VK_L);

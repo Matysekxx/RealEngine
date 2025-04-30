@@ -15,7 +15,7 @@ import java.util.List;
  * Umožňuje uživateli procházet dostupné mapy, vybírat je a načítat do herního panelu.
  * Dědí z JPanel a obsahuje vlastní logiku pro zobrazení seznamu map a ovládání pomocí klávesnice.
  */
-public final class MapMenuPanel extends JPanel {
+public class MapMenuPanel extends JPanel {
     private final JFrame parentFrame;
     private final GamePanel gamePanel;
     private JList<String> mapList;
@@ -42,7 +42,6 @@ public final class MapMenuPanel extends JPanel {
 
     private JPanel createTitlePanel() {
         TitlePanel titlePanel = new TitlePanel();
-        titlePanel.setLayout(new BorderLayout());
         JLabel titleLabel = new JLabel("MAPS");
         titleLabel.setFont(new Font("Verdana", Font.BOLD, 32));
         titleLabel.setForeground(Color.YELLOW);

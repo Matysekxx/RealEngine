@@ -7,7 +7,10 @@ import java.awt.*;
  * Panel pro zobrazení titulku v menu s gradientním pozadím.
  * Dědí z JPanel a využívá metodu pro vykreslení pozadí z InstructionsPanel.
  */
-public final class TitlePanel extends JPanel {
+public class TitlePanel extends JPanel {
+    public TitlePanel() {
+        this.setLayout(new BorderLayout());
+    }
 
     @Override
     public void paintComponent(Graphics g) {

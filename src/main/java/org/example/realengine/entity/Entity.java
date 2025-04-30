@@ -1,9 +1,10 @@
 package org.example.realengine.entity;
 
 import org.example.realengine.object.EObject;
+import org.jetbrains.annotations.NotNull;
 
-import static org.example.realengine.game.GameConstants.TILE_SIZE;
 import static org.example.realengine.game.GameConstants.GRAVITY;
+import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
 /**
  * Základní třída pro všechny herní objekty (postavy, předměty atd.),
@@ -13,27 +14,28 @@ import static org.example.realengine.game.GameConstants.GRAVITY;
  */
 //TODO: predelat tridu Entity
 public sealed abstract class Entity permits Player {
+    protected final String type;
     protected float x, y;
-    protected float vx = 0;
-    protected float vy = 0;
-    protected int width = 16;
-    protected int height = 16;
+    protected int width, height;
     protected boolean isOnGround = false;
     protected boolean isOnLadder = false;
     protected boolean active = true;
-    protected float health = 100;
-    protected float maxHealth = 100;
+    protected float health = 1;
+    protected float maxHealth = 5;
     protected boolean movingLeft = false;
     protected boolean movingRight = false;
     protected boolean movingUp = false;
-    protected boolean movingDown = false;
+    protected boolean isMovingDown = false;
     protected boolean jumping = false;
     protected float moveSpeed = 3.0f;
     protected float climbSpeed = 2.0f;
     protected float jumpStrength = -10.0f;
     protected float gravity = GRAVITY;
     protected float maxFallSpeed = 15.0f;
-    protected final String type;
+    protected float velocityX = 0;
+    protected float velocityY = 0;
+    protected float jumpVelocity = -900.0f;
+    protected float autoMoveSpeed = 400.0f;
 
     /**
      * Vytvoří novou entitu na zadaných souřadnicích.
@@ -41,9 +43,11 @@ public sealed abstract class Entity permits Player {
      * @param x Počáteční X souřadnice.
      * @param y Počáteční Y souřadnice.
      */
-    public Entity(float x, float y, String type) {
+    public Entity(float x, float y, int width, int height, String type) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.type = type;
     }
 
@@ -57,114 +61,208 @@ public sealed abstract class Entity permits Player {
      */
     public abstract void update(float deltaTime, EObject[][] collisionMap);
 
+    public abstract void onDead();
+
+    public boolean isMovingLeft() {
+        return movingLeft;
+    }
+
     /**
-     * Zkontroluje, zda se entita nachází na dlaždici typu LADDER.
-     * Aktualizuje příznak `isOnLadder`.
-     *
-     * @param collisionMap Kolizní mapa.
+     * Nastaví, zda se má entita pohybovat doleva. @param moving `true` pro pohyb doleva.
      */
-    protected void checkLadderStatus(EObject[][] collisionMap) {
-        if (collisionMap == null) {
-            isOnLadder = false;
+    public void setMovingLeft(boolean moving) {
+        if (moving) velocityX = -autoMoveSpeed;
+        else if (velocityX < 0) velocityX = 0;
+    }
+
+    public boolean isMovingRight() {
+        return movingRight;
+    }
+
+    /**
+     * Nastaví, zda se má entita pohybovat doprava. @param moving `true` pro pohyb doprava.
+     */
+    public void setMovingRight(boolean moving) {
+        if (moving) velocityX = autoMoveSpeed;
+        else if (velocityX > 0) velocityX = 0;
+    }
+
+    public boolean isMovingUp() {
+        return movingUp;
+    }
+
+    public void setMovingUp(boolean moving) {
+        this.movingUp = moving;
+    }
+
+    public boolean isMovingDown() {
+        return isMovingDown;
+    }
+
+    public void setMovingDown(boolean movingDown) {
+        if (!movingDown) {
+            this.isMovingDown = false;
             return;
         }
-        int midX = (int) ((x + width / 2f) / TILE_SIZE);
-        int bottomY = (int) ((y + height - 1) / TILE_SIZE);
-        int midY = (int) ((y + height / 2f) / TILE_SIZE);
+        this.isMovingDown = this.isOnLadder;
+    }
 
-        EObject objAtFeet = getObjectAtTile(midX, bottomY, collisionMap);
-        EObject objAtMid = getObjectAtTile(midX, midY, collisionMap);
+    public boolean isJumping() {
+        return jumping;
+    }
 
-        isOnLadder = (objAtFeet == EObject.LADDER || objAtMid == EObject.LADDER);
-        if (isOnLadder) {
-            isOnGround = true;
-            vy = 0;
+    public void setJumping(boolean jumping) {
+        this.jumping = jumping;
+    }
+
+    public float getVelocityX() {
+        return velocityX;
+    }
+
+    public void setVelocityX(float velocityX) {
+        this.velocityX = velocityX;
+    }
+
+    public float getVelocityY() {
+        return velocityY;
+    }
+
+    public void setVelocityY(float velocityY) {
+        this.velocityY = velocityY;
+    }
+
+    public float getJumpVelocity() {
+        return jumpVelocity;
+    }
+
+    public void setJumpVelocity(float jumpVelocity) {
+        this.jumpVelocity = jumpVelocity;
+    }
+
+    public float getAutoMoveSpeed() {
+        return autoMoveSpeed;
+    }
+
+    public void setAutoMoveSpeed(float autoMoveSpeed) {
+        this.autoMoveSpeed = autoMoveSpeed;
+    }
+
+    public void handleSpecialTiles(EObject[][] collisionMap) {
+        var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
+        var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
+        boolean isOnHoney = false;
+
+        EObject currentObject;
+        if (collisionMap != null &&
+                centerTileX >= 0 && centerTileX < collisionMap.length &&
+                centerTileY >= 0 && centerTileY < collisionMap[0].length) {
+            currentObject = collisionMap[centerTileX][centerTileY];
+            if (currentObject == EObject.SLIME) {
+                isOnHoney = true;
+            }
+            if (currentObject == EObject.SPIKE || currentObject == EObject.HAZARD_LIQUID) {
+                onDead();
+            }
+            if (currentObject == EObject.SPRING && isOnGround && velocityY == 0) {
+                velocityY = jumpVelocity * 1.5f;
+                isOnGround = false;
+            }
+        }
+        gravity = 1700.0f;
+        if (isOnHoney) {
+            velocityX = 0;
+            velocityY = 0;
         }
     }
 
-    /**
-     * Pomocná metoda pro získání objektu na dlaždici.
-     */
-    private EObject getObjectAtTile(int x, int y, EObject[][] map) {
-        if (!isValidMapPosition(map, x, y)) {
-            return EObject.BORDER;
-        }
-        EObject object = map[x][y];
-        return object != null ? object : EObject.EMPTY;
-    }
-
-    /**
-     * Vypočítá zamýšlený pohyb entity na základě aktuálního stavu
-     * (movingLeft, movingRight, jumping, isOnLadder, movingUp, movingDown).
-     * Nastavuje `vx` a `vy`.
-     */
-    protected void calculateMovement() {
-        vx = 0;
-        vy = isOnLadder ? 0 : vy;
-
-        if (isOnLadder) {
-            if (movingUp) {
-                vy = -climbSpeed;
-            } else if (movingDown) {
-                vy = climbSpeed;
+    boolean handleXCollision(EObject[][] collisionMap, float potentialNextX) {
+        boolean collisionDetectedX = false;
+        if (velocityX != 0) {
+            var topTileY = (int) (y / TILE_SIZE);
+            var bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
+            int nextTileX;
+            if (velocityX > 0) {
+                nextTileX = (int) ((potentialNextX + width - 1) / TILE_SIZE);
+                for (int tileY = topTileY; tileY <= bottomTileY; tileY++) {
+                    if (collisionMap != null &&
+                            nextTileX >= 0 && nextTileX < collisionMap.length &&
+                            tileY >= 0 && tileY < collisionMap[0].length &&
+                            collisionMap[nextTileX][tileY] != null &&
+                            collisionMap[nextTileX][tileY].isSolid()) {
+                        collisionDetectedX = true;
+                        x = nextTileX * TILE_SIZE - width;
+                        velocityX = 0;
+                        break;
+                    }
+                }
             } else {
-                vy = 0;
-            }
-            if (movingLeft) vx -= moveSpeed;
-            if (movingRight) vx += moveSpeed;
-
-            if (jumping) {
-                vy = jumpStrength;
-                isOnLadder = false;
-                isOnGround = false;
-                jumping = false;
-            }
-
-        } else {
-            if (movingLeft) vx -= moveSpeed;
-            if (movingRight) vx += moveSpeed;
-
-            if (jumping && isOnGround) {
-                vy = jumpStrength;
-                isOnGround = false;
-                jumping = false;
+                nextTileX = (int) (potentialNextX / TILE_SIZE);
+                for (int tileY = topTileY; tileY <= bottomTileY; tileY++) {
+                    if (collisionMap != null &&
+                            nextTileX >= 0 && nextTileX < collisionMap.length &&
+                            tileY >= 0 && tileY < collisionMap[0].length &&
+                            collisionMap[nextTileX][tileY] != null &&
+                            collisionMap[nextTileX][tileY].isSolid()) {
+                        collisionDetectedX = true;
+                        x = (nextTileX + 1) * TILE_SIZE;
+                        velocityX = 0;
+                        break;
+                    }
+                }
             }
         }
+        return collisionDetectedX;
     }
 
-    /**
-     * Zkontroluje, zda tato entita koliduje (překrývá se) s jinou entitou.
-     * Používá AABB (Axis-Aligned Bounding Box) kolizní test.
-     *
-     * @param other Druhá entita pro kontrolu kolize.
-     * @return `true`, pokud entity kolidují, jinak `false`.
-     */
-    public boolean collidesWith(Entity other) {
-        if (other == null || !active || !other.active) return false;
+    boolean handleYCollision(@NotNull EObject[][] collisionMap, float potentialNextY) {
+        boolean collisionDetectedY = false;
+        isOnGround = false;
+        if (velocityY < 0) {
+            var leftHeadTileX = (int) (x / TILE_SIZE);
+            var rightHeadTileX = (int) ((x + width - 1) / TILE_SIZE);
+            var topTileY = (int) (potentialNextY / TILE_SIZE);
 
-        return !(x + width <= other.x ||
-                x >= other.x + other.width ||
-                y + height <= other.y ||
-                y >= other.y + other.height);
-    }
-
-    /**
-     * Aplikuje poškození na entitu.
-     * Snižuje `health` a může nastavit entitu jako neaktivní (`active = false`), pokud zdraví klesne na 0.
-     *
-     * @param amount Množství poškození.
-     * @return `true`, pokud entita poškození přežila (`health > 0`), jinak `false`.
-     */
-    public boolean damage(float amount) {
-        if (!active) return false;
-
-        health -= amount;
-        if (health <= 0) {
-            health = 0;
-            active = false;
-            return false;
+            for (int tileX = leftHeadTileX; tileX <= rightHeadTileX; tileX++) {
+                if (tileX >= 0 && tileX < collisionMap.length &&
+                        topTileY >= 0 && topTileY < collisionMap[0].length &&
+                        collisionMap[tileX][topTileY] != null &&
+                        !collisionMap[tileX][topTileY].isWalkable()) {
+                    collisionDetectedY = true;
+                    velocityY = 0;
+                    y = (topTileY + 1) * TILE_SIZE;
+                    break;
+                }
+            }
         }
-        return true;
+        if (velocityY >= 0) {
+            var leftFootTileX = (int) (x / TILE_SIZE);
+            var rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
+            var bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
+
+            for (int tileX = leftFootTileX; tileX <= rightFootTileX; tileX++) {
+                if (tileX >= 0 && tileX < collisionMap.length &&
+                        bottomTileY >= 0 && bottomTileY < collisionMap[0].length &&
+                        collisionMap[tileX][bottomTileY] != null) {
+                    if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
+                        onDead();
+                        return true;
+                    } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown) {
+                        if (collisionMap[tileX][bottomTileY] == EObject.SPRING) {
+                            velocityY = jumpVelocity * 1.25f;
+                            isOnGround = false;
+                            collisionDetectedY = true;
+                        } else {
+                            collisionDetectedY = true;
+                            isOnGround = true;
+                            velocityY = 0;
+                            y = bottomTileY * TILE_SIZE - height;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return collisionDetectedY;
     }
 
     /**
@@ -173,7 +271,9 @@ public sealed abstract class Entity permits Player {
      */
     public void jump() {
         if (isOnGround || isOnLadder) {
-            jumping = true;
+            velocityY = jumpVelocity;
+            isOnGround = false;
+            jumping = false;
         }
     }
 
@@ -206,34 +306,6 @@ public sealed abstract class Entity permits Player {
     }
 
     /**
-     * @return Aktuální horizontální rychlost entity.
-     */
-    public float getVx() {
-        return vx;
-    }
-
-    /**
-     * Nastaví horizontální rychlost entity. @param vx Nová horizontální rychlost.
-     */
-    public void setVx(float vx) {
-        this.vx = vx;
-    }
-
-    /**
-     * @return Aktuální vertikální rychlost entity.
-     */
-    public float getVy() {
-        return vy;
-    }
-
-    /**
-     * Nastaví vertikální rychlost entity. @param vy Nová vertikální rychlost.
-     */
-    public void setVy(float vy) {
-        this.vy = vy;
-    }
-
-    /**
      * @return Šířka entity (pro kolize a vykreslování).
      */
     public int getWidth() {
@@ -260,6 +332,7 @@ public sealed abstract class Entity permits Player {
     public void setHeight(int height) {
         this.height = height;
     }
+
     /**
      * @return `true`, pokud je entita aktivní (aktualizuje se, vykresluje, koliduje), jinak `false`.
      */
@@ -295,32 +368,8 @@ public sealed abstract class Entity permits Player {
         return isOnLadder;
     }
 
-    /**
-     * Nastaví, zda se má entita pohybovat doleva. @param moving `true` pro pohyb doleva.
-     */
-    public void setMovingLeft(boolean moving) {
-        this.movingLeft = moving;
-    }
-
-    /**
-     * Nastaví, zda se má entita pohybovat doprava. @param moving `true` pro pohyb doprava.
-     */
-    public void setMovingRight(boolean moving) {
-        this.movingRight = moving;
-    }
-
-    /**
-     * Nastaví, zda se má entita pohybovat nahoru (pro žebřík). @param moving `true` pro pohyb nahoru.
-     */
-    public void setMovingUp(boolean moving) {
-        this.movingUp = moving;
-    }
-
-    /**
-     * Nastaví, zda se má entita pohybovat dolů (pro žebřík). @param moving `true` pro pohyb dolů.
-     */
-    public void setMovingDown(boolean moving) {
-        this.movingDown = moving;
+    public void setOnLadder(boolean onLadder) {
+        isOnLadder = onLadder;
     }
 
     /**

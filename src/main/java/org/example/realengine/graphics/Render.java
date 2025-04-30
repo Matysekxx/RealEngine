@@ -159,7 +159,7 @@ public class Render {
             return Color.GRAY;
         }
         return switch (type.toLowerCase()) {
-            case "player" -> Color.BLUE;
+            case "player" -> Color.RED;
             default -> Color.GRAY;
         };
     }
