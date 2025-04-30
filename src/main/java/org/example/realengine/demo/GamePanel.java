@@ -1,6 +1,7 @@
 package org.example.realengine.demo;
 
 import org.example.realengine.control.RControl;
+import org.example.realengine.demo.mapmenu.MapMenuPanel;
 import org.example.realengine.entity.Player;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
@@ -26,26 +27,28 @@ public class GamePanel extends JPanel implements Runnable {
     private static final int TILE_SIZE = GameConstants.TILE_SIZE;
     public static final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL;
     public static final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;
+    private static final int BOX_GRAVITY_DELAY = 6;
+    private static final int FPS = 60;
     public static int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
     public static int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
-    private static final int BOX_GRAVITY_DELAY = 6;
     private final RControl rControl;
     private final Render render;
     private final Camera camera;
     private final Player player;
-    private static final int FPS = 60;
     private RMap map;
     private Point spawnPoint;
     private Thread gameThread;
     private boolean isPaused = false;
     private int boxGravityTick = 0;
+    private Audio audio;
 
     public GamePanel() throws IOException {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        this.map = RMap.loadFromPng("resources/defaultmap.png");
+        this.map = RMap.loadFromPng("src/build_in/defaultmap.png");
+        setAudio();
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
@@ -76,7 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
             for (int x = 0; x < mapToSearch.getWidth(); x++) {
                 if (x < collisionLayer.length && y < collisionLayer[x].length)
                     if (collisionLayer[x][y] == EObject.PLAYER_SPAWN) {
-                        return new Point(x*TILE_SIZE, y*TILE_SIZE);
+                        return new Point(x * TILE_SIZE, y * TILE_SIZE);
                     }
             }
         }
@@ -89,6 +92,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
+
     }
 
     /**
@@ -177,11 +181,9 @@ public class GamePanel extends JPanel implements Runnable {
                 }
                 repaint();
             }
-
             try {
                 long timeNow = System.nanoTime();
                 long sleepTime = (lastTime + (long) drawInterval - timeNow) / 1000000;
-
                 if (sleepTime > 0) {
                     Thread.sleep(sleepTime);
                 }
@@ -198,7 +200,7 @@ public class GamePanel extends JPanel implements Runnable {
      *
      * @param newMap The new RMap instance to load.
      */
-    public void loadMap(@NotNull RMap newMap) {
+    public void loadMap(final @NotNull RMap newMap) {
         if (this.map != null) {
             this.map.clearEntities();
         }
@@ -212,6 +214,13 @@ public class GamePanel extends JPanel implements Runnable {
         player.setSpawnPoint(spawnPoint);
         resetPlayer(spawnPoint);
         this.map.addEntity(player);
+        setAudio();
+    }
+
+    public void setAudio() {
+        if (audio != null) audio.stopMusic();
+        audio = new Audio(Audio.musicMap.getOrDefault(this.map.getPath(), "resources/audio/02. Title.wav"));
+        audio.playMusic();
     }
 
     private void resetPlayer(Point playerSpawn) {
@@ -238,14 +247,12 @@ public class GamePanel extends JPanel implements Runnable {
     public void showMapMenu() {
         pauseGame();
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        if (frame != null) {
-            frame.getContentPane().remove(this);
-            MapMenuPanel mapMenu = new MapMenuPanel(frame, this);
-            frame.getContentPane().add(mapMenu);
-            mapMenu.requestFocus();
-            frame.revalidate();
-            frame.repaint();
-        }
+        frame.getContentPane().remove(this);
+        MapMenuPanel mapMenu = new MapMenuPanel(frame, this);
+        frame.getContentPane().add(mapMenu);
+        mapMenu.requestFocus();
+        frame.revalidate();
+        frame.repaint();
     }
 
     private void applyBoxGravity() {

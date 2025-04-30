@@ -7,7 +7,8 @@ import java.io.IOException;
 
 public enum EBackground {
     GRASS_LAND("resources/grassland.png"),
-    CAVE("resources/cave.png");
+    CAVE("resources/cave.png"),
+    DEFAULT("resources/default.png");
 
 
     private final BufferedImage background;

@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
@@ -35,7 +34,7 @@ public class Render {
      * Vykreslí pozadí, mapu a všechny entity viditelné kamerou.
      * Pokud je zapnutý debug režim, vykreslí i další informace.
      *
-     * @param g      Grafický kontext (`Graphics` nebo `Graphics2D`), na který se má kreslit.
+     * @param g      Grafický kontext, na který se má kreslit.
      * @param map    Herní mapa {@link RMap}, která se má vykreslit.
      * @param camera Kamera {@link Camera} určující pohled na scénu.
      */
@@ -57,7 +56,7 @@ public class Render {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     public void renderBackground(final Graphics g, final Camera camera, final RMap map) {
-        g.drawImage(backgrounds.getOrDefault(map.getPath(), EBackground.GRASS_LAND).getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+        g.drawImage(backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**
@@ -117,9 +116,8 @@ public class Render {
      */
     public void renderEntities(final Graphics g, final List<Entity> entities, final Camera camera) {
         if (entities == null) return;
-
         for (Entity entity : entities) {
-            if (entity != null && entity.isActive()) {
+            if (entity != null) {
                 renderEntity(g, entity, camera);
             }
         }
@@ -145,9 +143,6 @@ public class Render {
                 screenY + entity.getHeight() >= 0 && screenY <= camera.getScreenHeight()) {
             g.setColor(getColorForEntityType(entity.getType()));
             g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
-            g.setColor(Color.BLACK);
-            g.drawRect(screenX, screenY, entity.getWidth() - 1, entity.getHeight() - 1);
-
         }
     }
 
@@ -158,6 +153,7 @@ public class Render {
      * @param type The entity type string (e.g., "player", "enemy").
      * @return A Color for the entity type.
      */
+    //TODO: pridat entity
     protected Color getColorForEntityType(String type) {
         if (type == null) {
             return Color.GRAY;

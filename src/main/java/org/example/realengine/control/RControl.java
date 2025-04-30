@@ -12,7 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class RControl implements MouseListener, KeyListener {
+public final class RControl implements MouseListener, KeyListener {
 
     private Entity controlledEntity;
 
