@@ -1,15 +1,11 @@
 package org.example.realengine.control;
 
 import org.example.realengine.demo.GamePanel;
-import org.example.realengine.entity.Entity;
 import org.example.realengine.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public final class RControl implements KeyListener {
 
@@ -40,7 +36,6 @@ public final class RControl implements KeyListener {
             GamePanel gamePanel = (GamePanel) e.getComponent();
             gamePanel.stopAudio();
             gamePanel.showMapMenu();
-
         }
     }
 

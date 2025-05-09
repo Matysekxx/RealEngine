@@ -12,14 +12,12 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
  * Poskytuje základní fyzikální chování, jako je gravitace, detekce kolizí s mapou,
  * a základní podporu pro platformy a žebříky.
  */
-//TODO: predelat tridu Entity
 public sealed abstract class Entity permits Player {
     protected final String type;
     protected float x, y;
     protected int width, height;
     protected boolean isOnGround = false;
     protected boolean isOnLadder = false;
-    protected boolean active = true;
     protected float health = 1;
     protected float maxHealth = 5;
     protected boolean movingLeft = false;
@@ -150,7 +148,7 @@ public sealed abstract class Entity permits Player {
     public void handleSpecialTiles(EObject[][] collisionMap) {
         var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
         var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
-        boolean isOnHoney = false;
+        boolean isOnSlime = false;
 
         EObject currentObject;
         if (collisionMap != null &&
@@ -158,7 +156,7 @@ public sealed abstract class Entity permits Player {
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
             currentObject = collisionMap[centerTileX][centerTileY];
             if (currentObject == EObject.SLIME) {
-                isOnHoney = true;
+                isOnSlime = true;
             }
             if (currentObject == EObject.SPIKE || currentObject == EObject.HAZARD_LIQUID) {
                 onDead();
@@ -169,7 +167,7 @@ public sealed abstract class Entity permits Player {
             }
         }
         gravity = 1700.0f;
-        if (isOnHoney) {
+        if (isOnSlime) {
             velocityX = 0;
             velocityY = 0;
         }
@@ -331,20 +329,6 @@ public sealed abstract class Entity permits Player {
      */
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    /**
-     * @return `true`, pokud je entita aktivní (aktualizuje se, vykresluje, koliduje), jinak `false`.
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * Nastaví, zda je entita aktivní. @param active `true` pro aktivaci, `false` pro deaktivaci.
-     */
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     /**

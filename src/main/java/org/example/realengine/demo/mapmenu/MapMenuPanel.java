@@ -18,9 +18,9 @@ import java.util.List;
 public class MapMenuPanel extends JPanel {
     private final JFrame parentFrame;
     private final GamePanel gamePanel;
+    private final List<String> mapPaths = new ArrayList<>();
     private JList<String> mapList;
     private DefaultListModel<String> listModel;
-    private final List<String> mapPaths = new ArrayList<>();
 
     public MapMenuPanel(JFrame parentFrame, GamePanel gamePanel) {
         this.parentFrame = parentFrame;
@@ -29,28 +29,15 @@ public class MapMenuPanel extends JPanel {
         setBackground(new Color(20, 20, 50));
         setPreferredSize(parentFrame.getSize());
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        JPanel titlePanel = createTitlePanel();
+        JPanel titlePanel = new TitlePanel();
         JScrollPane scrollPane = createMapListScrollPane();
-        JPanel instructionsPanel = createInstructionsPanel();
+        JPanel instructionsPanel = new InstructionsPanel();
         add(titlePanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(instructionsPanel, BorderLayout.SOUTH);
         setFocusable(true);
         addKeyListener(new MapMenuControl(mapList, mapPaths, this));
         loadMapList();
-    }
-
-    private JPanel createTitlePanel() {
-        TitlePanel titlePanel = new TitlePanel();
-        JLabel titleLabel = new JLabel("MAPS");
-        titleLabel.setFont(new Font("Verdana", Font.BOLD, 32));
-        titleLabel.setForeground(Color.YELLOW);
-        titleLabel.setHorizontalAlignment(JLabel.CENTER);
-        titleLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.YELLOW),
-                BorderFactory.createEmptyBorder(20, 0, 20, 0)));
-        titlePanel.add(titleLabel, BorderLayout.CENTER);
-        return titlePanel;
     }
 
     private JScrollPane createMapListScrollPane() {
@@ -67,18 +54,6 @@ public class MapMenuPanel extends JPanel {
         scrollPane.setBackground(new Color(20, 20, 50));
         scrollPane.getViewport().setBackground(new Color(30, 30, 60));
         return scrollPane;
-    }
-
-    private JPanel createInstructionsPanel() {
-        JPanel instructionsPanel = new InstructionsPanel();
-        instructionsPanel.setLayout(new BorderLayout());
-        JLabel instructionsLabel = new JLabel("↑↓ - Select | ENTER - Load | ESC - Back");
-        instructionsLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-        instructionsLabel.setForeground(Color.YELLOW);
-        instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
-        instructionsLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        instructionsPanel.add(instructionsLabel, BorderLayout.CENTER);
-        return instructionsPanel;
     }
 
     public void loadMapList() {
@@ -125,6 +100,7 @@ public class MapMenuPanel extends JPanel {
         parentFrame.getContentPane().add(gamePanel);
         gamePanel.requestFocus();
         gamePanel.resumeGame();
+        gamePanel.setAudio();
         parentFrame.revalidate();
         parentFrame.repaint();
     }

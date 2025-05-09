@@ -1,6 +1,7 @@
 package org.example.realengine.graphics;
 
 import org.example.realengine.entity.Entity;
+import org.example.realengine.entity.Player;
 import org.example.realengine.map.ETile;
 import org.example.realengine.map.MapElementManager;
 import org.example.realengine.map.RMap;
@@ -8,7 +9,6 @@ import org.example.realengine.object.EObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +21,8 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
 public class Render {
     private static final MapElementManager manager = new MapElementManager();
     private static final Map<EObject, ETile> tiles = manager.getObjectToTileMap();
+
     private final boolean texturesOn = true;
-    private final static Map<String, EBackground> backgrounds = new HashMap<>(Map.of(
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_1.png", EBackground.GRASS_LAND,
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_2.png", EBackground.GRASS_LAND,
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_3.png", EBackground.CAVE,
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_4.png", EBackground.CAVE
-    ));
 
     /**
      * Hlavní metoda pro vykreslení celé herní scény.
@@ -56,7 +51,7 @@ public class Render {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     public void renderBackground(final Graphics g, final Camera camera, final RMap map) {
-        g.drawImage(backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+        g.drawImage(EBackground.backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**
@@ -97,7 +92,7 @@ public class Render {
                             texture = map.getLayer()[x][y].texture;
                             g.drawImage(texture, screenX, screenY, TILE_SIZE, TILE_SIZE, null);
                         } else {
-                            Color color = tiles.get(object).color;
+                            Color color = tiles.get(object).getColor();
                             g.setColor(color);
                             g.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
                         }
@@ -141,9 +136,18 @@ public class Render {
 
         if (screenX + entity.getWidth() >= 0 && screenX <= camera.getScreenWidth() &&
                 screenY + entity.getHeight() >= 0 && screenY <= camera.getScreenHeight()) {
-            g.setColor(getColorForEntityType(entity.getType()));
+            if (entity instanceof Player p) {
+                renderPlayer(g, p, screenX, screenY);
+                return;
+            }
+            g.setColor(Color.RED);
             g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
         }
+    }
+
+    public void renderPlayer(final Graphics g, final Player player, int screenX, int screenY) {
+        g.setColor(Color.cyan);
+        g.fillRect(screenX, screenY, player.getWidth(), player.getHeight());
     }
 
     /**
@@ -158,9 +162,6 @@ public class Render {
         if (type == null) {
             return Color.GRAY;
         }
-        return switch (type.toLowerCase()) {
-            case "player" -> Color.RED;
-            default -> Color.GRAY;
-        };
+        return Color.GRAY;
     }
 }

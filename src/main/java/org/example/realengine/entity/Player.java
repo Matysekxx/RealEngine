@@ -2,7 +2,6 @@ package org.example.realengine.entity;
 
 import org.example.realengine.demo.GamePanel;
 import org.example.realengine.object.EObject;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

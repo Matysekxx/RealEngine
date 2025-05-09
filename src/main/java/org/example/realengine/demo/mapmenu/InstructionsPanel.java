@@ -8,15 +8,20 @@ import java.awt.*;
  * Dědí z JPanel a poskytuje statickou metodu pro vykreslení pozadí.
  */
 public class InstructionsPanel extends JPanel {
+    public InstructionsPanel() {
+        this.setLayout(new BorderLayout());
+        this.add(new InstructionsLabel(), BorderLayout.CENTER);
+    }
+
+    static void paintBackground(Graphics g, Color color) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+        g2d.fillRect(0, 0, g2d.getClipBounds().width, g2d.getClipBounds().height);
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         paintBackground(g, new Color(20, 20, 50));
-    }
-
-    public static void paintBackground(Graphics g, Color color) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(color);
-        g2d.fillRect(0, 0, g2d.getClipBounds().width, g2d.getClipBounds().height);
     }
 }

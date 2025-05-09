@@ -15,19 +15,19 @@ public final class MapElementManager {
     private final Map<ETile, EObject> tileToObjectMap = new HashMap<>();
     private final Map<EObject, ETile> objectToTileMap = new HashMap<>();
 
+    /**
+     * Vytvoří novou instanci správce mapových elementů s výchozím mapováním.
+     */
+    public MapElementManager() {
+        initializeDefaultMappings();
+    }
+
     public Map<EObject, ETile> getObjectToTileMap() {
         return objectToTileMap;
     }
 
     public Map<ETile, EObject> getTileToObjectMap() {
         return tileToObjectMap;
-    }
-
-    /**
-     * Vytvoří novou instanci správce mapových elementů s výchozím mapováním.
-     */
-    public MapElementManager() {
-        initializeDefaultMappings();
     }
 
     /**
@@ -111,18 +111,6 @@ public final class MapElementManager {
     }
 
     /**
-     * Získá vizuální dlaždici odpovídající koliznímu objektu.
-     * (Poznámka: Toto mapování nemusí být jednoznačné, pokud více dlaždic mapuje na stejný objekt)
-     *
-     * @param object Kolizní objekt.
-     * @return Odpovídající vizuální dlaždice nebo ETile.UNKNOWN.
-     */
-    public ETile getTileFromObject(final EObject object) {
-        if (object == null) return ETile.UNKNOWN;
-        return objectToTileMap.getOrDefault(object, ETile.UNKNOWN);
-    }
-
-    /**
      * Zpracuje obrázek a vytvoří 2D pole vizuálních dlaždic (ETile).
      *
      * @param image Obrázek mapy.
@@ -158,10 +146,7 @@ public final class MapElementManager {
                 int rgb = image.getRGB(x, y);
                 ETile tile = getTileFromRGB(rgb);
                 collisionMap[x][y] = getObjectFromTile(tile);
-                System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb, tile.name());
-                if (tile == ETile.UNKNOWN) {
-                    System.out.printf("Unknown color at (%d,%d): #%06X\n", x, y, rgb);
-                }
+                //System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb, tile.name());
             }
         }
         return collisionMap;

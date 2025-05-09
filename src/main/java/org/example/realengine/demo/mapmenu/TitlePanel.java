@@ -10,6 +10,7 @@ import java.awt.*;
 public class TitlePanel extends JPanel {
     public TitlePanel() {
         this.setLayout(new BorderLayout());
+        this.add(new TitleLabel(), BorderLayout.CENTER);
     }
 
     @Override

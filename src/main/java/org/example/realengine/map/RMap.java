@@ -65,16 +65,6 @@ public class RMap {
         System.out.println("Created new RMap (" + width + "x" + height + ")");
     }
 
-    private static ETile[][] createETiles(final BufferedImage image, int width, int height) {
-        ETile[][] visualLayer = new ETile[width][height];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                visualLayer[x][y] = ETile.fromRGB(image.getRGB(x, y));
-            }
-        }
-        return visualLayer;
-    }
-
     /**
      * Načte mapu z PNG souboru. Určí rozměry mapy z rozměrů obrázku.
      *
@@ -98,7 +88,6 @@ public class RMap {
         map.setCollisionMap(collisionData);
         return map;
     }
-
 
 
     private static BufferedImage loadImage(final String path) throws IOException {
@@ -127,7 +116,6 @@ public class RMap {
             throw new IllegalArgumentException("Layer dimensions (" + layer.length + "x" + (layer.length > 0 ? layer[0].length : 0)
                     + ") do not match map dimensions (" + width + "x" + height + ").");
         }
-        System.err.println("layer is loaded");
         this.layer = layer;
     }
 
