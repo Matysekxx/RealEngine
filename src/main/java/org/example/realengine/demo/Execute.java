@@ -7,10 +7,9 @@ import java.io.IOException;
  * Třída zajišťující spuštění hlavního okna aplikace a inicializaci herního panelu.
  * Obsahuje statickou metodu pro spuštění hry v samostatném vlákně Swing.
  */
-public final class Execute implements Runnable {
+public final class Execute {
 
-    @Override
-    public void run() {
+    public final static Runnable run = () -> {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -25,5 +24,9 @@ public final class Execute implements Runnable {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         gamePanel.startGameThread();
-    }
+    };
+
+    private Execute() {}
+
+
 }

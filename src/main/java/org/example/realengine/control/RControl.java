@@ -32,6 +32,9 @@ public final class RControl implements KeyListener {
             controlledPlayer.setMovingDown(true);
             controlledPlayer.setClimbingDown(true);
         }
+        if (code == KeyEvent.VK_SHIFT) {
+            controlledPlayer.bunnyJump();
+        }
         if (e.getKeyCode() == KeyEvent.VK_L) {
             GamePanel gamePanel = (GamePanel) e.getComponent();
             gamePanel.stopAudio();

@@ -216,6 +216,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void pauseGame() {
         if (gameThread != null) {
             isPaused = true;
+            stopAudio();
         }
     }
 

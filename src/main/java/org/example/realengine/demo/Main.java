@@ -1,12 +1,6 @@
-package org.example.realengine.demo;
-
 import javax.swing.*;
+import static org.example.realengine.demo.Execute.run;
 
-/**
- * Hlavní třída aplikace, která spouští hru.
- */
-public class Main {
-    public static void main(final String[] args) {
-        SwingUtilities.invokeLater(new Execute());
-    }
+void main() {
+    SwingUtilities.invokeLater(run);
 }

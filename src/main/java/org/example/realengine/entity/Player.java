@@ -33,9 +33,16 @@ public non-sealed class Player extends Entity {
         this.width = 32;
         this.height = 32;
     }
-
     public void setSpawnPoint(Point spawnPoint) {
         this.spawnPoint = spawnPoint;
+    }
+
+    public void bunnyJump() {
+        if (isOnGround) {
+            velocityY = jumpVelocity/ 1.6f;
+            isOnGround = false;
+            jumping = false;
+        }
     }
 
     @Override
@@ -224,4 +231,6 @@ public non-sealed class Player extends Entity {
             }
         }
     }
+
+
 }

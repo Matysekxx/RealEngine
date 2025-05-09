@@ -146,8 +146,9 @@ public class Render {
     }
 
     public void renderPlayer(final Graphics g, final Player player, int screenX, int screenY) {
-        g.setColor(Color.cyan);
-        g.fillRect(screenX, screenY, player.getWidth(), player.getHeight());
+        g.setColor(Color.red);
+        if (!player.isOnGround()) g.fillRect(screenX, screenY, player.getWidth()-5, player.getHeight()+5);
+        else g.fillRect(screenX, screenY, player.getWidth(), player.getHeight());
     }
 
     /**
@@ -159,9 +160,6 @@ public class Render {
      */
     //TODO: pridat entity
     protected Color getColorForEntityType(String type) {
-        if (type == null) {
-            return Color.GRAY;
-        }
         return Color.GRAY;
     }
 }
