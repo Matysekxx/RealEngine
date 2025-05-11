@@ -134,10 +134,16 @@ public enum ETile {
      */
     UNKNOWN(new Color(0xFF00FF), "textures/sky.png"),
 
-    /**
-     * #FF0000 - červená
-     */
     SPRING(new Color(0xFF0000), "textures/spring.png"),
+
+    /**
+     * #FF1050
+     */
+    ENEMY_SPAWN(new Color(0xFF1050), ""),
+    /**
+     * #EF3033
+     */
+    JUMPING_ENEMY_SPAWN(new Color(0xEF3033), ""),
 
     /**
      * #0000FF - modrá

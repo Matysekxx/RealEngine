@@ -81,9 +81,6 @@ public class Render {
             for (int x = startTileX; x < endTileX; x++) {
                 if (x >= 0 && x < map.getWidth() && y >= 0 && y < map.getHeight()) {
                     EObject object = collisionMap[x][y];
-                    if (object == null) {
-                        System.err.println("WARN: Object is null in Renderer.renderMap");
-                    }
                     if (object != null && object != EObject.EMPTY && object != EObject.PLAYER_SPAWN) {
                         int screenX = (int) (x * TILE_SIZE - camX);
                         int screenY = (int) (y * TILE_SIZE - camY);
@@ -140,26 +137,18 @@ public class Render {
                 renderPlayer(g, p, screenX, screenY);
                 return;
             }
-            g.setColor(Color.RED);
+            g.setColor(switch (entity.getType()) {
+                case "enemy" -> Color.red;
+                case "jumping_enemy" -> Color.yellow;
+                default -> throw new IllegalStateException("Unexpected value: " + entity);
+            });
             g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
         }
     }
 
     public void renderPlayer(final Graphics g, final Player player, int screenX, int screenY) {
-        g.setColor(Color.red);
+        g.setColor(Color.blue);
         if (!player.isOnGround()) g.fillRect(screenX, screenY, player.getWidth()-5, player.getHeight()+5);
         else g.fillRect(screenX, screenY, player.getWidth(), player.getHeight());
-    }
-
-    /**
-     * Returns a default color based on the entity type string.
-     * Used as a fallback when textures are unavailable.
-     *
-     * @param type The entity type string (e.g., "player", "enemy").
-     * @return A Color for the entity type.
-     */
-    //TODO: pridat entity
-    protected Color getColorForEntityType(String type) {
-        return Color.GRAY;
     }
 }

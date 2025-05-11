@@ -66,6 +66,8 @@ public final class MapElementManager {
         mapTileToObject(ETile.CLOUD, EObject.PLATFORM);
         mapTileToObject(ETile.END1, EObject.END);
         mapTileToObject(ETile.END2, EObject.END);
+        mapTileToObject(ETile.ENEMY_SPAWN, EObject.ENEMY_SPAWN);
+        mapTileToObject(ETile.JUMPING_ENEMY_SPAWN, EObject.ENEMY_SPAWN);
     }
 
     /**

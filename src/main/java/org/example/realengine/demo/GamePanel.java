@@ -2,6 +2,7 @@ package org.example.realengine.demo;
 
 import org.example.realengine.control.RControl;
 import org.example.realengine.demo.mapmenu.MapMenuPanel;
+import org.example.realengine.entity.Enemy;
 import org.example.realengine.entity.Player;
 import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
@@ -107,7 +108,23 @@ public class GamePanel extends JPanel implements Runnable {
         if (player.getY() > WORLD_HEIGHT) {
             respawnPlayer();
         }
-        player.update((float) 0.016666668, map.getCollisionMap());
+        for (int i = map.getEntities().size() - 1; i >= 0; i--) {
+            org.example.realengine.entity.Entity entity = map.getEntities().get(i);
+            entity.update((float) 0.016666668, map.getCollisionMap());
+
+            if (entity.isDead() || entity.getX() == 0 || entity.getX() == MAX_WORLD_COL) {
+                map.getEntities().remove(i);
+                continue;
+            }
+            if (entity instanceof Enemy enemy) {
+                if (player.getX() < enemy.getX() + enemy.getWidth() &&
+                    player.getX() + player.getWidth() > enemy.getX() &&
+                    player.getY() < enemy.getY() + enemy.getHeight() &&
+                    player.getY() + player.getHeight() > enemy.getY()) {
+                    player.onDead();
+                }
+            }
+        }
         camera.update();
     }
 
@@ -181,8 +198,8 @@ public class GamePanel extends JPanel implements Runnable {
             this.map.clearEntities();
         }
         this.map = newMap;
-        int newWorldWidth = newMap.getWidth() * TILE_SIZE;
-        int newWorldHeight = newMap.getHeight() * TILE_SIZE;
+        final int newWorldWidth = newMap.getWidth() * TILE_SIZE;
+        final int newWorldHeight = newMap.getHeight() * TILE_SIZE;
         WORLD_HEIGHT = newWorldHeight;
         WORLD_WIDTH = newWorldWidth;
         camera.setWorldDimensions(newWorldWidth, newWorldHeight);

@@ -12,7 +12,7 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
  * Poskytuje základní fyzikální chování, jako je gravitace, detekce kolizí s mapou,
  * a základní podporu pro platformy a žebříky.
  */
-public sealed abstract class Entity permits Player {
+public sealed abstract class Entity permits Enemy, Player {
     protected final String type;
     protected float x, y;
     protected int width, height;
@@ -34,6 +34,7 @@ public sealed abstract class Entity permits Player {
     protected float velocityY = 0;
     protected float jumpVelocity = -900.0f;
     protected float autoMoveSpeed = 400.0f;
+    protected boolean isDead = false;
 
     /**
      * Vytvoří novou entitu na zadaných souřadnicích.
@@ -60,6 +61,10 @@ public sealed abstract class Entity permits Player {
     public abstract void update(float deltaTime, EObject[][] collisionMap);
 
     public abstract void onDead();
+
+    public boolean isDead() {
+        return isDead;
+    }
 
     public boolean isMovingLeft() {
         return movingLeft;
@@ -247,7 +252,6 @@ public sealed abstract class Entity permits Player {
                     } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown) {
                         if (collisionMap[tileX][bottomTileY] == EObject.SPRING) {
                             velocityY = jumpVelocity * 1.25f;
-                            isOnGround = false;
                             collisionDetectedY = true;
                         } else {
                             collisionDetectedY = true;

@@ -51,6 +51,7 @@ public enum EObject {
     TELEPORT_RED(true),
     TELEPORT_PURPLE(true),
     SPRING(true),
+    ENEMY_SPAWN(true),
     END(true);
 
     private final boolean walkable;

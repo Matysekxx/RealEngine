@@ -1,5 +1,6 @@
 package org.example.realengine.map;
 
+import org.example.realengine.entity.Enemy;
 import org.example.realengine.entity.Entity;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
 
 /**
@@ -86,6 +89,25 @@ public class RMap {
         map.setPath(imagePath);
         map.setLayer(tileLayer);
         map.setCollisionMap(collisionData);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (collisionData[x][y] == EObject.ENEMY_SPAWN) {
+                    Enemy enemy = switch (tileLayer[x][y]) {
+                        case JUMPING_ENEMY_SPAWN -> {
+                            System.err.println("Jumping enemy was added to the map");
+                            yield new Enemy(x * TILE_SIZE, y * TILE_SIZE, true, "jumping_enemy");
+                        }
+                        case ENEMY_SPAWN -> {
+                            System.err.println("Enemy was added to the map");
+                            yield new Enemy(x * TILE_SIZE, y * TILE_SIZE, false, "enemy");
+                        }
+                        default -> null;
+                    };
+                    map.addEntity(enemy);
+                    collisionData[x][y] = EObject.EMPTY;
+                }
+            }
+        }
         return map;
     }
 
@@ -154,7 +176,7 @@ public class RMap {
      * Pro přidání nebo odstranění použijte {@link #addEntity(Entity)} a {@link #removeEntity(Entity)}.
      */
     public List<Entity> getEntities() {
-        return Collections.unmodifiableList(entities);
+        return entities;
     }
 
     /**
