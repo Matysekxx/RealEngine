@@ -60,8 +60,6 @@ public final class MapMenuControl extends KeyAdapter {
             robot.delay(100);
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
-
-        } catch (AWTException _) {
-        }
+        } catch (AWTException _) {}
     }
 }
