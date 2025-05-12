@@ -51,7 +51,9 @@ public class Render {
      * @param camera Kamera (pro získání rozměrů obrazovky).
      */
     public void renderBackground(final Graphics g, final Camera camera, final RMap map) {
-        g.drawImage(EBackground.backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(), 0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+        System.err.println(map.getPath());
+        g.drawImage(EBackground.backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(),
+                0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
 import java.util.List;
 
 public final class MapMenuControl extends KeyAdapter {
@@ -45,7 +46,7 @@ public final class MapMenuControl extends KeyAdapter {
         }
     }
 
-    public void WSL() {
+    private static void WSL() {
         try {
             final Robot robot = new Robot();
             robot.keyPress(KeyEvent.VK_WINDOWS);

@@ -43,7 +43,7 @@ public class RMap {
      * Kolizní mapa určující pevné a průchozí oblasti.
      */
     private EObject[][] collisionMap;
-    private String path = "maps/defaultmap.png";
+    private String path = "resources\\maps\\defaultmap.png";
 
     /**
      * Vytvoří novou prázdnou mapu se zadanými rozměry.

@@ -12,10 +12,10 @@ public class Audio {
     public static final Audio OVERWORLD = new Audio("resources/audio/12.20Overworld.wav");
     public static final Audio CAVE = new Audio("resources/audio/21.20Underground2028Yoshi29.wav");
     public final static Map<String, Audio> musicMap = new HashMap<>(Map.of(
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_1.png", OVERWORLD,
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_2.png", OVERWORLD,
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_3.png", CAVE,
-            "C:\\Users\\chalo\\IdeaProjects\\RealEngine\\maps\\map_4.png", CAVE
+            "resources\\maps\\map_1.png", OVERWORLD,
+            "resources\\maps\\map_2.png", OVERWORLD,
+            "resources\\maps\\map_3.png", CAVE,
+            "resources\\maps\\map_4.png", CAVE
     ));
     private final String filePath;
     private Clip clip;

@@ -48,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        this.map = RMap.loadFromPng("src/build_in/defaultmap.png");
+        this.map = RMap.loadFromPng("resources/maps/defaultmap.png");
         setAudio();
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {

@@ -59,7 +59,7 @@ public class MapMenuPanel extends JPanel {
     public void loadMapList() {
         listModel.clear();
         mapPaths.clear();
-        File customMapsDir = new File("maps");
+        File customMapsDir = new File("resources/maps");
         if (!customMapsDir.exists()) throw new RuntimeException("maps directory does not exist");
         loadMapsFromDirectory(customMapsDir);
         if (listModel.isEmpty()) {
@@ -79,15 +79,16 @@ public class MapMenuPanel extends JPanel {
                 for (File mapFile : mapFiles) {
                     String mapName = mapFile.getName();
                     listModel.addElement(mapName);
-                    mapPaths.add(mapFile.getAbsolutePath());
+                    mapPaths.add(mapFile.getPath());
+                    System.err.println(mapFile.getPath());
                 }
             }
         }
     }
 
-    void loadSelectedMap(String mapPath) {
+    void loadSelectedMap(final String mapPath) {
         try {
-            RMap newMap = RMap.loadFromPng(mapPath);
+            final RMap newMap = RMap.loadFromPng(mapPath);
             gamePanel.loadMap(newMap);
             returnToGame();
         } catch (IOException e) {
