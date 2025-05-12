@@ -1,6 +1,7 @@
 package org.example.realengine.demo.mapmenu;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -20,7 +21,7 @@ public final class MapMenuControl extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_L -> mapMenuPanel.returnToGame();
-            case KeyEvent.VK_ESCAPE -> System.exit(0);
+            case KeyEvent.VK_ESCAPE -> WSL();
             case KeyEvent.VK_ENTER -> {
                 int selectedIndex = mapList.getSelectedIndex();
                 if (selectedIndex >= 0 && selectedIndex < mapPaths.size()) {
@@ -41,6 +42,26 @@ public final class MapMenuControl extends KeyAdapter {
                     mapList.ensureIndexIsVisible(selectedIndex + 1);
                 }
             }
+        }
+    }
+
+    public void WSL() {
+        try {
+            final Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_WINDOWS);
+            robot.keyRelease(KeyEvent.VK_WINDOWS);
+            robot.delay(100);
+            robot.keyPress(KeyEvent.VK_W);
+            robot.keyRelease(KeyEvent.VK_W);
+            robot.keyPress(KeyEvent.VK_S);
+            robot.keyRelease(KeyEvent.VK_S);
+            robot.keyPress(KeyEvent.VK_L);
+            robot.keyRelease(KeyEvent.VK_L);
+            robot.delay(100);
+            robot.keyPress(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+
+        } catch (AWTException _) {
         }
     }
 }
