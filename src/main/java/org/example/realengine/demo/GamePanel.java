@@ -3,8 +3,8 @@ package org.example.realengine.demo;
 import org.example.realengine.control.RControl;
 import org.example.realengine.demo.mapmenu.MapMenuPanel;
 import org.example.realengine.entity.Enemy;
+import org.example.realengine.entity.Entity;
 import org.example.realengine.entity.Player;
-import org.example.realengine.game.GameConstants;
 import org.example.realengine.graphics.Camera;
 import org.example.realengine.graphics.Render;
 import org.example.realengine.map.RMap;
@@ -15,19 +15,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
+import static org.example.realengine.game.GameConstants.TILE_SIZE;
+
 /**
  * Hlavní herní panel, který zajišťuje vykreslování, logiku hry a správu herního cyklu.
  * Dědí z JPanel a implementuje Runnable pro běh herní smyčky v samostatném vlákně.
  * Obsahuje správu mapy, hráče, kamery a zpracování vstupů.
  */
 public class GamePanel extends JPanel implements Runnable {
-    public static final int MAX_SCREEN_COL = 26;
-    public static final int MAX_SCREEN_ROW = 16;
     public static final int MAX_WORLD_COL = 180;
     public static final int MAX_WORLD_ROW = 14;
-    private static final int TILE_SIZE = GameConstants.TILE_SIZE;
-    public static final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL;
-    public static final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW;
+    private int screenWidth;
+    private int screenHeight;
     private static final int BOX_GRAVITY_DELAY = 6;
     private static final int FPS = 60;
     public static int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
@@ -42,13 +41,14 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean isPaused = false;
     private int boxGravityTick = 0;
     private Audio audio;
+    private final JFrame frame;
 
-    public GamePanel() throws IOException {
-        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+    public GamePanel(JFrame frame) throws IOException {
+        this.frame = frame;
         this.setBackground(new Color(25, 25, 40));
         this.setDoubleBuffered(true);
         render = new Render();
-        this.map = RMap.loadFromPng("resources/maps/defaultmap.png");
+        this.map = RMap.loadFromPng("resources\\maps\\defaultmap.png");
         setAudio();
         spawnPoint = findSpawnPoint(map);
         if (spawnPoint == null) {
@@ -62,9 +62,20 @@ public class GamePanel extends JPanel implements Runnable {
         rControl = new RControl(player);
         this.addKeyListener(rControl);
         this.setFocusable(true);
-        camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+
+        camera = new Camera(1, 1, WORLD_WIDTH, WORLD_HEIGHT);
         camera.follow(player);
-        camera.setFollowOffsetX(-SCREEN_WIDTH / 4.0f);
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        this.screenWidth = frame.getWidth();
+        this.screenHeight = frame.getHeight();
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        camera.updateScreenDimensions(screenWidth, screenHeight);
+        camera.setFollowOffsetX(-screenWidth / 4.0f);
+
     }
 
     /**
@@ -74,7 +85,7 @@ public class GamePanel extends JPanel implements Runnable {
      * @return A Point representing the top-left pixel coordinates of the spawn tile, or null if not found.
      */
     private Point findSpawnPoint(final RMap mapToSearch) {
-        EObject[][] collisionLayer = mapToSearch.getCollisionMap();
+        final EObject[][] collisionLayer = mapToSearch.getCollisionMap();
         if (collisionLayer == null) return null;
         for (int y = 0; y < mapToSearch.getHeight(); y++) {
             for (int x = 0; x < mapToSearch.getWidth(); x++) {
@@ -91,9 +102,25 @@ public class GamePanel extends JPanel implements Runnable {
      * Starts the main game loop thread.
      */
     public void startGameThread() {
+        if (screenWidth == 0 || screenHeight == 0) {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (frame != null && frame.getWidth() > 0 && frame.getHeight() > 0) {
+                this.screenWidth = frame.getWidth();
+                this.screenHeight = frame.getHeight();
+                this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+                camera.updateScreenDimensions(screenWidth, screenHeight);
+                camera.setFollowOffsetX(-screenWidth / 4.0f);
+            } else {
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                this.screenWidth = screenSize.width;
+                this.screenHeight = screenSize.height;
+                this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+                camera.updateScreenDimensions(screenWidth, screenHeight);
+                camera.setFollowOffsetX(-screenWidth / 4.0f);
+            }
+        }
         gameThread = new Thread(this);
         gameThread.start();
-
     }
 
     /**
@@ -109,7 +136,7 @@ public class GamePanel extends JPanel implements Runnable {
             respawnPlayer();
         }
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
-            org.example.realengine.entity.Entity entity = map.getEntities().get(i);
+            Entity entity = map.getEntities().get(i);
             entity.update((float) 0.016666668, map.getCollisionMap());
 
             if (entity.isDead() || entity.getX() == 0 || entity.getX() == MAX_WORLD_COL) {
@@ -211,6 +238,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setAudio() {
+        stopAudio();
         audio = Audio.musicMap.getOrDefault(this.map.getPath(), Audio.DEFAULT_AUDIO);
         audio.startAudio();
     }
@@ -243,9 +271,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void showMapMenu() {
         pauseGame();
-        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         frame.getContentPane().remove(this);
-        MapMenuPanel mapMenu = new MapMenuPanel(frame, this);
+        final MapMenuPanel mapMenu = new MapMenuPanel(frame, this);
         frame.getContentPane().add(mapMenu);
         mapMenu.requestFocus();
         frame.revalidate();
@@ -253,7 +280,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void applyBoxGravity() {
-        EObject[][] collisionMap = map.getCollisionMap();
+        final EObject[][] collisionMap = map.getCollisionMap();
         int width = map.getWidth();
         int height = map.getHeight();
         for (int y = height - 2; y >= 0; y--) {
@@ -266,5 +293,9 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
         }
+    }
+
+    public Audio getAudio() {
+        return audio;
     }
 }

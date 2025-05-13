@@ -52,9 +52,9 @@ public non-sealed class Player extends Entity {
             isOnGround = false;
             jumping = false;
         }
-        float potentialNextX = x + velocityX * deltaTime;
+        final float potentialNextX = x + velocityX * deltaTime;
         velocityY += gravity * deltaTime;
-        float potentialNextY = y + velocityY * deltaTime;
+        final float potentialNextY = y + velocityY * deltaTime;
         boxPushTick++;
 
         if (teleportCooldown > 0) {
@@ -106,8 +106,8 @@ public non-sealed class Player extends Entity {
         var collisionDetectedX = false;
         if (velocityX != 0 && boxPushTick >= BOX_PUSH_DELAY && isOnGround) {
             int dir = velocityX > 0 ? 1 : -1;
-            var playerTileX = (int) ((x + (dir > 0 ? width : 0)) / TILE_SIZE);
-            var playerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
+            final var playerTileX = (int) ((x + (dir > 0 ? width : 0)) / TILE_SIZE);
+            final var playerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
             int nextTileX = playerTileX + dir;
             if (nextTileX >= 0 && nextTileX < collisionMap.length &&
                     playerTileY >= 0 && playerTileY < collisionMap[0].length &&
@@ -147,8 +147,8 @@ public non-sealed class Player extends Entity {
 
     @Override
     public void handleSpecialTiles(EObject[][] collisionMap) {
-        var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
-        var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
+        final var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
+        final var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
 
         boolean isOnLadder = false;
         boolean isOnHoney = false;
@@ -209,8 +209,8 @@ public non-sealed class Player extends Entity {
 
     private boolean canClimbDown(EObject[][] collisionMap) {
         boolean canClimbDown = false;
-        int belowTileY = (int) ((y + height) / TILE_SIZE);
-        int belowTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
+        final int belowTileY = (int) ((y + height) / TILE_SIZE);
+        final int belowTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
         if (collisionMap != null && belowTileX >= 0 && belowTileX < collisionMap.length && belowTileY >= 0 && belowTileY < collisionMap[0].length) {
             EObject below = collisionMap[belowTileX][belowTileY];
             if (below != null && !below.isSolid()) {
@@ -231,6 +231,4 @@ public non-sealed class Player extends Entity {
             }
         }
     }
-
-
 }

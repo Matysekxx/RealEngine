@@ -25,13 +25,14 @@ public class Audio {
         this.filePath = filePath;
     }
 
+    @Deprecated
     public Audio(String filePath, boolean infiniteLoop) {
         this.filePath = filePath;
         this.infiniteLoop = infiniteLoop;
     }
 
     public void startAudio() {
-        Thread playThread = new Thread(() -> {
+        final Thread playThread = new Thread(() -> {
             try {
                 final AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(this.filePath));
                 this.clip = AudioSystem.getClip();
@@ -46,7 +47,7 @@ public class Audio {
     }
 
     public void stopMusic() {
-        this.clip.stop();
+        if (clip != null) this.clip.stop();
     }
 
     public void playMusic() {

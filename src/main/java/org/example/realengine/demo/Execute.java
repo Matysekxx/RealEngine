@@ -10,12 +10,14 @@ import java.io.IOException;
 public final class Execute {
 
     public final static Runnable run = () -> {
-        JFrame frame = new JFrame();
+        final JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
+        frame.setResizable(true);
         GamePanel gamePanel;
         try {
-            gamePanel = new GamePanel();
+            gamePanel = new GamePanel(frame);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -27,6 +29,4 @@ public final class Execute {
     };
 
     private Execute() {}
-
-
 }

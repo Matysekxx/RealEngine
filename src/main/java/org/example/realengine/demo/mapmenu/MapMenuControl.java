@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedWriter;
 import java.util.List;
 
 public final class MapMenuControl extends KeyAdapter {
@@ -43,6 +42,7 @@ public final class MapMenuControl extends KeyAdapter {
                     mapList.ensureIndexIsVisible(selectedIndex + 1);
                 }
             }
+            case KeyEvent.VK_X -> System.exit(0);
         }
     }
 

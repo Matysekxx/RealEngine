@@ -148,7 +148,6 @@ public final class MapElementManager {
                 int rgb = image.getRGB(x, y);
                 ETile tile = getTileFromRGB(rgb);
                 collisionMap[x][y] = getObjectFromTile(tile);
-                //System.out.printf("Pixel (%d,%d): #%06X -> %s\n", x, y, rgb, tile.name());
             }
         }
         return collisionMap;

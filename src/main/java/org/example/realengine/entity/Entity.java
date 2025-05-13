@@ -151,8 +151,8 @@ public sealed abstract class Entity permits Enemy, Player {
     }
 
     public void handleSpecialTiles(EObject[][] collisionMap) {
-        var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
-        var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
+        final var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
+        final var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
         boolean isOnSlime = false;
 
         EObject currentObject;
@@ -181,8 +181,8 @@ public sealed abstract class Entity permits Enemy, Player {
     boolean handleXCollision(EObject[][] collisionMap, float potentialNextX) {
         boolean collisionDetectedX = false;
         if (velocityX != 0) {
-            var topTileY = (int) (y / TILE_SIZE);
-            var bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
+            final var topTileY = (int) (y / TILE_SIZE);
+            final var bottomTileY = (int) ((y + height - 1) / TILE_SIZE);
             int nextTileX;
             if (velocityX > 0) {
                 nextTileX = (int) ((potentialNextX + width - 1) / TILE_SIZE);
@@ -221,9 +221,9 @@ public sealed abstract class Entity permits Enemy, Player {
         boolean collisionDetectedY = false;
         isOnGround = false;
         if (velocityY < 0) {
-            var leftHeadTileX = (int) (x / TILE_SIZE);
-            var rightHeadTileX = (int) ((x + width - 1) / TILE_SIZE);
-            var topTileY = (int) (potentialNextY / TILE_SIZE);
+            final var leftHeadTileX = (int) (x / TILE_SIZE);
+            final var rightHeadTileX = (int) ((x + width - 1) / TILE_SIZE);
+            final var topTileY = (int) (potentialNextY / TILE_SIZE);
 
             for (int tileX = leftHeadTileX; tileX <= rightHeadTileX; tileX++) {
                 if (tileX >= 0 && tileX < collisionMap.length &&
@@ -238,9 +238,9 @@ public sealed abstract class Entity permits Enemy, Player {
             }
         }
         if (velocityY >= 0) {
-            var leftFootTileX = (int) (x / TILE_SIZE);
-            var rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
-            var bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
+            final var leftFootTileX = (int) (x / TILE_SIZE);
+            final var rightFootTileX = (int) ((x + width - 1) / TILE_SIZE);
+            final var bottomTileY = (int) ((potentialNextY + height) / TILE_SIZE);
 
             for (int tileX = leftFootTileX; tileX <= rightFootTileX; tileX++) {
                 if (tileX >= 0 && tileX < collisionMap.length &&
@@ -457,13 +457,6 @@ public sealed abstract class Entity permits Enemy, Player {
     public void setMaxHealth(float maxHealth) {
         this.maxHealth = Math.max(0, maxHealth);
         if (health > this.maxHealth) health = this.maxHealth;
-    }
-
-    /**
-     * Helper method to check if coordinates are valid within a map
-     */
-    protected boolean isValidMapPosition(EObject[][] map, int x, int y) {
-        return map != null && x >= 0 && y >= 0 && x < map.length && y < map[0].length;
     }
 
     public String getType() {

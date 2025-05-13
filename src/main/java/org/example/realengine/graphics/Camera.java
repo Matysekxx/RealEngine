@@ -3,7 +3,7 @@ package org.example.realengine.graphics;
 import org.example.realengine.entity.Entity;
 
 public class Camera {
-    private final int screenWidth, screenHeight;
+    private int screenWidth, screenHeight;
     private int worldWidth, worldHeight;
     private float x, y;
     private Entity target;
@@ -17,6 +17,11 @@ public class Camera {
         this.worldHeight = worldHeight;
         this.x = 0;
         this.y = 0;
+    }
+
+    public void updateScreenDimensions(int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
     }
 
     /**
@@ -79,21 +84,6 @@ public class Camera {
 
     public int getScreenHeight() {
         return screenHeight;
-    }
-
-    public void setPosition(float x, float y) {
-        this.target = null;
-        this.x = Math.max(0, Math.min(x, worldWidth - screenWidth));
-        this.y = Math.max(0, Math.min(y, worldHeight - screenHeight));
-    }
-
-    public boolean isRectVisible(float objX, float objY, int objWidth, int objHeight) {
-        return objX < x + screenWidth && objX + objWidth > x &&
-                objY < y + screenHeight && objY + objHeight > y;
-    }
-
-    public boolean isEntityVisible(Entity entity) {
-        return isRectVisible(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
     }
 
     /**

@@ -154,16 +154,6 @@ public class RMap {
     }
 
     /**
-     * Odstraní entitu z mapy.
-     *
-     * @param entity Entita, která se má odstranit.
-     * @return `true`, pokud byla entita úspěšně odstraněna, jinak `false`.
-     */
-    public boolean removeEntity(Entity entity) {
-        return entities.remove(entity);
-    }
-
-    /**
      * Odstraní všechny entity z mapy.
      */
     public void clearEntities() {
@@ -173,24 +163,10 @@ public class RMap {
 
     /**
      * @return Nemodifikovatelný seznam všech entit na mapě.
-     * Pro přidání nebo odstranění použijte {@link #addEntity(Entity)} a {@link #removeEntity(Entity)}.
+     * Pro přidání použijte {@link #addEntity(Entity)}.
      */
     public List<Entity> getEntities() {
         return entities;
-    }
-
-    /**
-     * Získá typ kolizního objektu {@link EObject} na daných souřadnicích mapy.
-     *
-     * @param x Souřadnice X (sloupec).
-     * @param y Souřadnice Y (řádek).
-     * @return Typ objektu na daných souřadnicích. Vrací {@link EObject#BORDER}, pokud jsou souřadnice mimo mapu.
-     */
-    public EObject getObjectAt(int x, int y) {
-        if (x < 0 || x >= width || y < 0 || y >= height) {
-            return EObject.BORDER;
-        }
-        return collisionMap[x][y] != null ? collisionMap[x][y] : EObject.EMPTY;
     }
 
     /**

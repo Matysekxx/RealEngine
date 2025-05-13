@@ -2,8 +2,6 @@ package org.example.realengine.entity;
 
 import org.example.realengine.object.EObject;
 
-import java.util.Random;
-
 import static org.example.realengine.demo.GamePanel.WORLD_HEIGHT;
 import static org.example.realengine.demo.GamePanel.WORLD_WIDTH;
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
@@ -53,5 +51,8 @@ public non-sealed class Enemy extends Entity {
         this.isDead = true;
     }
 }
+
+
+
 
 

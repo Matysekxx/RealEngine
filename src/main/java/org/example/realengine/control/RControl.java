@@ -37,7 +37,7 @@ public final class RControl implements KeyListener {
         }
         if (e.getKeyCode() == KeyEvent.VK_L) {
             GamePanel gamePanel = (GamePanel) e.getComponent();
-            gamePanel.stopAudio();
+            gamePanel.getAudio().stopMusic();
             gamePanel.showMapMenu();
         }
     }

@@ -29,9 +29,9 @@ public class MapMenuPanel extends JPanel {
         setBackground(new Color(20, 20, 50));
         setPreferredSize(parentFrame.getSize());
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        JPanel titlePanel = new TitlePanel();
-        JScrollPane scrollPane = createMapListScrollPane();
-        JPanel instructionsPanel = new InstructionsPanel();
+        final JPanel titlePanel = new TitlePanel();
+        final JScrollPane scrollPane = createMapListScrollPane();
+        final JPanel instructionsPanel = new InstructionsPanel();
         add(titlePanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(instructionsPanel, BorderLayout.SOUTH);
@@ -49,7 +49,7 @@ public class MapMenuPanel extends JPanel {
         mapList.setSelectionBackground(new Color(60, 60, 120));
         mapList.setSelectionForeground(Color.YELLOW);
         mapList.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JScrollPane scrollPane = new JScrollPane(mapList);
+        final JScrollPane scrollPane = new JScrollPane(mapList);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         scrollPane.setBackground(new Color(20, 20, 50));
         scrollPane.getViewport().setBackground(new Color(30, 30, 60));
@@ -59,7 +59,7 @@ public class MapMenuPanel extends JPanel {
     public void loadMapList() {
         listModel.clear();
         mapPaths.clear();
-        File customMapsDir = new File("resources/maps");
+        final File customMapsDir = new File("resources\\maps");
         if (!customMapsDir.exists()) throw new RuntimeException("maps directory does not exist");
         loadMapsFromDirectory(customMapsDir);
         if (listModel.isEmpty()) {
@@ -74,7 +74,7 @@ public class MapMenuPanel extends JPanel {
      */
     private void loadMapsFromDirectory(File directory) {
         if (directory.exists() && directory.isDirectory()) {
-            File[] mapFiles = directory.listFiles((_, name) -> name.toLowerCase().endsWith(".png"));
+            final File[] mapFiles = directory.listFiles((_, name) -> name.endsWith(".png"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
                     String mapName = mapFile.getName();

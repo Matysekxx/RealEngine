@@ -14,7 +14,7 @@ public class InstructionsPanel extends JPanel {
     }
 
     static void paintBackground(Graphics g, Color color) {
-        Graphics2D g2d = (Graphics2D) g;
+        final Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(color);
         g2d.fillRect(0, 0, g2d.getClipBounds().width, g2d.getClipBounds().height);
     }
