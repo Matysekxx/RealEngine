@@ -67,7 +67,6 @@ public final class MapElementManager {
         mapTileToObject(ETile.END1, EObject.END);
         mapTileToObject(ETile.END2, EObject.END);
         mapTileToObject(ETile.ENEMY_SPAWN, EObject.ENEMY_SPAWN);
-        mapTileToObject(ETile.JUMPING_ENEMY_SPAWN, EObject.ENEMY_SPAWN);
     }
 
     /**
@@ -119,12 +118,11 @@ public final class MapElementManager {
      * @return 2D pole ETile.
      */
     public ETile[][] createTileLayerFromImage(final BufferedImage image) {
-        if (image == null) {
-            throw new IllegalArgumentException("Input image cannot be null.");
-        }
+        if (image == null) throw new IllegalArgumentException("Input image cannot be null.");
+
         int width = image.getWidth();
         int height = image.getHeight();
-        ETile[][] layer = new ETile[width][height];
+        final var layer = new ETile[width][height];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {

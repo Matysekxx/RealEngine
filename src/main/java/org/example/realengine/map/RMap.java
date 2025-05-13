@@ -93,10 +93,6 @@ public class RMap {
             for (int y = 0; y < height; y++) {
                 if (collisionData[x][y] == EObject.ENEMY_SPAWN) {
                     Enemy enemy = switch (tileLayer[x][y]) {
-                        case JUMPING_ENEMY_SPAWN -> {
-                            System.err.println("Jumping enemy was added to the map");
-                            yield new Enemy(x * TILE_SIZE, y * TILE_SIZE, true, "jumping_enemy");
-                        }
                         case ENEMY_SPAWN -> {
                             System.err.println("Enemy was added to the map");
                             yield new Enemy(x * TILE_SIZE, y * TILE_SIZE, false, "enemy");

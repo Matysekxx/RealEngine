@@ -139,11 +139,7 @@ public enum ETile {
     /**
      * #FF1050
      */
-    ENEMY_SPAWN(new Color(0xFF1050), ""),
-    /**
-     * #EF3033
-     */
-    JUMPING_ENEMY_SPAWN(new Color(0xEF3033), ""),
+    ENEMY_SPAWN(new Color(0xFF1050), null),
 
     /**
      * #0000FF - modrá
@@ -173,11 +169,6 @@ public enum ETile {
 
     static {
         for (ETile tile : values()) {
-            if (rgbToTileMap.containsKey(tile.color.getRGB())) {
-                System.err.println("WARN: Duplicate RGB value " + Integer.toHexString(tile.color.getRGB()) +
-                        " detected for ETile." + tile.name() +
-                        " and ETile." + rgbToTileMap.get(tile.color.getRGB()).name());
-            }
             rgbToTileMap.put(tile.color.getRGB(), tile);
         }
 
@@ -187,22 +178,18 @@ public enum ETile {
         return color;
     }
 
-    public int getRgb() {
-        return rgb;
-    }
-
     public BufferedImage getTexture() {
         return texture;
     }
 
     private final Color color;
     private final int rgb;
-    public BufferedImage texture;
+    private BufferedImage texture;
 
     ETile(Color color, String path) {
         this.rgb = color.getRGB();
         this.color = color;
-        try {
+        if (path != null) try {
             this.texture = ImageIO.read(new File(path));
         } catch (IOException _) {}
     }

@@ -1,5 +1,7 @@
 package org.example.realengine.demo.mapmenu;
 
+import org.example.realengine.graphics.Render;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -43,6 +45,7 @@ public final class MapMenuControl extends KeyAdapter {
                 }
             }
             case KeyEvent.VK_X -> System.exit(0);
+            case (KeyEvent.VK_P) -> Render.texturesOn = !Render.texturesOn;
         }
     }
 
@@ -61,6 +64,7 @@ public final class MapMenuControl extends KeyAdapter {
             robot.delay(100);
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
+            System.exit(0);
         } catch (AWTException _) {}
     }
 }

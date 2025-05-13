@@ -2,6 +2,7 @@ package org.example.realengine.control;
 
 import org.example.realengine.demo.GamePanel;
 import org.example.realengine.entity.Player;
+import org.example.realengine.graphics.Render;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.KeyEvent;
@@ -39,6 +40,9 @@ public final class RControl implements KeyListener {
             GamePanel gamePanel = (GamePanel) e.getComponent();
             gamePanel.getAudio().stopMusic();
             gamePanel.showMapMenu();
+        }
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+            Render.texturesOn = !Render.texturesOn;
         }
     }
 

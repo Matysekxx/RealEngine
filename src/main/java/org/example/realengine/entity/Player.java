@@ -27,7 +27,7 @@ public non-sealed class Player extends Entity {
     private int teleportCooldown = 0;
 
     public Player(float x, float y) {
-        super(x, y, 16, 16, "player");
+        super(x, y, 16, 16, "player", 5); // Added animationDelay
         this.maxHealth = 3;
         this.health = this.maxHealth;
         this.width = 32;
@@ -78,6 +78,7 @@ public non-sealed class Player extends Entity {
 
         x = Math.max(0, Math.min(x, GamePanel.WORLD_WIDTH - width));
         y = Math.max(0, Math.min(y, GamePanel.WORLD_HEIGHT - height));
+        updateAnimation();
     }
 
     @Override

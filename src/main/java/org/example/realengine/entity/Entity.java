@@ -3,6 +3,9 @@ package org.example.realengine.entity;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.image.BufferedImage;
+import java.util.Map;
+
 import static org.example.realengine.game.GameConstants.GRAVITY;
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
@@ -13,6 +16,19 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
  * a základní podporu pro platformy a žebříky.
  */
 public sealed abstract class Entity permits Enemy, Player {
+    protected Map<Integer, BufferedImage[]> texturesFromDirection;
+    protected boolean wasWalking = true;
+    protected int animationCounter = 0;
+    protected int animationDelay = 7;
+
+    public void setWasWalking() {
+        this.wasWalking = !wasWalking;
+    }
+
+    public boolean wasWalking() {
+        return wasWalking;
+    }
+
     protected final String type;
     protected float x, y;
     protected int width, height;
@@ -42,6 +58,15 @@ public sealed abstract class Entity permits Enemy, Player {
      * @param x Počáteční X souřadnice.
      * @param y Počáteční Y souřadnice.
      */
+    public Entity(float x, float y, int width, int height, String type, int animationDelay) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.type = type;
+        this.animationDelay = animationDelay;
+    }
+
     public Entity(float x, float y, int width, int height, String type) {
         this.x = x;
         this.y = y;
@@ -59,6 +84,18 @@ public sealed abstract class Entity permits Enemy, Player {
      * @param collisionMap Dvourozměrné pole reprezentující kolizní mapu světa.
      */
     public abstract void update(float deltaTime, EObject[][] collisionMap);
+
+    protected void updateAnimation() {
+        animationCounter++;
+        if (animationCounter >= animationDelay) {
+            animationCounter = 0;
+            setWasWalking();
+        }
+    }
+
+    public Map<Integer, BufferedImage[]> getTexturesFromDirection() {
+        return texturesFromDirection;
+    }
 
     public abstract void onDead();
 
