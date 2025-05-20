@@ -3,43 +3,51 @@ package org.example.realengine.entity;
 import org.example.realengine.demo.GamePanel;
 import org.example.realengine.object.EObject;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 import static org.example.realengine.game.GameConstants.*;
 
 public non-sealed class Player extends Entity {
-
-    private static final Robot robot;
-
-    static {
-        try {
-            robot = new Robot();
-        } catch (AWTException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    private final GamePanel gamePanel;
     private Point spawnPoint;
     private boolean wantsToClimbUp = false;
     private boolean wantsToClimbDown = false;
     private int boxPushTick = 0;
     private int teleportCooldown = 0;
 
-    public Player(float x, float y) {
-        super(x, y, 16, 16, "player", 5); // Added animationDelay
+    public Player(float x, float y, GamePanel gamePanel) {
+        super(x, y, 16, 16, "player", 5);
+        this.gamePanel = gamePanel;
         this.maxHealth = 3;
         this.health = this.maxHealth;
         this.width = 32;
         this.height = 32;
+
+        try {
+            this.texturesFromDirection = Map.of(
+                    1, new BufferedImage[]{ImageIO.read(new File("textures\\mario-IDLE.png")),
+                            ImageIO.read(new File("textures\\mario-Jump.png")),
+                            ImageIO.read(new File("textures\\mario-Walking.png")),},
+                    -1, new BufferedImage[]{ImageIO.read(new File("textures\\marioIDLE.png")),
+                            ImageIO.read(new File("textures\\marioJump.png")),
+                            ImageIO.read(new File("textures\\marioWalking.png"))}
+            );
+        } catch (IOException _) {
+        }
     }
+
     public void setSpawnPoint(Point spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 
     public void bunnyJump() {
         if (isOnGround) {
-            velocityY = jumpVelocity/ 1.6f;
+            velocityY = jumpVelocity / 1.6f;
             isOnGround = false;
             jumping = false;
         }
@@ -160,7 +168,7 @@ public non-sealed class Player extends Entity {
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
             currentObject = collisionMap[centerTileX][centerTileY];
             if (currentObject == EObject.END) {
-                robot.keyPress(KeyEvent.VK_L);
+                gamePanel.showMapMenu();
             }
             if (currentObject == EObject.LADDER) {
                 isOnLadder = true;
@@ -170,9 +178,6 @@ public non-sealed class Player extends Entity {
             }
             if (currentObject == EObject.SPIKE || currentObject == EObject.HAZARD_LIQUID) {
                 onDead();
-            }
-            if (currentObject == EObject.END) {
-                robot.keyPress(KeyEvent.VK_L);
             }
             if (currentObject == EObject.SPRING && isOnGround && velocityY == 0) {
                 velocityY = jumpVelocity * 1.5f;
@@ -231,5 +236,15 @@ public non-sealed class Player extends Entity {
                 }
             }
         }
+    }
+
+    public void setMovingLeft(boolean moving) {
+        super.setMovingLeft(moving);
+        if (moving) direction = -1;
+    }
+
+    public void setMovingRight(boolean moving) {
+        super.setMovingRight(moving);
+        if (moving) direction = 1;
     }
 }

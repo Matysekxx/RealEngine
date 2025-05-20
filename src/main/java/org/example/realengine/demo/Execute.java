@@ -28,5 +28,6 @@ public final class Execute {
         gamePanel.startGameThread();
     };
 
-    private Execute() {}
+    private Execute() {
+    }
 }

@@ -8,14 +8,11 @@ import org.example.realengine.map.MapElementManager;
 import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
@@ -134,32 +131,54 @@ public class Render {
      * @param camera Kamera určující viditelnou oblast.
      */
     public void renderEntity(final Graphics g, final Entity entity, final Camera camera) throws IOException {
-        var screenX = (int) (entity.getX() - camera.getX());
-        var screenY = (int) (entity.getY() - camera.getY());
+        //TODO: predelat render pomoci polymorfizmus
+        final var screenX = (int) (entity.getX() - camera.getX());
+        final var screenY = (int) (entity.getY() - camera.getY());
 
         if (screenX + entity.getWidth() >= 0 && screenX <= camera.getScreenWidth() &&
                 screenY + entity.getHeight() >= 0 && screenY <= camera.getScreenHeight())
             if (entity instanceof Player p) {
                 renderPlayer(g, p, screenX, screenY);
-                return;
-            } else if (entity instanceof Enemy enemy){
-                g.drawImage(enemy.getTexturesFromDirection().get(enemy.getDirection())[enemy.wasWalking() ? 1 : 0], screenX, screenY, TILE_SIZE, TILE_SIZE, null);
+            } else if (entity instanceof Enemy enemy) {
+                if (!texturesOn) {
+                    g.setColor(switch (entity.getType()) {
+                        case "enemy" -> Color.red;
+                        case "jumping_enemy" -> Color.yellow;
+                        default -> throw new IllegalStateException("Unexpected value: " + entity);
+                    });
+                    g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
+                } else g.drawImage(enemy.getTexturesFromDirection().get(
+                        enemy.getDirection())[enemy.wasWalking() ? 1 : 0],
+                        screenX, screenY, TILE_SIZE, TILE_SIZE, null);
             }
-        if (!texturesOn) {
-            g.setColor(switch (entity.getType()) {
-                case "enemy" -> Color.red;
-                case "jumping_enemy" -> Color.yellow;
-                default -> throw new IllegalStateException("Unexpected value: " + entity);
-            });
-            g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
-        }
-
     }
 
 
     public void renderPlayer(final Graphics g, final Player player, int screenX, int screenY) {
-        g.setColor(Color.blue);
-        if (!player.isOnGround()) g.fillRect(screenX, screenY, player.getWidth() - 5, player.getHeight() + 5);
-        else g.fillRect(screenX, screenY, player.getWidth(), player.getHeight());
+        if (!texturesOn) {
+            g.setColor(Color.blue);
+            if (!player.isOnGround()) g.fillRect(screenX, screenY, player.getWidth() - 5, player.getHeight() + 5);
+            else g.fillRect(screenX, screenY, player.getWidth(), player.getHeight());
+        } else {
+            g.drawImage(getCurrentTexture(player), screenX, screenY, TILE_SIZE, TILE_SIZE, null);
+        }
+    }
+
+    private BufferedImage getCurrentTexture(Player player) {
+        //TODO: textura pro lezeni
+        int dir = player.getDirection();
+        if (!player.getTexturesFromDirection().containsKey(dir)) dir = 1;
+        final BufferedImage[] textures = player.getTexturesFromDirection().get(dir);
+        if (!player.isOnGround()) {
+            return textures[1];
+        }
+        boolean walking = Math.abs(player.getVelocityX()) > 0.1f;
+        if (walking) {
+            player.setAnimationDelay(32);
+            int frame = ((player.getAnimationCounter() / (player.getAnimationDelay() >> 1)) % 2 == 0) ? 0 : 2;
+            return textures[frame];
+        } else {
+            return textures[0];
+        }
     }
 }

@@ -62,16 +62,6 @@ public enum EObject {
     }
 
     /**
-     * Checks if this object type is generally walkable.
-     * Specific entities might have different interactions (e.g., falling through platforms).
-     *
-     * @return true if the object is generally passable, false otherwise.
-     */
-    public boolean isWalkable() {
-        return walkable;
-    }
-
-    /**
      * Checks if this object type is solid (not walkable).
      * Convenience method, equivalent to !isWalkable().
      *

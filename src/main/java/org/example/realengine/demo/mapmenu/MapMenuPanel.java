@@ -77,7 +77,7 @@ public class MapMenuPanel extends JPanel {
             final File[] mapFiles = directory.listFiles((_, name) -> name.endsWith(".png"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
-                    String mapName = mapFile.getName();
+                    final String mapName = mapFile.getName();
                     listModel.addElement(mapName);
                     mapPaths.add(mapFile.getPath());
                     System.err.println(mapFile.getPath());

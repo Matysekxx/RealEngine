@@ -25,23 +25,22 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
 public class GamePanel extends JPanel implements Runnable {
     public static final int MAX_WORLD_COL = 180;
     public static final int MAX_WORLD_ROW = 14;
-    private int screenWidth;
-    private int screenHeight;
     private static final int BOX_GRAVITY_DELAY = 6;
     private static final int FPS = 60;
     public static int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
     public static int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
-    private final RControl rControl;
     private final Render render;
     private final Camera camera;
     private final Player player;
+    private final JFrame frame;
+    private int screenWidth;
+    private int screenHeight;
     private RMap map;
     private Point spawnPoint;
     private Thread gameThread;
     private boolean isPaused = false;
     private int boxGravityTick = 0;
     private Audio audio;
-    private final JFrame frame;
 
     public GamePanel(JFrame frame) throws IOException {
         this.frame = frame;
@@ -55,11 +54,11 @@ public class GamePanel extends JPanel implements Runnable {
             System.out.println("WARN: PLAYER_SPAWN not found, using default spawn position.");
             spawnPoint = new Point(2 * TILE_SIZE, (MAX_WORLD_ROW - 5) * TILE_SIZE);
         }
-        player = new Player(spawnPoint.x, spawnPoint.y);
+        player = new Player(spawnPoint.x, spawnPoint.y, this);
         player.setWidth(TILE_SIZE);
         player.setHeight(TILE_SIZE);
         map.addEntity(player);
-        rControl = new RControl(player);
+        RControl rControl = new RControl(player);
         this.addKeyListener(rControl);
         this.setFocusable(true);
 
@@ -107,17 +106,14 @@ public class GamePanel extends JPanel implements Runnable {
             if (frame != null && frame.getWidth() > 0 && frame.getHeight() > 0) {
                 this.screenWidth = frame.getWidth();
                 this.screenHeight = frame.getHeight();
-                this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-                camera.updateScreenDimensions(screenWidth, screenHeight);
-                camera.setFollowOffsetX(-screenWidth / 4.0f);
             } else {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 this.screenWidth = screenSize.width;
                 this.screenHeight = screenSize.height;
-                this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-                camera.updateScreenDimensions(screenWidth, screenHeight);
-                camera.setFollowOffsetX(-screenWidth / 4.0f);
             }
+            this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+            camera.updateScreenDimensions(screenWidth, screenHeight);
+            camera.setFollowOffsetX(-screenWidth / 4.0f);
         }
         gameThread = new Thread(this);
         gameThread.start();
@@ -145,9 +141,9 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (entity instanceof Enemy enemy) {
                 if (player.getX() < enemy.getX() + enemy.getWidth() &&
-                    player.getX() + player.getWidth() > enemy.getX() &&
-                    player.getY() < enemy.getY() + enemy.getHeight() &&
-                    player.getY() + player.getHeight() > enemy.getY()) {
+                        player.getX() + player.getWidth() > enemy.getX() &&
+                        player.getY() < enemy.getY() + enemy.getHeight() &&
+                        player.getY() + player.getHeight() > enemy.getY()) {
                     player.onDead();
                 }
             }
@@ -171,14 +167,11 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void paint(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-
-        render.renderScene(g2, map, camera);
-
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Arial", Font.BOLD, 20));
-        g2.drawString("Use arrow or wsad to move and jump", 10, 30);
-        g2.dispose();
+        render.renderScene(g, map, camera);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Use arrow or wsad to move and jump", 10, 30);
+        g.dispose();
     }
 
     @Override

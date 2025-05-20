@@ -3,7 +3,6 @@ package org.example.realengine.entity;
 import org.example.realengine.object.EObject;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +13,14 @@ import static org.example.realengine.demo.GamePanel.WORLD_WIDTH;
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
 public non-sealed class Enemy extends Entity {
-    private int direction = -1;
-    private float baseSpeed = 100f;
     private final boolean infinityJumping;
+    private float baseSpeed = 100f;
 
     /**
      * Vytvoří novou entitu na zadaných souřadnicích.
      *
-     * @param x      Počáteční X souřadnice.
-     * @param y      Počáteční Y souřadnice.
+     * @param x Počáteční X souřadnice.
+     * @param y Počáteční Y souřadnice.
      */
     public Enemy(float x, float y, boolean infinityJumping, String type) {
         super(x, y, TILE_SIZE, TILE_SIZE, type, 10);
@@ -31,8 +29,8 @@ public non-sealed class Enemy extends Entity {
 
         try {
             this.texturesFromDirection = Map.of(
-                    -1, new BufferedImage[] {ImageIO.read(new File("textures\\spiny1.png")), ImageIO.read(new File("textures\\spiny2.png"))},
-                    1, new BufferedImage[] {ImageIO.read(new File("textures\\spiny-1.png")), ImageIO.read(new File("textures\\spiny-2.png"))}
+                    -1, new BufferedImage[]{ImageIO.read(new File("textures\\spiny1.png")), ImageIO.read(new File("textures\\spiny2.png"))},
+                    1, new BufferedImage[]{ImageIO.read(new File("textures\\spiny-1.png")), ImageIO.read(new File("textures\\spiny-2.png"))}
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -68,9 +66,6 @@ public non-sealed class Enemy extends Entity {
         this.isDead = true;
     }
 
-    public int getDirection() {
-        return direction;
-    }
 }
 
 

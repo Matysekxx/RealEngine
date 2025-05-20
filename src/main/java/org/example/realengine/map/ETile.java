@@ -164,14 +164,16 @@ public enum ETile {
      */
     END2(new Color(0xFF009D), "textures/end2.png");
 
-
-    private static final Map<Integer, ETile> rgbToTileMap = new HashMap<>();
-
-    static {
-        for (ETile tile : values()) {
-            rgbToTileMap.put(tile.color.getRGB(), tile);
+    private final Color color;
+    private final int rgb;
+    private BufferedImage texture;
+    ETile(Color color, String path) {
+        this.rgb = color.getRGB();
+        this.color = color;
+        if (path != null) try {
+            this.texture = ImageIO.read(new File(path));
+        } catch (IOException _) {
         }
-
     }
 
     public Color getColor() {
@@ -180,18 +182,6 @@ public enum ETile {
 
     public BufferedImage getTexture() {
         return texture;
-    }
-
-    private final Color color;
-    private final int rgb;
-    private BufferedImage texture;
-
-    ETile(Color color, String path) {
-        this.rgb = color.getRGB();
-        this.color = color;
-        if (path != null) try {
-            this.texture = ImageIO.read(new File(path));
-        } catch (IOException _) {}
     }
 
     public int getRGB() {

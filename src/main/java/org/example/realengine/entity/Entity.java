@@ -16,20 +16,11 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
  * a základní podporu pro platformy a žebříky.
  */
 public sealed abstract class Entity permits Enemy, Player {
+    protected final String type;
     protected Map<Integer, BufferedImage[]> texturesFromDirection;
     protected boolean wasWalking = true;
     protected int animationCounter = 0;
     protected int animationDelay = 7;
-
-    public void setWasWalking() {
-        this.wasWalking = !wasWalking;
-    }
-
-    public boolean wasWalking() {
-        return wasWalking;
-    }
-
-    protected final String type;
     protected float x, y;
     protected int width, height;
     protected boolean isOnGround = false;
@@ -51,7 +42,7 @@ public sealed abstract class Entity permits Enemy, Player {
     protected float jumpVelocity = -900.0f;
     protected float autoMoveSpeed = 400.0f;
     protected boolean isDead = false;
-
+    protected int direction = -1;
     /**
      * Vytvoří novou entitu na zadaných souřadnicích.
      *
@@ -66,13 +57,36 @@ public sealed abstract class Entity permits Enemy, Player {
         this.type = type;
         this.animationDelay = animationDelay;
     }
-
     public Entity(float x, float y, int width, int height, String type) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.type = type;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    public boolean isWasWalking() {
+        return wasWalking;
+    }
+
+    public void setWasWalking(boolean wasWalking) {
+        this.wasWalking = wasWalking;
+    }
+
+    public void setWasWalking() {
+        this.wasWalking = !wasWalking;
+    }
+
+    public boolean wasWalking() {
+        return wasWalking;
     }
 
     /**
@@ -111,6 +125,7 @@ public sealed abstract class Entity permits Enemy, Player {
      * Nastaví, zda se má entita pohybovat doleva. @param moving `true` pro pohyb doleva.
      */
     public void setMovingLeft(boolean moving) {
+        this.movingLeft = moving;
         if (moving) velocityX = -autoMoveSpeed;
         else if (velocityX < 0) velocityX = 0;
     }
@@ -119,10 +134,31 @@ public sealed abstract class Entity permits Enemy, Player {
         return movingRight;
     }
 
+    public int getAnimationCounter() {
+        return animationCounter;
+    }
+
+    public void setAnimationCounter(int animationCounter) {
+        this.animationCounter = animationCounter;
+    }
+
+    public int getAnimationDelay() {
+        return animationDelay;
+    }
+
+    public void setAnimationDelay(int animationDelay) {
+        this.animationDelay = animationDelay;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
     /**
      * Nastaví, zda se má entita pohybovat doprava. @param moving `true` pro pohyb doprava.
      */
     public void setMovingRight(boolean moving) {
+        this.movingRight = moving;
         if (moving) velocityX = autoMoveSpeed;
         else if (velocityX > 0) velocityX = 0;
     }
@@ -266,7 +302,7 @@ public sealed abstract class Entity permits Enemy, Player {
                 if (tileX >= 0 && tileX < collisionMap.length &&
                         topTileY >= 0 && topTileY < collisionMap[0].length &&
                         collisionMap[tileX][topTileY] != null &&
-                        !collisionMap[tileX][topTileY].isWalkable()) {
+                        collisionMap[tileX][topTileY].isSolid()) {
                     collisionDetectedY = true;
                     velocityY = 0;
                     y = (topTileY + 1) * TILE_SIZE;
@@ -286,7 +322,7 @@ public sealed abstract class Entity permits Enemy, Player {
                     if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
                         onDead();
                         return true;
-                    } else if (!collisionMap[tileX][bottomTileY].isWalkable() && !isMovingDown) {
+                    } else if (collisionMap[tileX][bottomTileY].isSolid() && !isMovingDown) {
                         if (collisionMap[tileX][bottomTileY] == EObject.SPRING) {
                             velocityY = jumpVelocity * 1.25f;
                             collisionDetectedY = true;

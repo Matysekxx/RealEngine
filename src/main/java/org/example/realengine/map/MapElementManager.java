@@ -26,10 +26,6 @@ public final class MapElementManager {
         return objectToTileMap;
     }
 
-    public Map<ETile, EObject> getTileToObjectMap() {
-        return tileToObjectMap;
-    }
-
     /**
      * Inicializuje výchozí mapování mezi barvami a elementy.
      */

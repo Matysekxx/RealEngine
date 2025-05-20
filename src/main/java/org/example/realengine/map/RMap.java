@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
@@ -93,10 +92,8 @@ public class RMap {
             for (int y = 0; y < height; y++) {
                 if (collisionData[x][y] == EObject.ENEMY_SPAWN) {
                     Enemy enemy = switch (tileLayer[x][y]) {
-                        case ENEMY_SPAWN -> {
-                            System.err.println("Enemy was added to the map");
-                            yield new Enemy(x * TILE_SIZE, y * TILE_SIZE, false, "enemy");
-                        }
+                        case ENEMY_SPAWN -> new Enemy(x * TILE_SIZE, y * TILE_SIZE,
+                                false, "enemy");
                         default -> null;
                     };
                     map.addEntity(enemy);

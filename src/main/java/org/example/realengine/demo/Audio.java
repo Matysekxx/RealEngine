@@ -19,7 +19,8 @@ public class Audio {
     ));
     private final String filePath;
     private Clip clip;
-    private boolean infiniteLoop = true;
+    private boolean infiniteLoop = false;
+    private AudioInputStream audioInputStream;
 
     public Audio(String filePath) {
         this.filePath = filePath;
@@ -34,9 +35,11 @@ public class Audio {
     public void startAudio() {
         final Thread playThread = new Thread(() -> {
             try {
-                final AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(this.filePath));
-                this.clip = AudioSystem.getClip();
-                clip.open(audioStream);
+                if (audioInputStream == null || clip == null) {
+                    this.audioInputStream = AudioSystem.getAudioInputStream(new File(this.filePath));
+                    this.clip = AudioSystem.getClip();
+                }
+                clip.open(audioInputStream);
                 if (infiniteLoop) clip.loop(Clip.LOOP_CONTINUOUSLY);
                 clip.start();
             } catch (Exception e) {
@@ -48,9 +51,5 @@ public class Audio {
 
     public void stopMusic() {
         if (clip != null) this.clip.stop();
-    }
-
-    public void playMusic() {
-        this.clip.start();
     }
 }

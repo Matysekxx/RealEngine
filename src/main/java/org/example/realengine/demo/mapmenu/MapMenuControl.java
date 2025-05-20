@@ -19,6 +19,26 @@ public final class MapMenuControl extends KeyAdapter {
         this.mapMenuPanel = mapMenuPanel;
     }
 
+    private static void WSL() {
+        try {
+            final Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_WINDOWS);
+            robot.keyRelease(KeyEvent.VK_WINDOWS);
+            robot.delay(100);
+            robot.keyPress(KeyEvent.VK_W);
+            robot.keyRelease(KeyEvent.VK_W);
+            robot.keyPress(KeyEvent.VK_S);
+            robot.keyRelease(KeyEvent.VK_S);
+            robot.keyPress(KeyEvent.VK_L);
+            robot.keyRelease(KeyEvent.VK_L);
+            robot.delay(100);
+            robot.keyPress(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+            System.exit(0);
+        } catch (AWTException _) {
+        }
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -47,24 +67,5 @@ public final class MapMenuControl extends KeyAdapter {
             case KeyEvent.VK_X -> System.exit(0);
             case (KeyEvent.VK_P) -> Render.texturesOn = !Render.texturesOn;
         }
-    }
-
-    private static void WSL() {
-        try {
-            final Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_WINDOWS);
-            robot.keyRelease(KeyEvent.VK_WINDOWS);
-            robot.delay(100);
-            robot.keyPress(KeyEvent.VK_W);
-            robot.keyRelease(KeyEvent.VK_W);
-            robot.keyPress(KeyEvent.VK_S);
-            robot.keyRelease(KeyEvent.VK_S);
-            robot.keyPress(KeyEvent.VK_L);
-            robot.keyRelease(KeyEvent.VK_L);
-            robot.delay(100);
-            robot.keyPress(KeyEvent.VK_ENTER);
-            robot.keyRelease(KeyEvent.VK_ENTER);
-            System.exit(0);
-        } catch (AWTException _) {}
     }
 }
