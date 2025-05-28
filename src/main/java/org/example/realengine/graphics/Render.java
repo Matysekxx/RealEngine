@@ -1,6 +1,5 @@
 package org.example.realengine.graphics;
 
-import org.example.realengine.entity.Enemy;
 import org.example.realengine.entity.Entity;
 import org.example.realengine.entity.Player;
 import org.example.realengine.map.ETile;
@@ -17,54 +16,68 @@ import java.util.Map;
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
 /**
- * Zodpovídá za vykreslování herního světa (mapy, entit) na obrazovku.
- * Používá {@link Camera} pro určení viditelné oblasti a {@link MapElementManager} pro získání textur.
+ * Handles the rendering of the game world (maps, entities) to the screen.
+ * Utilizes {@link Camera} to determine the visible area and {@link MapElementManager} to obtain textures.
  */
 public class Render {
+    /**
+     * Manages the mapping between game elements, colors, tiles, and objects.
+     * Used to retrieve textures for rendering.
+     */
     private static final MapElementManager manager = new MapElementManager();
+    /**
+     * A map associating {@link EObject} types with their corresponding {@link ETile} representations.
+     * Used for rendering based on collision map data.
+     */
     private static final Map<EObject, ETile> tiles = manager.getObjectToTileMap();
 
+    /**
+     * A boolean flag indicating whether textures should be rendered. If false, solid colors are used instead.
+     */
     public static boolean texturesOn = true;
 
     /**
-     * Hlavní metoda pro vykreslení celé herní scény.
-     * Vykreslí pozadí, mapu a všechny entity viditelné kamerou.
-     * Pokud je zapnutý debug režim, vykreslí i další informace.
+     * Toggles the `texturesOn` flag, switching between texture rendering and solid color rendering.
+     */
+    public static void reverseTexturesOn() {
+        texturesOn = !texturesOn;
+    }
+
+    /**
+     * The main method for rendering the entire game scene.
+     * Renders the background, the map, and all entities visible through the camera.
+     * If debug mode is enabled, additional information might be rendered.
      *
-     * @param g      Grafický kontext, na který se má kreslit.
-     * @param map    Herní mapa {@link RMap}, která se má vykreslit.
-     * @param camera Kamera {@link Camera} určující pohled na scénu.
+     * @param g      The graphics context to draw on.
+     * @param map    The game map ({@link RMap}) to be rendered.
+     * @param camera The camera ({@link Camera}) defining the view of the scene.
      */
     public void renderScene(final Graphics g, final RMap map, final Camera camera) {
-        if (g == null || map == null || camera == null) {
-            System.err.println("WARN: Attempting to render scene with null Graphics, RMap, or Camera.");
-            return;
-        }
-        renderBackground(g, camera, map);
+        if (texturesOn) renderBackground(g, camera, map);
         renderMap(g, map, camera);
         renderEntities(g, map.getEntities(), camera);
     }
 
     /**
-     * Vykreslí jednoduché jednobarevné pozadí.
-     * Lze přepsat v podtřídě pro vykreslení obrázku nebo paralaxního pozadí.
+     * Renders the background of the scene.
+     * This method draws the appropriate background image based on the current map's path.
      *
-     * @param g      Grafický kontext.
-     * @param camera Kamera (pro získání rozměrů obrazovky).
+     * @param g      The graphics context.
+     * @param camera The camera (used to get screen dimensions).
+     * @param map    The current game map, used to determine the background image.
      */
     public void renderBackground(final Graphics g, final Camera camera, final RMap map) {
-        if (texturesOn)
-            g.drawImage(EBackground.backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(),
-                    0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
+        g.drawImage(EBackground.backgrounds.getOrDefault(map.getPath(), EBackground.DEFAULT).getBackground(),
+                0, 0, camera.getScreenWidth(), camera.getScreenHeight(), null);
     }
 
     /**
-     * Vykreslí všechny vizuální vrstvy mapy viditelné kamerou.
-     * Optimalizuje vykreslování tím, že kreslí pouze dlaždice v zorném poli kamery.
+     * Renders all visual layers of the map visible through the camera.
+     * Optimizes rendering by drawing only tiles within the camera's field of view.
      *
-     * @param g      Grafický kontext.
-     * @param map    Mapa k vykreslení.
-     * @param camera Kamera určující viditelnou oblast.
+     * @param g      The graphics context.
+     * @param map    The map to render.
+     * @param camera The camera defining the visible area.
      */
     public void renderMap(final Graphics g, final RMap map, final Camera camera) {
         final float camX = camera.getX();
@@ -77,7 +90,6 @@ public class Render {
 
         EObject[][] collisionMap = map.getCollisionMap();
         if (collisionMap == null) {
-            System.err.println("WARN: Collision map is null in Renderer.renderMap");
             return;
         }
 
@@ -103,57 +115,79 @@ public class Render {
     }
 
     /**
-     * Vykreslí všechny entity ze seznamu, které jsou viditelné kamerou.
+     * Renders all entities from the list that are visible through the camera.
      *
-     * @param g        Grafický kontext.
-     * @param entities Seznam entit k vykreslení.
-     * @param camera   Kamera určující viditelnou oblast.
+     * @param g        The graphics context.
+     * @param entities The list of entities to render.
+     * @param camera   The camera defining the visible area.
      */
     public void renderEntities(final Graphics g, final List<Entity> entities, final Camera camera) {
         if (entities == null) return;
+
+        final float camX = camera.getX();
+        final float camY = camera.getY();
+        final int camW = camera.getScreenWidth();
+        final int camH = camera.getScreenHeight();
+
         for (int i = 0; i < entities.size(); i++) {
-            if (entities.get(i) != null) {
-                try {
-                    renderEntity(g, entities.get(i), camera);
-                } catch (IOException _) {
+            Entity entity = entities.get(i);
+            if (entity != null) {
+                if (entity.getX() + entity.getWidth() >= camX && entity.getX() <= camX + camW &&
+                        entity.getY() + entity.getHeight() >= camY && entity.getY() <= camY + camH) {
+                    try {
+                        renderEntity(g, entity, camera);
+                    } catch (IOException _) {
+                    }
                 }
             }
         }
     }
 
     /**
-     * Vykreslí jednu entitu, pokud je viditelná kamerou.
-     * Použije texturu entity, pokud je dostupná, jinak vykreslí barevný obdélník.
-     * Může také vykreslit ukazatel zdraví.
+     * Renders a single entity if it is visible through the camera.
+     * Uses the entity's texture if available, otherwise renders a colored rectangle.
+     * Can also render a health indicator.
      *
-     * @param g      Grafický kontext.
-     * @param entity Entita k vykreslení.
-     * @param camera Kamera určující viditelnou oblast.
+     * @param g      The graphics context.
+     * @param entity The entity to render.
+     * @param camera The camera defining the visible area.
+     * @throws IOException If an I/O error occurs while retrieving the entity's texture.
      */
     public void renderEntity(final Graphics g, final Entity entity, final Camera camera) throws IOException {
-        //TODO: predelat render pomoci polymorfizmus
         final var screenX = (int) (entity.getX() - camera.getX());
         final var screenY = (int) (entity.getY() - camera.getY());
 
         if (screenX + entity.getWidth() >= 0 && screenX <= camera.getScreenWidth() &&
                 screenY + entity.getHeight() >= 0 && screenY <= camera.getScreenHeight())
-            if (entity instanceof Player p) {
+            if (entity instanceof final Player p) {
                 renderPlayer(g, p, screenX, screenY);
-            } else if (entity instanceof Enemy enemy) {
-                if (!texturesOn) {
-                    g.setColor(switch (entity.getType()) {
-                        case "enemy" -> Color.red;
-                        case "jumping_enemy" -> Color.yellow;
-                        default -> throw new IllegalStateException("Unexpected value: " + entity);
-                    });
-                    g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
-                } else g.drawImage(enemy.getTexturesFromDirection().get(
-                        enemy.getDirection())[enemy.wasWalking() ? 1 : 0],
-                        screenX, screenY, TILE_SIZE, TILE_SIZE, null);
+                return;
             }
+        if (!texturesOn) {
+            g.setColor(switch (entity.getType()) {
+                case "enemy" -> Color.red;
+                case "jumping" -> Color.yellow;
+                default -> Color.orange;
+            });
+            g.fillRect(screenX, screenY, entity.getWidth(), entity.getHeight());
+        } else {
+            BufferedImage texture = entity.getTexture(entity.getCurrentAnimationState());
+            if (texture != null) {
+                g.drawImage(texture, screenX, screenY, TILE_SIZE, TILE_SIZE, null);
+            }
+        }
+
     }
 
-
+    /**
+     * Renders the player character.
+     * If textures are off, it renders a blue rectangle. Otherwise, it uses the player's current animation texture.
+     *
+     * @param g       The graphics context.
+     * @param player  The player entity to render.
+     * @param screenX The X-coordinate on the screen where the player should be rendered.
+     * @param screenY The Y-coordinate on the screen where the player should be rendered.
+     */
     public void renderPlayer(final Graphics g, final Player player, int screenX, int screenY) {
         if (!texturesOn) {
             g.setColor(Color.blue);
@@ -164,21 +198,13 @@ public class Render {
         }
     }
 
+    /**
+     * Retrieves the current texture for the player based on their animation state.
+     *
+     * @param player The player entity.
+     * @return The {@link BufferedImage} representing the player's current texture.
+     */
     private BufferedImage getCurrentTexture(Player player) {
-        //TODO: textura pro lezeni
-        int dir = player.getDirection();
-        if (!player.getTexturesFromDirection().containsKey(dir)) dir = 1;
-        final BufferedImage[] textures = player.getTexturesFromDirection().get(dir);
-        if (!player.isOnGround()) {
-            return textures[1];
-        }
-        boolean walking = Math.abs(player.getVelocityX()) > 0.1f;
-        if (walking) {
-            player.setAnimationDelay(32);
-            int frame = ((player.getAnimationCounter() / (player.getAnimationDelay() >> 1)) % 2 == 0) ? 0 : 2;
-            return textures[frame];
-        } else {
-            return textures[0];
-        }
+        return player.getTexture(player.getCurrentAnimationState());
     }
 }

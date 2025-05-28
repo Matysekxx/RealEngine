@@ -1,27 +1,57 @@
 package org.example.realengine.entity;
 
 import org.example.realengine.demo.GamePanel;
+import org.example.realengine.map.RMap;
 import org.example.realengine.object.EObject;
+import org.example.realengine.resource.ResourceManager;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import static org.example.realengine.game.GameConstants.*;
 
+/**
+ * Represents the player entity in the game. Handles player-specific logic
+ * such as movement, jumping, climbing, teleportation, and interaction with
+ * special tiles and objects.
+ */
 public non-sealed class Player extends Entity {
-    private final GamePanel gamePanel;
+    /**
+     * Reference to the main game panel.
+     */
+    final GamePanel gamePanel;
+    /**
+     * The point where the player will respawn after dying.
+     */
     private Point spawnPoint;
+    /**
+     * Flag indicating if the player intends to climb up a ladder.
+     */
     private boolean wantsToClimbUp = false;
+    /**
+     * Flag indicating if the player intends to climb down a ladder.
+     */
     private boolean wantsToClimbDown = false;
+    /**
+     * Tick counter for controlling the rate of box pushing.
+     */
     private int boxPushTick = 0;
+    /**
+     * Cooldown counter for teleportation ability.
+     */
     private int teleportCooldown = 0;
 
+    /**
+     * Constructs a new Player entity.
+     *
+     * @param x The initial x-coordinate of the player.
+     * @param y The initial y-coordinate of the player.
+     * @param gamePanel The game panel instance.
+     */
     public Player(float x, float y, GamePanel gamePanel) {
-        super(x, y, 16, 16, "player", 5);
+        super(x, y, 16, 16, "player", 3);
         this.gamePanel = gamePanel;
         this.maxHealth = 3;
         this.health = this.maxHealth;
@@ -29,22 +59,36 @@ public non-sealed class Player extends Entity {
         this.height = 32;
 
         try {
-            this.texturesFromDirection = Map.of(
-                    1, new BufferedImage[]{ImageIO.read(new File("textures\\mario-IDLE.png")),
-                            ImageIO.read(new File("textures\\mario-Jump.png")),
-                            ImageIO.read(new File("textures\\mario-Walking.png")),},
-                    -1, new BufferedImage[]{ImageIO.read(new File("textures\\marioIDLE.png")),
-                            ImageIO.read(new File("textures\\marioJump.png")),
-                            ImageIO.read(new File("textures\\marioWalking.png"))}
+            texturesFromDirection = Map.of(
+                    1, new BufferedImage[]{
+                            ResourceManager.getTexture("textures/mario-IDLE.png"),
+                            ResourceManager.getTexture("textures/mario-Jump.png"),
+                            ResourceManager.getTexture("textures/mario-Walking.png"),
+                            ResourceManager.getTexture("textures/mario-IDLE.png")
+                    },
+                    -1, new BufferedImage[]{
+                            ResourceManager.getTexture("textures/marioIDLE.png"),
+                            ResourceManager.getTexture("textures/marioJump.png"),
+                            ResourceManager.getTexture("textures/marioWalking.png"),
+                            ResourceManager.getTexture("textures/marioIDLE.png")
+                    }
             );
         } catch (IOException _) {
         }
     }
 
+    /**
+     * Sets the spawn point for the player.
+     *
+     * @param spawnPoint The point to set as the spawn point.
+     */
     public void setSpawnPoint(Point spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 
+    /**
+     * Initiates a bunny jump if the player is on the ground.
+     */
     public void bunnyJump() {
         if (isOnGround) {
             velocityY = jumpVelocity / 1.6f;
@@ -53,8 +97,15 @@ public non-sealed class Player extends Entity {
         }
     }
 
+    /**
+     * Updates the player's state, including movement, collisions, and interactions.
+     *
+     * @param deltaTime The time elapsed since the last frame.
+     * @param map The current game map.
+     */
     @Override
-    public void update(float deltaTime, EObject[][] collisionMap) {
+    public void update(float deltaTime, RMap map) {
+        final EObject[][] collisionMap = map.getCollisionMap();
         if (jumping) {
             velocityY = jumpVelocity;
             isOnGround = false;
@@ -86,9 +137,13 @@ public non-sealed class Player extends Entity {
 
         x = Math.max(0, Math.min(x, GamePanel.WORLD_WIDTH - width));
         y = Math.max(0, Math.min(y, GamePanel.WORLD_HEIGHT - height));
+        updateGameTime(deltaTime);
         updateAnimation();
     }
 
+    /**
+     * Handles the player's death event, typically by moving the player back to the spawn point.
+     */
     @Override
     public void onDead() {
         if (spawnPoint != null) {
@@ -102,15 +157,30 @@ public non-sealed class Player extends Entity {
         velocityY = 0;
     }
 
+    /**
+     * Sets the flag indicating if the player wants to climb up.
+     *
+     * @param climbingUp True if the player wants to climb up, false otherwise.
+     */
     public void setClimbingUp(boolean climbingUp) {
         this.wantsToClimbUp = climbingUp;
     }
 
+    /**
+     * Sets the flag indicating if the player wants to climb down.
+     *
+     * @param climbingDown True if the player wants to climb down, false otherwise.
+     */
     public void setClimbingDown(boolean climbingDown) {
         this.wantsToClimbDown = climbingDown;
     }
 
-
+    /**
+     * Handles the logic for pushing boxes.
+     *
+     * @param collisionMap The map representing tile collisions.
+     * @return True if a box collision was detected and handled, false otherwise.
+     */
     private boolean handleBoxPush(EObject[][] collisionMap) {
         var collisionDetectedX = false;
         if (velocityX != 0 && boxPushTick >= BOX_PUSH_DELAY && isOnGround) {
@@ -154,6 +224,11 @@ public non-sealed class Player extends Entity {
         return collisionDetectedX;
     }
 
+    /**
+     * Handles interactions with special tiles like END, LADDER, SLIME, SPIKE, HAZARD_LIQUID, SPRING, TELEPORT, and CHECKPOINT.
+     *
+     * @param collisionMap The map representing tile collisions.
+     */
     @Override
     public void handleSpecialTiles(EObject[][] collisionMap) {
         final var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
@@ -168,7 +243,7 @@ public non-sealed class Player extends Entity {
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
             currentObject = collisionMap[centerTileX][centerTileY];
             if (currentObject == EObject.END) {
-                gamePanel.showMapMenu();
+                gamePanel.endLevel();
             }
             if (currentObject == EObject.LADDER) {
                 isOnLadder = true;
@@ -211,8 +286,22 @@ public non-sealed class Player extends Entity {
             velocityX = 0;
             velocityY = 0;
         }
+        if (collisionMap != null &&
+                centerTileX >= 0 && centerTileX < collisionMap.length &&
+                centerTileY + 1 >= 0 && centerTileY + 1 < collisionMap[0].length) {
+            if (collisionMap[centerTileX][centerTileY + 1] == EObject.FALLING_PLATFORM) {
+                gamePanel.getObjectManager().updateFallingPlatforms(
+                        gamePanel.getMap(), centerTileX, centerTileY + 1);
+            }
+        }
     }
 
+    /**
+     * Checks if the player can climb down a ladder.
+     *
+     * @param collisionMap The map representing tile collisions.
+     * @return True if the player can climb down, false otherwise.
+     */
     private boolean canClimbDown(EObject[][] collisionMap) {
         boolean canClimbDown = false;
         final int belowTileY = (int) ((y + height) / TILE_SIZE);
@@ -226,6 +315,15 @@ public non-sealed class Player extends Entity {
         return canClimbDown;
     }
 
+    /**
+     * Teleports the player to another tile of the same teleport type.
+     *
+     * @param collisionMap The map representing tile collisions.
+     * @param teleportType The type of teleport tile.
+     * @param fromX The x-coordinate of the current teleport tile.
+     * @param fromY The y-coordinate of the current teleport tile.
+     * @param TILE_SIZE The size of a single tile.
+     */
     private void teleportToNext(EObject[][] collisionMap, EObject teleportType, int fromX, int fromY, int TILE_SIZE) {
         for (int x = 0; x < collisionMap.length; x++) {
             for (int y = 0; y < collisionMap[0].length; y++) {
@@ -238,11 +336,21 @@ public non-sealed class Player extends Entity {
         }
     }
 
+    /**
+     * Sets the player's moving left state and updates direction.
+     *
+     * @param moving True if the player is moving left, false otherwise.
+     */
     public void setMovingLeft(boolean moving) {
         super.setMovingLeft(moving);
         if (moving) direction = -1;
     }
 
+    /**
+     * Sets the player's moving right state and updates direction.
+     *
+     * @param moving True if the player is moving right, false otherwise.
+     */
     public void setMovingRight(boolean moving) {
         super.setMovingRight(moving);
         if (moving) direction = 1;

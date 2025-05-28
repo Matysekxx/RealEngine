@@ -7,16 +7,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Třída pro jednotnou správu mapových elementů (ETile a EObject).
- * Umožňuje konverzi mezi barvami a elementy a mezi různými typy elementů.
+ * A utility class for managing map elements, specifically {@link ETile} and {@link EObject}.
+ * It facilitates conversions between RGB colors, visual tiles, and collision objects.
+ * This class is crucial for parsing map images into game-understandable data structures.
  */
 public final class MapElementManager {
+    /**
+     * Maps RGB integer values to their corresponding {@link ETile} enum constants.
+     * This is used when parsing map images to identify visual tiles by their color.
+     */
     private final Map<Integer, ETile> rgbToTileMap = new HashMap<>();
+    /**
+     * Maps {@link ETile} enum constants to their corresponding {@link EObject} enum constants.
+     * This defines the collision properties associated with each visual tile.
+     */
     private final Map<ETile, EObject> tileToObjectMap = new HashMap<>();
+    /**
+     * Maps {@link EObject} enum constants back to their primary {@link ETile} representation.
+     * Useful for rendering or debugging purposes where a visual representation of an object is needed.
+     */
     private final Map<EObject, ETile> objectToTileMap = new HashMap<>();
 
     /**
-     * Vytvoří novou instanci správce mapových elementů s výchozím mapováním.
+     * Constructs a new instance of the MapElementManager and initializes default mappings
+     * between colors, tiles, and objects.
      */
     public MapElementManager() {
         initializeDefaultMappings();
@@ -27,7 +41,9 @@ public final class MapElementManager {
     }
 
     /**
-     * Inicializuje výchozí mapování mezi barvami a elementy.
+     * Initializes the default mappings between RGB colors, {@link ETile}s, and {@link EObject}s.
+     * This method registers all known {@link ETile}s and then defines their corresponding
+     * collision {@link EObject}s.
      */
     private void initializeDefaultMappings() {
         for (ETile tile : ETile.values()) {
@@ -37,7 +53,6 @@ public final class MapElementManager {
         mapTileToObject(ETile.LAVA, EObject.HAZARD_LIQUID);
         mapTileToObject(ETile.PLAYER_SPAWN, EObject.PLAYER_SPAWN);
         mapTileToObject(ETile.EMPTY, EObject.EMPTY);
-        mapTileToObject(ETile.SKY, EObject.EMPTY);
         mapTileToObject(ETile.UNKNOWN, EObject.EMPTY);
         mapTileToObject(ETile.SLIME, EObject.SLIME);
         mapTileToObject(ETile.VINE, EObject.LADDER);
@@ -45,7 +60,6 @@ public final class MapElementManager {
         mapTileToObject(ETile.BACKGROUND_GRASS, EObject.BACKGROUND_OBJECT);
         mapTileToObject(ETile.BACKGROUND_DIRT, EObject.BACKGROUND_OBJECT);
         mapTileToObject(ETile.BACKGROUND_STONE, EObject.BACKGROUND_OBJECT);
-        mapTileToObject(ETile.BACKGROUND_LAVA, EObject.BACKGROUND_OBJECT);
         mapTileToObject(ETile.SPIKE, EObject.SPIKE);
         mapTileToObject(ETile.BOX, EObject.BOX);
         mapTileToObject(ETile.GRASS, EObject.WALL);
@@ -56,19 +70,23 @@ public final class MapElementManager {
         mapTileToObject(ETile.TELEPORT_RED, EObject.TELEPORT_RED);
         mapTileToObject(ETile.HARD_BLOCK, EObject.WALL);
         mapTileToObject(ETile.WOOD, EObject.WALL);
-        mapTileToObject(ETile.SNOW, EObject.SLIME);
-        mapTileToObject(ETile.SAND, EObject.WALL);
         mapTileToObject(ETile.BRICK, EObject.WALL);
-        mapTileToObject(ETile.CLOUD, EObject.PLATFORM);
+        mapTileToObject(ETile.CLOUD, EObject.WALL);
         mapTileToObject(ETile.END1, EObject.END);
         mapTileToObject(ETile.END2, EObject.END);
         mapTileToObject(ETile.ENEMY_SPAWN, EObject.ENEMY_SPAWN);
+        mapTileToObject(ETile.JUMPING_ENEMY_SPAWN, EObject.ENEMY_SPAWN);
+        mapTileToObject(ETile.CHECKPOINT, EObject.CHECKPOINT);
+        mapTileToObject(ETile.FALLING_PLATFORM, EObject.FALLING_PLATFORM);
+        mapTileToObject(ETile.LAKITU_ENEMY_SPAWN, EObject.ENEMY_SPAWN);
+        mapTileToObject(ETile.ANGRY_LAKITU_ENEMY, EObject.ENEMY_SPAWN);
     }
 
     /**
-     * Registruje vizuální dlaždici podle její RGB hodnoty.
+     * Registers a visual tile ({@link ETile}) based on its RGB color value.
+     * This mapping allows the system to identify tiles from image data.
      *
-     * @param tile Dlaždice k registraci.
+     * @param tile The {@link ETile} to register. Its RGB value will be used as the key.
      */
     public void registerTile(final ETile tile) {
         if (tile != null) {
@@ -77,6 +95,14 @@ public final class MapElementManager {
     }
 
 
+    /**
+     * Maps a visual tile ({@link ETile}) to a collision object ({@link EObject}).
+     * This establishes the physical properties of a tile within the game world.
+     * If an {@link EObject} does not yet have a primary {@link ETile} mapping, this method also sets it.
+     *
+     * @param tile The {@link ETile} to map.
+     * @param object The {@link EObject} it should map to.
+     */
     public void mapTileToObject(final ETile tile, final EObject object) {
         if (tile != null && object != null) {
             tileToObjectMap.put(tile, object);
@@ -87,20 +113,22 @@ public final class MapElementManager {
     }
 
     /**
-     * Získá vizuální dlaždici podle RGB hodnoty.
+     * Retrieves a visual tile ({@link ETile}) based on its RGB color value.
+     * If no specific tile is mapped to the given RGB, {@link ETile#EMPTY} is returned as a default.
      *
-     * @param rgb RGB hodnota barvy.
-     * @return Odpovídající ETile nebo ETile.UNKNOWN.
+     * @param rgb The integer RGB value representing the color of the tile.
+     * @return The corresponding {@link ETile} or {@link ETile#EMPTY} if not found.
      */
     public ETile getTileFromRGB(int rgb) {
         return rgbToTileMap.getOrDefault(rgb, ETile.EMPTY);
     }
 
     /**
-     * Získá kolizní objekt odpovídající vizuální dlaždici.
+     * Retrieves the collision object ({@link EObject}) corresponding to a given visual tile ({@link ETile}).
+     * If the tile is null or no specific object is mapped to it, {@link EObject#EMPTY} is returned.
      *
-     * @param tile Vizuální dlaždice.
-     * @return Odpovídající kolizní objekt nebo EObject.EMPTY.
+     * @param tile The {@link ETile} for which to retrieve the collision object.
+     * @return The corresponding {@link EObject} or {@link EObject#EMPTY} if no mapping exists or tile is null.
      */
     public EObject getObjectFromTile(final ETile tile) {
         if (tile == null) return EObject.EMPTY;
@@ -108,10 +136,12 @@ public final class MapElementManager {
     }
 
     /**
-     * Zpracuje obrázek a vytvoří 2D pole vizuálních dlaždic (ETile).
+     * Processes an image and creates a 2D array of visual tiles ({@link ETile}).
+     * Each pixel's RGB value in the input image is converted into an {@link ETile} based on registered mappings.
      *
-     * @param image Obrázek mapy.
-     * @return 2D pole ETile.
+     * @param image The {@link BufferedImage} representing the map layer.
+     * @return A 2D array of {@link ETile} objects, representing the visual layout of the map.
+     * @throws IllegalArgumentException If the input image is null.
      */
     public ETile[][] createTileLayerFromImage(final BufferedImage image) {
         if (image == null) throw new IllegalArgumentException("Input image cannot be null.");
@@ -129,6 +159,15 @@ public final class MapElementManager {
         return layer;
     }
 
+    /**
+     * Creates a 2D array of collision objects ({@link EObject}) from a given image.
+     * This method reads the RGB values from the image, converts them to {@link ETile}s,
+     * and then maps those tiles to their corresponding {@link EObject}s to form the collision map.
+     *
+     * @param image The {@link BufferedImage} representing the map's collision layer.
+     * @return A 2D array of {@link EObject}s, representing the collision properties of the map.
+     * @throws IllegalArgumentException If the input image is null.
+     */
     public EObject[][] createCollisionMapFromImage(BufferedImage image) {
         if (image == null) {
             throw new IllegalArgumentException("Input image cannot be null.");

@@ -1,14 +1,18 @@
 package org.example.realengine.demo;
 
 import javax.swing.*;
-import java.io.IOException;
 
 /**
- * Třída zajišťující spuštění hlavního okna aplikace a inicializaci herního panelu.
- * Obsahuje statickou metodu pro spuštění hry v samostatném vlákně Swing.
+ * <p>The {@code Execute} class is responsible for launching the main application window and initializing the game panel.</p>
+ * <p>It contains a static {@code Runnable} field to start the game in a dedicated Swing thread.</p>
  */
 public final class Execute {
 
+    /**
+     * <p>A {@code Runnable} instance that sets up and starts the main game window.</p>
+     * <p>This includes creating the {@code JFrame}, setting its properties (e.g., full screen, undecorated),
+     * initializing the {@code GamePanel}, adding it to the frame, and starting the game thread.</p>
+     */
     public final static Runnable run = () -> {
         final JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -16,11 +20,7 @@ public final class Execute {
         frame.setUndecorated(true);
         frame.setResizable(true);
         GamePanel gamePanel;
-        try {
-            gamePanel = new GamePanel(frame);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        gamePanel = new GamePanel(frame);
         frame.add(gamePanel);
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -28,6 +28,9 @@ public final class Execute {
         gamePanel.startGameThread();
     };
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private Execute() {
     }
 }

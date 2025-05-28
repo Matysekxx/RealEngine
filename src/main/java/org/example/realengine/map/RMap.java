@@ -2,6 +2,7 @@ package org.example.realengine.map;
 
 import org.example.realengine.entity.Enemy;
 import org.example.realengine.entity.Entity;
+import org.example.realengine.entity.Lakitu;
 import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,41 +17,41 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
 
 /**
- * Reprezentuje herní mapu.
- * Obsahuje jednu nebo více vizuálních vrstev dlaždic {@link ETile}
- * a jednu kolizní mapu {@link EObject}. Může také spravovat entity na mapě.
- * Poskytuje také statické metody pro načítání map z obrázků, včetně vytváření entit ze spawn pointů.
+ * Represents the game map.
+ * Contains one or more visual tile layers ({@link ETile})
+ * and one collision map ({@link EObject}). It can also manage entities on the map.
+ * Provides static methods for loading maps from images, including creating entities from spawn points.
  */
 public class RMap {
     /**
-     * Seznam entit aktuálně přítomných na mapě (načtených nebo přidaných později).
+     * List of entities currently present on the map (loaded or added later).
      */
     private final List<Entity> entities = new ArrayList<>();
     /**
-     * Šířka mapy v dlaždicích.
+     * Map width in tiles.
      */
     private final int width;
     /**
-     * Výška mapy v dlaždicích.
+     * Map height in tiles.
      */
     private final int height;
     /**
-     * Seznam vizuálních vrstev mapy. Každá vrstva je 2D pole dlaždic.
+     * A 2D array of {@link ETile} objects representing the visual layer of the map.
      */
     private ETile[][] layer;
     /**
-     * Kolizní mapa určující pevné a průchozí oblasti.
+     * Collision map determining solid and passable areas.
      */
     private EObject[][] collisionMap;
     private String path = "resources\\maps\\defaultmap.png";
 
     /**
-     * Vytvoří novou prázdnou mapu se zadanými rozměry.
-     * Inicializuje prázdnou kolizní mapu (všechny objekty jsou {@link EObject#EMPTY}).
+     * Creates a new empty map with the specified dimensions.
+     * Initializes an empty collision map (all objects are {@link EObject#EMPTY}).
      *
-     * @param width  Šířka mapy v počtu dlaždic.
-     * @param height Výška mapy v počtu dlaždic.
-     * @throws IllegalArgumentException pokud je šířka nebo výška nekladná.
+     * @param width  The width of the map in tiles.
+     * @param height The height of the map in tiles.
+     * @throws IllegalArgumentException if the width or height is non-positive.
      */
     public RMap(int width, int height) {
         if (width <= 0 || height <= 0) {
@@ -68,32 +69,49 @@ public class RMap {
     }
 
     /**
-     * Načte mapu z PNG souboru. Určí rozměry mapy z rozměrů obrázku.
+     * Loads a map from a PNG file. Determines map dimensions from the image dimensions.
+     * This method reads the image pixel by pixel and uses the color information
+     * to determine the type of tile and collision object at each position.
+     * It also identifies and creates entities based on specific spawn point colors.
      *
-     * @param imagePath Cesta k PNG souboru.
-     * @return Nová instance RMap.
-     * @throws IOException Pokud dojde k chybě při načítání souboru.
+     * <blockquote><pre>
+     * Example usage:
+     * RMap gameMap;
+     * try {
+     *      gameMap = RMap.loadFromPng("resources/maps/my_level.png");
+     * } catch(IOException e) {
+     *     throw new RunTimeException();
+     * }
+     * </pre></blockquote>
+     *
+     * @param imagePath The path to the PNG file.
+     * @return A new RMap instance.
+     * @throws IOException If an error occurs while loading the file.
      */
     public static RMap loadFromPng(final String imagePath) throws IOException {
-        BufferedImage image = loadImage(imagePath);
+        final BufferedImage image = loadImage(imagePath);
         if (image == null) {
             throw new IOException("Failed to load image: " + imagePath);
         }
         var width = image.getWidth();
         var height = image.getHeight();
-        MapElementManager manager = new MapElementManager();
-        ETile[][] tileLayer = manager.createTileLayerFromImage(image);
-        EObject[][] collisionData = manager.createCollisionMapFromImage(image);
-        RMap map = new RMap(width, height);
+        final MapElementManager manager = new MapElementManager();
+        final ETile[][] tileLayer = manager.createTileLayerFromImage(image);
+        final EObject[][] collisionData = manager.createCollisionMapFromImage(image);
+        final RMap map = new RMap(width, height);
         map.setPath(imagePath);
         map.setLayer(tileLayer);
         map.setCollisionMap(collisionData);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (collisionData[x][y] == EObject.ENEMY_SPAWN) {
-                    Enemy enemy = switch (tileLayer[x][y]) {
+                    Entity enemy = switch (tileLayer[x][y]) {
                         case ENEMY_SPAWN -> new Enemy(x * TILE_SIZE, y * TILE_SIZE,
                                 false, "enemy");
+                        case JUMPING_ENEMY_SPAWN -> new Enemy(x * TILE_SIZE, y * TILE_SIZE,
+                                true, "jumping");
+                        case LAKITU_ENEMY_SPAWN -> new Lakitu(x * TILE_SIZE, y * TILE_SIZE, false);
+                        case ANGRY_LAKITU_ENEMY -> new Lakitu(x * TILE_SIZE, y * TILE_SIZE, true);
                         default -> null;
                     };
                     map.addEntity(enemy);
@@ -101,30 +119,36 @@ public class RMap {
                 }
             }
         }
+
         return map;
     }
 
 
     private static BufferedImage loadImage(final String path) throws IOException {
-        File imgFile = new File(path);
+        final File imgFile = new File(path);
         if (!imgFile.exists()) {
             throw new IOException("Image file not found: " + path);
         }
         return ImageIO.read(imgFile);
     }
 
+    /**
+     * Returns the visual tile layer of the map.
+     *
+     * @return The 2D array of ETile representing the visual layer.
+     */
     public ETile[][] getLayer() {
         return layer;
     }
 
     /**
-     * Přidá novou vizuální vrstvu dlaždic do mapy.
-     * Vrstva musí mít stejné rozměry jako mapa.
-     * Vrstvy se vykreslují v pořadí, v jakém byly přidány.
+     * Sets the visual tile layer for the map.
+     * The layer must have the same dimensions as the map.
+     * Layers are rendered in the order they are added.
      *
-     * @param layer Dvourozměrné pole dlaždic {@link ETile}, které se má přidat. Nesmí být `null`.
-     * @throws NullPointerException     pokud je `layer` `null`.
-     * @throws IllegalArgumentException pokud rozměry vrstvy nesouhlasí s rozměry mapy.
+     * @param layer The 2D array of {@link ETile} to add. Must not be {@code null}.
+     * @throws NullPointerException     if {@code layer} is {@code null}.
+     * @throws IllegalArgumentException if the layer dimensions do not match the map dimensions.
      */
     public void setLayer(@NotNull final ETile[][] layer) {
         if (layer.length != width || layer.length == 0 || layer[0].length != height) {

@@ -42,7 +42,7 @@ public final class RControl implements KeyListener {
             gamePanel.showMapMenu();
         }
         if (e.getKeyCode() == KeyEvent.VK_P) {
-            Render.texturesOn = !Render.texturesOn;
+            Render.reverseTexturesOn();
         }
     }
 

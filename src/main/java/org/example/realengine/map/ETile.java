@@ -1,12 +1,10 @@
 package org.example.realengine.map;
 
-import javax.imageio.ImageIO;
+import org.example.realengine.resource.ResourceManager;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Enum representing the visual tiles based on their RGB color values.
@@ -15,175 +13,199 @@ import java.util.Map;
  */
 public enum ETile {
     /**
-     * #808080 - šedá
+     * Represents a stone tile. Hex color: #808080.
      */
     STONE(new Color(0x808080), "textures/stone.png"),
 
     /**
-     * #808000 - olivově zelená
+     * Represents a hard block tile. Hex color: #808000.
      */
     HARD_BLOCK(new Color(0x808000), "textures/hard_block.png"),
 
     /**
-     * #FF9900 - oranžová
+     * Represents a lava tile. Hex color: #FF9900.
      */
     LAVA(new Color(0xFF9900), "textures/lava_up.png"),
 
     /**
-     * #963204 - tmavě hnědá
+     * Represents a wood tile. Hex color: #963204.
      */
     WOOD(new Color(0x963204), "textures/wood.png"),
 
     /**
-     * #2980B9 - modrá (oceánová)
-     */
-    WATER(new Color(0x2980b9), "textures/water.png"),
-
-    /**
-     * #D7DBDD - světle šedobílá
-     */
-    SNOW(new Color(0xd7dbdd), "textures/snow.png"),
-
-    /**
-     * #F4D03F - pískově žlutá
-     */
-    SAND(new Color(0xf4d03f), "textures/sand.png"),
-
-    /**
-     * #CD5C5C - cihlově červená
+     * Represents a brick tile. Hex color: #CD5C5C.
      */
     BRICK(new Color(0xCD5C5C), "textures/brick.png"),
 
     /**
-     * #FFFF00 - jasně žlutá
+     * Represents the player spawn point. Hex color: #FFFF00.
      */
     PLAYER_SPAWN(new Color(0xFFFF00), "textures/sky.png"),
 
     /**
-     * #FFFFFF - bílá
+     * Represents an empty, transparent tile. Hex color: #FFFFFF.
      */
     EMPTY(new Color(0xFFFFFF), "textures/sky.png"),
 
     /**
-     * #87CEEB - nebeská modř
-     */
-    SKY(new Color(0x87CEEB), "textures/sky.png"),
-
-    /**
-     * #228B22 - tmavě zelená pro pozadí trávy
+     * Represents a background grass tile. Hex color: #228B22.
      */
     BACKGROUND_GRASS(new Color(0x228B22), "textures/grass.png"),
 
     /**
-     * #708090 - šedá břidlice pro pozadí kamene
+     * Represents a background stone tile. Hex color: #708090.
      */
     BACKGROUND_STONE(new Color(0x708090), "textures/stone.png"),
 
     /**
-     * #8B451A - sedlově hnědá pro pozadí hlíny
+     * Represents a background dirt tile. Hex color: #8B451A.
      */
     BACKGROUND_DIRT(new Color(0x8B451A), "textures/dirt.png"),
 
     /**
-     * #B22222 - ohnivě červená pro pozadí lávy
-     */
-    BACKGROUND_LAVA(new Color(0xB22222), "textures/lava.png"),
-
-    /**
-     * #AFAEFF - světle fialová
+     * Represents a spike hazard tile. Hex color: #AFAEFF.
      */
     SPIKE(new Color(0xAFAEFF), "textures/spike.png"),
 
     /**
-     * #E6CBFF
+     * Represents a cloud tile. Hex color: #E6CBFF.
      */
     CLOUD(new Color(0xE6CBFF), "textures/cloud.png"),
 
     /**
-     * #67201A - tmavě hnědá (barva hlíny)
+     * Represents a dirt tile. Hex color: #67201A.
      */
     DIRT(new Color(0x67201a), "textures/dirt.png"),
 
     /**
-     * #049625 - sytě zelená (barva trávy)
+     * Represents a grass tile. Hex color: #049625.
      */
     GRASS(new Color(0x049625), "textures/grass.png"),
 
     /**
-     * #B8860B - bronzově hnědá
+     * Represents a slime tile. Hex color: #B8860B.
      */
     SLIME(new Color(0xB8860B), "textures/slime.png"),
 
     /**
-     * #00BFFF - jasně modrá (deep sky blue)
+     * Represents a vine tile, typically used for climbing. Hex color: #00BFFF.
      */
     VINE(new Color(0x00BFFF), "textures/vine.png"),
 
     /**
-     * #00FFFF - azurová (cyan)
+     * Represents a plant tile, typically used for climbing. Hex color: #00FFFF.
      */
     PLANT(new Color(0x00FFFF), "textures/plant.png"),
 
     /**
-     * #8B4513 - sedlově hnědá
+     * Represents a pushable box tile. Hex color: #8B4513.
      */
     BOX(new Color(0x8B4513), "textures/box.png"),
 
     /**
-     * #FF00FF - purpurová (magenta)
+     * Represents an unknown or unmapped tile. Hex color: #FF00FF.
      */
     UNKNOWN(new Color(0xFF00FF), "textures/sky.png"),
 
+    /**
+     * Represents a spring tile, providing a jump boost. Hex color: #FF0000.
+     */
     SPRING(new Color(0xFF0000), "textures/spring.png"),
 
     /**
-     * #FF1050
+     * Represents a generic enemy spawn point. Hex color: #FF1050.
      */
     ENEMY_SPAWN(new Color(0xFF1050), null),
+    /**
+     * Represents a jumping enemy spawn point. Hex color: #FFE969.
+     */
+    JUMPING_ENEMY_SPAWN(new Color(0xFFE969), null),
+    /**
+     * Represents a Lakitu enemy spawn point. Hex color: #FF69FF.
+     */
+    LAKITU_ENEMY_SPAWN(new Color(0xFF69FF), null),
 
     /**
-     * #0000FF - modrá
+     * Represents an angry Lakitu enemy spawn point. Hex color: #6FF9A0.
+     */
+    ANGRY_LAKITU_ENEMY(new Color(0x6FF9A0), null),
+    /**
+     * Represents a checkpoint tile. Hex color: #9F09FF.
+     */
+    CHECKPOINT(new Color(0x9F09FF), "textures/checkpoint.png"),
+
+    /**
+     * Represents a blue teleport tile. Hex color: #0000FF.
      */
     TELEPORT_BLUE(new Color(0x0000FF), "textures/teleport_blue.png"),
 
     /**
-     * #C800FF - fialová
+     * Represents a purple teleport tile. Hex color: #C800FF.
      */
     TELEPORT_PURPLE(new Color(0xC800FF), "textures/teleport_purple.png"),
 
     /**
-     * #FF0033 - růžovočervená
+     * Represents a red teleport tile. Hex color: #FF0033.
      */
     TELEPORT_RED(new Color(0xFF0033), "textures/teleport_red.png"),
     /**
-     * #FC38D8
+     * Represents the first part of an end-of-level marker. Hex color: #FC38D8.
      */
     END1(new Color(0xFC38D8), "textures/end1.png"),
     /**
-     * #FF009D
+     * Represents the second part of an end-of-level marker. Hex color: #FF009D.
      */
-    END2(new Color(0xFF009D), "textures/end2.png");
+    END2(new Color(0xFF009D), "textures/end2.png"),
+
+    /**
+     * Represents a falling platform tile. Hex color: #00FF99.
+     */
+    FALLING_PLATFORM(new Color(0x00FF99), "textures/falling_platform.png"),
+    ;
 
     private final Color color;
     private final int rgb;
     private BufferedImage texture;
+
+    /**
+     * Constructs an ETile enum constant with a specified color and an optional texture path.
+     * The texture is loaded and cached using {@link ResourceManager#getTexture(String)}.
+     *
+     * @param color The {@link Color} associated with this tile.
+     * @param path The file path to the tile's texture image, or null if no texture.
+     */
     ETile(Color color, String path) {
         this.rgb = color.getRGB();
         this.color = color;
         if (path != null) try {
-            this.texture = ImageIO.read(new File(path));
+            this.texture = ResourceManager.getTexture(path);
         } catch (IOException _) {
         }
     }
 
+    /**
+     * Returns the {@link Color} associated with this tile.
+     *
+     * @return The {@link Color} of the tile.
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Returns the {@link BufferedImage} texture for this tile.
+     *
+     * @return The texture of the tile, or null if no texture is assigned.
+     */
     public BufferedImage getTexture() {
         return texture;
     }
 
+    /**
+     * Returns the RGB integer value of this tile's color.
+     *
+     * @return The RGB integer value.
+     */
     public int getRGB() {
         return rgb;
     }
