@@ -84,12 +84,12 @@ public class EntityManager {
                     entity.getY() <= camera.getY() + camera.getScreenHeight()) {
                 entity.update((float) 0.016666668, map);
             }
-            if (entity.isDead() || entity.getX() == 0 || entity.getX() == MAX_WORLD_COL) {
+            if ((entity.isDead() || entity.getX() == 0 || entity.getX() == MAX_WORLD_COL) && !(entity instanceof Player) && !(entity instanceof Lakitu)) {
                 removeEntity(entity);
                 i--;
                 continue;
             }
-            if (entity instanceof Enemy || entity instanceof Lakitu ) {
+            if (entity instanceof Enemy || entity instanceof Lakitu) {
                 if (player.getX() < entity.getX() + entity.getWidth() &&
                         player.getX() + player.getWidth() > entity.getX() &&
                         player.getY() < entity.getY() + entity.getHeight() &&

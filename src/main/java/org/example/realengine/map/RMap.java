@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.example.realengine.game.GameConstants.TILE_SIZE;
 
@@ -23,6 +24,7 @@ import static org.example.realengine.game.GameConstants.TILE_SIZE;
  * Provides static methods for loading maps from images, including creating entities from spawn points.
  */
 public class RMap {
+    private final static Random random = new Random();
     /**
      * List of entities currently present on the map (loaded or added later).
      */
@@ -166,6 +168,7 @@ public class RMap {
      */
     public void addEntity(Entity entity) {
         if (entity != null && !entities.contains(entity)) {
+            entity.setDirection((random.nextBoolean() ? 1 : -1));
             entities.add(entity);
         }
     }

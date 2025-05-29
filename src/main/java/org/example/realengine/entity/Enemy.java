@@ -112,29 +112,22 @@ public non-sealed class Enemy extends Entity {
     void handleSpecialTiles(EObject[][] collisionMap) {
         final var centerTileX = (int) ((x + (float) width / 2) / TILE_SIZE);
         final var centerTileY = (int) ((y + (float) height / 2) / TILE_SIZE);
-        boolean isOnSlime = false;
 
         EObject currentObject;
         if (collisionMap != null &&
                 centerTileX >= 0 && centerTileX < collisionMap.length &&
                 centerTileY >= 0 && centerTileY < collisionMap[0].length) {
             currentObject = collisionMap[centerTileX][centerTileY];
-            if (currentObject == EObject.SLIME) {
-                isOnSlime = true;
-            }
             if (currentObject == EObject.HAZARD_LIQUID || currentObject == EObject.SPIKE) {
                 onDead();
             }
             if (currentObject == EObject.SPRING && isOnGround && velocityY == 0) {
-                velocityY = jumpVelocity * 1.5f;
+                velocityY = jumpVelocity*1.5f;
+
                 isOnGround = false;
             }
         }
         gravity = 1700.0f;
-        if (isOnSlime) {
-            velocityX = 0;
-            velocityY = 0;
-        }
     }
 }
 

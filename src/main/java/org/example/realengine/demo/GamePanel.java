@@ -206,7 +206,7 @@ public class GamePanel extends JPanel implements Runnable {
         camera.setFollowOffsetX(-screenWidth / 4.0f);
     }
 
-    /**
+    /**+
      * Finds the first occurrence of {@code PLAYER_SPAWN} in the map's collision layer.
      * @param mapToSearch The {@code RMap} to search within.
      * @return A {@code Point} representing the top-left pixel coordinates of the spawn tile, or {@code null} if not found.
@@ -217,9 +217,9 @@ public class GamePanel extends JPanel implements Runnable {
         for (int y = 0; y < mapToSearch.getHeight(); y++) {
             for (int x = 0; x < mapToSearch.getWidth(); x++) {
                 if (x < collisionLayer.length && y < collisionLayer[x].length)
-                    if (collisionLayer[x][y] == EObject.PLAYER_SPAWN) {
+                    if (collisionLayer[x][y] == EObject.PLAYER_SPAWN)
                         return new Point(x * TILE_SIZE, y * TILE_SIZE);
-                    }
+
             }
         }
         return null;

@@ -250,7 +250,7 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     public BufferedImage getTexture(AnimationState state) {
         BufferedImage[] textures = texturesFromDirection.get(direction);
         if (textures == null || state.getIndex() >= textures.length) {
-            textures = texturesFromDirection.get(1); // Fallback to default direction (e.g., right)
+            textures = texturesFromDirection.get(1);
             if (textures == null || state.getIndex() >= textures.length) {
                 return null;
             }
@@ -584,7 +584,7 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
                         collisionMap[tileX][topTileY].isSolid()) {
                     collisionDetectedY = true;
                     velocityY = 0;
-                    y = (topTileY + 1) * TILE_SIZE; // Adjust position to be below the collided tile
+                    y = (topTileY + 1) * TILE_SIZE;
                     break;
                 }
             }
@@ -599,17 +599,17 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
                         bottomTileY >= 0 && bottomTileY < collisionMap[0].length &&
                         collisionMap[tileX][bottomTileY] != null) {
                     if (collisionMap[tileX][bottomTileY] == EObject.HAZARD_LIQUID) {
-                        onDead(); // Entity dies if it hits hazard liquid
+                        onDead();
                         return true;
                     } else if (collisionMap[tileX][bottomTileY].isSolid() && !isMovingDown) {
                         if (collisionMap[tileX][bottomTileY] == EObject.SPRING) {
-                            velocityY = jumpVelocity * 1.25f; // Apply extra jump force for springs
+                            velocityY = jumpVelocity * 1.25f;
                             collisionDetectedY = true;
                         } else {
                             collisionDetectedY = true;
                             isOnGround = true;
                             velocityY = 0;
-                            y = bottomTileY * TILE_SIZE - height; // Adjust position to be on top of the collided tile
+                            y = bottomTileY * TILE_SIZE - height;
                         }
                         break;
                     }

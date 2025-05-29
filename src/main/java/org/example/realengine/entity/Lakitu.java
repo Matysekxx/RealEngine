@@ -60,9 +60,8 @@ public non-sealed class Lakitu extends Entity {
     public Lakitu(float x, float y, boolean angry) {
         super(x, y, 16, 24, "lakitu", 10);
         if (angry) {
-            System.err.println("is angry");
-            this.throwInterval = 2f;
-            this.maxSpeed = 400f;
+            this.throwInterval /= 2f;
+            this.maxSpeed *= 2f;
             try {
                 this.texturesFromDirection = Map.of(
                         1, new BufferedImage[]{

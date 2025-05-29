@@ -40,7 +40,9 @@ public enum EBackground {
             "resources\\maps\\map_4.png", EBackground.CAVE,
             "resources\\maps\\map_5.png", EBackground.GRASS_LAND,
             "resources\\maps\\map_6.png", EBackground.LAVA_CAVE,
-            "resources\\maps\\map_7.png", EBackground.LAVA_CAVE
+            "resources\\maps\\map_7.png", EBackground.LAVA_CAVE,
+            "resources\\maps\\map_8.png", EBackground.LAVA_CAVE,
+            "resources\\maps\\map_9.png", EBackground.LAVA_CAVE
     ));
 
     /**

@@ -20,7 +20,7 @@ public enum AnimationState {
     /**
      * Represents the second walking animation state.
      */
-    WALKING_2(3);
+    WALKING_2(3),;
 
     /**
      * The index associated with the animation state, used for texture access.

@@ -13,7 +13,7 @@ public class ObjectManager {
     /**
      * The delay in game ticks before a falling platform starts to fall after being stepped on.
      */
-    private static final int FALL_DELAY = 15;
+    private static final int FALL_DELAY = 30;
     /**
      * The delay in game ticks before a fallen platform respawns.
      */

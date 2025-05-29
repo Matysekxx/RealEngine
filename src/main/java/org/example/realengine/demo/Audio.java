@@ -30,6 +30,10 @@ public class Audio {
      */
     public static final Audio LAVA_CAVE = new Audio("resources/audio/48. World 8 (Part 2).wav");
     /**
+     * Represents the bonus level audio track.
+     */
+    public static final Audio BONUS_LEVEL = new Audio("resources/audio/11. Super Mario Bros. Remix.wav");
+    /**
      * A static map associating specific game map file paths with their corresponding {@code Audio} objects.
      * This allows for dynamic music changes based on the currently loaded map.
      */
@@ -40,7 +44,9 @@ public class Audio {
             "resources\\maps\\map_4.png", CAVE,
             "resources\\maps\\map_5.png", OVERWORLD,
             "resources\\maps\\map_6.png", LAVA_CAVE,
-            "resources\\maps\\map_7.png", LAVA_CAVE
+            "resources\\maps\\map_7.png", LAVA_CAVE,
+            "resources\\maps\\map_8.png", LAVA_CAVE,
+            "resources\\maps\\map_9.png", LAVA_CAVE
     ));
     /**
      * The file path to the audio resource.
