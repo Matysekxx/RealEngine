@@ -127,7 +127,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.frame = frame;
         this.render = new Render();
         try {
-            this.map = RMap.loadFromPng("resources/maps/defaultmap.png");
+            this.map = RMap.loadFromPng("resources\\maps\\defaultmap.png");
             WORLD_WIDTH = map.getWidth() * TILE_SIZE;
             WORLD_HEIGHT = map.getHeight() * TILE_SIZE;
         } catch (IOException e) {

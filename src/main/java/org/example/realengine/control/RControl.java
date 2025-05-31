@@ -8,14 +8,33 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+/**
+ * RControl is responsible for handling keyboard input and controlling the player's movement and actions.
+ * Implements the {@link KeyListener} interface to process key events for movement, jumping, climbing,
+ * and triggering game-specific actions such as opening the map menu or reversing textures.
+ */
 public final class RControl implements KeyListener {
 
+    /**
+     * The player instance controlled by this input handler.
+     */
     private final Player controlledPlayer;
 
+    /**
+     * Constructs a new RControl for the specified player.
+     *
+     * @param player the player to be controlled by keyboard input
+     */
     public RControl(@NotNull Player player) {
         this.controlledPlayer = player;
     }
 
+    /**
+     * Invoked when a key has been pressed. Handles movement, jumping, climbing,
+     * bunny jumping, opening the map menu, and reversing textures.
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
@@ -46,6 +65,11 @@ public final class RControl implements KeyListener {
         }
     }
 
+    /**
+     * Invoked when a key has been released. Stops movement or climbing actions as appropriate.
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -62,6 +86,11 @@ public final class RControl implements KeyListener {
         }
     }
 
+    /**
+     * Invoked when a key has been typed. Not used in this implementation.
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void keyTyped(KeyEvent e) {
     }

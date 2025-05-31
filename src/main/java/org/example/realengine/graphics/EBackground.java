@@ -27,7 +27,11 @@ public enum EBackground {
     /**
      * Represents a lava cave or castle-themed background.
      */
-    LAVA_CAVE("resources/background/castle.png");
+    LAVA_CAVE("resources/background/castle.png"),
+    /**
+     * Represents a night background.
+     */
+    NIGHT("resources/background/night.png");
 
     /**
      * A static map that associates specific map file paths with their corresponding background types.
@@ -42,7 +46,8 @@ public enum EBackground {
             "resources\\maps\\map_6.png", EBackground.LAVA_CAVE,
             "resources\\maps\\map_7.png", EBackground.LAVA_CAVE,
             "resources\\maps\\map_8.png", EBackground.LAVA_CAVE,
-            "resources\\maps\\map_9.png", EBackground.LAVA_CAVE
+            "resources\\maps\\map_9.png", EBackground.LAVA_CAVE,
+            "resources\\maps\\map_last.png", EBackground.NIGHT
     ));
 
     /**

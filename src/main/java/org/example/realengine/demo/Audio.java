@@ -29,6 +29,7 @@ public class Audio {
      * Represents the lava cave audio track.
      */
     public static final Audio LAVA_CAVE = new Audio("resources/audio/48. World 8 (Part 2).wav");
+    public static final Audio CASTLE = new Audio("resources/audio/yt1z.net - New Super Mario Bros. 2 Final Boss Phase 2 Music (320 KBps).wav");
     /**
      * Represents the bonus level audio track.
      */
@@ -45,8 +46,9 @@ public class Audio {
             "resources\\maps\\map_5.png", OVERWORLD,
             "resources\\maps\\map_6.png", LAVA_CAVE,
             "resources\\maps\\map_7.png", LAVA_CAVE,
-            "resources\\maps\\map_8.png", LAVA_CAVE,
-            "resources\\maps\\map_9.png", LAVA_CAVE
+            "resources\\maps\\map_8.png", CASTLE,
+            "resources\\maps\\map_9.png", CASTLE,
+            "resources\\maps\\map_last.png", BONUS_LEVEL
     ));
     /**
      * The file path to the audio resource.
