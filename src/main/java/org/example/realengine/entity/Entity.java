@@ -5,7 +5,6 @@ import org.example.realengine.object.EObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
-import java.lang.constant.Constable;
 import java.util.Map;
 
 import static org.example.realengine.game.GameConstants.GRAVITY;
@@ -92,25 +91,9 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
      */
     protected boolean jumping = false;
     /**
-     * The horizontal movement speed of the entity.
-     */
-    protected float moveSpeed = 3.0f;
-    /**
-     * The vertical climbing speed of the entity on ladders.
-     */
-    protected float climbSpeed = 2.0f;
-    /**
-     * The initial upward velocity applied during a jump.
-     */
-    protected float jumpStrength = -10.0f;
-    /**
      * The gravitational force applied to the entity.
      */
     protected float gravity = GRAVITY;
-    /**
-     * The maximum downward velocity the entity can reach due to gravity.
-     */
-    protected float maxFallSpeed = 15.0f;
     /**
      * The current horizontal velocity of the entity.
      */
@@ -160,15 +143,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Returns the current direction of the entity.
-     *
-     * @return The direction (-1 for left, 1 for right).
-     */
-    public int getDirection() {
-        return direction;
-    }
-
-    /**
      * Sets the direction of the entity.
      *
      * @param direction The new direction (-1 for left, 1 for right).
@@ -178,37 +152,10 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Checks if the entity was in a walking state.
-     *
-     * @return `true` if the entity was walking, `false` otherwise.
-     */
-    public boolean isWasWalking() {
-        return wasWalking;
-    }
-
-    /**
-     * Sets whether the entity was in a walking state.
-     *
-     * @param wasWalking `true` to indicate walking, `false` otherwise.
-     */
-    public void setWasWalking(boolean wasWalking) {
-        this.wasWalking = wasWalking;
-    }
-
-    /**
      * Toggles the `wasWalking` flag.
      */
     public void setWasWalking() {
         this.wasWalking = !wasWalking;
-    }
-
-    /**
-     * Checks if the entity was in a walking state.
-     *
-     * @return `true` if the entity was walking, `false` otherwise.
-     */
-    public boolean wasWalking() {
-        return wasWalking;
     }
 
     /**
@@ -230,15 +177,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
             animationCounter = 0;
             setWasWalking();
         }
-    }
-
-    /**
-     * Returns the map of textures for different directions.
-     *
-     * @return A map where keys are directions (e.g., -1, 1) and values are arrays of {@link BufferedImage} for animation.
-     */
-    public Map<Integer, BufferedImage[]> getTexturesFromDirection() {
-        return texturesFromDirection;
     }
 
     /**
@@ -292,24 +230,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Sets the dead status of the entity.
-     *
-     * @param dead `true` to mark the entity as dead, `false` otherwise.
-     */
-    public void setDead(boolean dead) {
-        isDead = dead;
-    }
-
-    /**
-     * Checks if the entity is currently attempting to move left.
-     *
-     * @return `true` if moving left, `false` otherwise.
-     */
-    public boolean isMovingLeft() {
-        return movingLeft;
-    }
-
-    /**
      * Sets whether the entity should move left.
      *
      * @param moving `true` for moving left.
@@ -318,15 +238,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
         this.movingLeft = moving;
         if (moving) velocityX = -autoMoveSpeed;
         else if (velocityX < 0) velocityX = 0;
-    }
-
-    /**
-     * Checks if the entity is currently attempting to move right.
-     *
-     * @return `true` if moving right, `false` otherwise.
-     */
-    public boolean isMovingRight() {
-        return movingRight;
     }
 
     /**
@@ -341,66 +252,12 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Returns the current animation frame counter.
-     *
-     * @return The animation counter.
-     */
-    public int getAnimationCounter() {
-        return animationCounter;
-    }
-
-    /**
-     * Sets the animation frame counter.
-     *
-     * @param animationCounter The new animation counter value.
-     */
-    public void setAnimationCounter(int animationCounter) {
-        this.animationCounter = animationCounter;
-    }
-
-    /**
-     * Returns the delay between animation frames.
-     *
-     * @return The animation delay.
-     */
-    public int getAnimationDelay() {
-        return animationDelay;
-    }
-
-    /**
-     * Sets the delay between animation frames.
-     *
-     * @param animationDelay The new animation delay value.
-     */
-    public void setAnimationDelay(int animationDelay) {
-        this.animationDelay = animationDelay;
-    }
-
-    /**
-     * Checks if the entity is currently attempting to move up.
-     *
-     * @return `true` if moving up, `false` otherwise.
-     */
-    public boolean isMovingUp() {
-        return movingUp;
-    }
-
-    /**
      * Sets whether the entity should move up.
      *
      * @param moving `true` for moving up.
      */
     public void setMovingUp(boolean moving) {
         this.movingUp = moving;
-    }
-
-    /**
-     * Checks if the entity is currently attempting to move down.
-     *
-     * @return `true` if moving down, `false` otherwise.
-     */
-    public boolean isMovingDown() {
-        return isMovingDown;
     }
 
     /**
@@ -417,33 +274,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Checks if the entity is currently in a jumping state.
-     *
-     * @return `true` if jumping, `false` otherwise.
-     */
-    public boolean isJumping() {
-        return jumping;
-    }
-
-    /**
-     * Sets whether the entity is in a jumping state.
-     *
-     * @param jumping `true` for jumping.
-     */
-    public void setJumping(boolean jumping) {
-        this.jumping = jumping;
-    }
-
-    /**
-     * Returns the current horizontal velocity of the entity.
-     *
-     * @return The horizontal velocity.
-     */
-    public float getVelocityX() {
-        return velocityX;
-    }
-
-    /**
      * Sets the horizontal velocity of the entity.
      *
      * @param velocityX The new horizontal velocity.
@@ -453,57 +283,12 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Returns the current vertical velocity of the entity.
-     *
-     * @return The vertical velocity.
-     */
-    public float getVelocityY() {
-        return velocityY;
-    }
-
-    /**
      * Sets the vertical velocity of the entity.
      *
      * @param velocityY The new vertical velocity.
      */
     public void setVelocityY(float velocityY) {
         this.velocityY = velocityY;
-    }
-
-    /**
-     * Returns the initial velocity applied during a jump.
-     *
-     * @return The jump velocity.
-     */
-    public float getJumpVelocity() {
-        return jumpVelocity;
-    }
-
-    /**
-     * Sets the initial velocity applied during a jump.
-     *
-     * @param jumpVelocity The new jump velocity.
-     */
-    public void setJumpVelocity(float jumpVelocity) {
-        this.jumpVelocity = jumpVelocity;
-    }
-
-    /**
-     * Returns the automatic movement speed of the entity.
-     *
-     * @return The auto move speed.
-     */
-    public float getAutoMoveSpeed() {
-        return autoMoveSpeed;
-    }
-
-    /**
-     * Sets the automatic movement speed of the entity.
-     *
-     * @param autoMoveSpeed The new auto move speed.
-     */
-    public void setAutoMoveSpeed(float autoMoveSpeed) {
-        this.autoMoveSpeed = autoMoveSpeed;
     }
 
     /**
@@ -713,42 +498,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
     }
 
     /**
-     * Sets whether the entity is on the ground.
-     *
-     * @param onGround `true` if the entity is on the ground, `false` otherwise.
-     */
-    public void setOnGround(boolean onGround) {
-        isOnGround = onGround;
-    }
-
-    /**
-     * Checks if the entity is currently on a ladder.
-     *
-     * @return `true` if the entity is on a ladder, `false` otherwise.
-     */
-    public boolean isOnLadder() {
-        return isOnLadder;
-    }
-
-    /**
-     * Sets whether the entity is on a ladder.
-     *
-     * @param onLadder `true` if the entity is on a ladder, `false` otherwise.
-     */
-    public void setOnLadder(boolean onLadder) {
-        isOnLadder = onLadder;
-    }
-
-    /**
-     * Returns the current health of the entity.
-     *
-     * @return The current health.
-     */
-    public float getHealth() {
-        return health;
-    }
-
-    /**
      * Sets the health of the entity.
      *
      * @param health The new health value.
@@ -764,105 +513,6 @@ public sealed abstract class Entity permits Enemy, Lakitu, Player {
      */
     public float getMaxHealth() {
         return maxHealth;
-    }
-
-    /**
-     * Sets the maximum health of the entity.
-     *
-     * @param maxHealth The new maximum health value.
-     */
-    public void setMaxHealth(float maxHealth) {
-        this.maxHealth = maxHealth;
-    }
-
-    /**
-     * Returns the movement speed of the entity.
-     *
-     * @return The movement speed.
-     */
-    public float getMoveSpeed() {
-        return moveSpeed;
-    }
-
-    /**
-     * Sets the movement speed of the entity.
-     *
-     * @param moveSpeed The new movement speed.
-     */
-    public void setMoveSpeed(float moveSpeed) {
-        this.moveSpeed = moveSpeed;
-    }
-
-    /**
-     * Returns the climbing speed of the entity.
-     *
-     * @return The climbing speed.
-     */
-    public float getClimbSpeed() {
-        return climbSpeed;
-    }
-
-    /**
-     * Sets the climbing speed of the entity.
-     *
-     * @param climbSpeed The new climbing speed.
-     */
-    public void setClimbSpeed(float climbSpeed) {
-        this.climbSpeed = climbSpeed;
-    }
-
-    /**
-     * Returns the jump strength of the entity.
-     *
-     * @return The jump strength.
-     */
-    public float getJumpStrength() {
-        return jumpStrength;
-    }
-
-    /**
-     * Sets the jump strength of the entity.
-     *
-     * @param jumpStrength The new jump strength.
-     */
-    public void setJumpStrength(float jumpStrength) {
-        this.jumpStrength = jumpStrength;
-    }
-
-    /**
-     * Returns the gravity applied to the entity.
-     *
-     * @return The gravity value.
-     */
-    public float getGravity() {
-        return gravity;
-    }
-
-    /**
-     * Sets the gravity applied to the entity.
-     *
-     * @param gravity The new gravity value.
-     */
-    public void setGravity(float gravity) {
-        this.gravity = gravity;
-    }
-
-    /**
-     * Returns the maximum fall speed of the entity.
-     *
-     * @return The maximum fall speed.
-     */
-    public float getMaxFallSpeed() {
-        return maxFallSpeed;
-    }
-
-    /**
-     * Sets the maximum fall speed of the entity.
-     *
-     * @param maxFallSpeed The new maximum fall speed.
-     */
-    public void setMaxFallSpeed(float maxFallSpeed) {
-        this.maxFallSpeed = maxFallSpeed;
     }
 
     /**

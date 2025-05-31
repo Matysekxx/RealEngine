@@ -65,16 +65,16 @@ public non-sealed class Lakitu extends Entity {
             try {
                 this.texturesFromDirection = Map.of(
                         1, new BufferedImage[]{
-                                ResourceManager.getTexture("textures\\angry_lakitu.png"),
-                                ResourceManager.getTexture("textures\\angry_lakitu.png"),
-                                ResourceManager.getTexture("textures\\angry_lakitu.png"),
-                                ResourceManager.getTexture("textures\\angry_lakitu.png")
+                                ResourceManager.getTexture("resources/textures/angry_lakitu.png"),
+                                ResourceManager.getTexture("resources/textures/angry_lakitu.png"),
+                                ResourceManager.getTexture("resources/textures/angry_lakitu.png"),
+                                ResourceManager.getTexture("resources/textures/angry_lakitu.png")
                         },
                         -1, new BufferedImage[]{
-                                ResourceManager.getTexture("textures\\angry_lakitu-.png"),
-                                ResourceManager.getTexture("textures\\angry_lakitu-.png"),
-                                ResourceManager.getTexture("textures\\angry_lakitu-.png"),
-                                ResourceManager.getTexture("textures\\angry_lakitu-.png")
+                                ResourceManager.getTexture("resources/textures/angry_lakitu-.png"),
+                                ResourceManager.getTexture("resources/textures/angry_lakitu-.png"),
+                                ResourceManager.getTexture("resources/textures/angry_lakitu-.png"),
+                                ResourceManager.getTexture("resources/textures/angry_lakitu-.png")
                         }
                 );
             } catch (IOException _) {
@@ -85,16 +85,16 @@ public non-sealed class Lakitu extends Entity {
             try {
                 this.texturesFromDirection = Map.of(
                         1, new BufferedImage[]{
-                                ResourceManager.getTexture("textures/lakitu.png"),
-                                ResourceManager.getTexture("textures/lakitu.png"),
-                                ResourceManager.getTexture("textures/lakitu.png"),
-                                ResourceManager.getTexture("textures/lakitu.png")
+                                ResourceManager.getTexture("resources/textures/lakitu.png"),
+                                ResourceManager.getTexture("resources/textures/lakitu.png"),
+                                ResourceManager.getTexture("resources/textures/lakitu.png"),
+                                ResourceManager.getTexture("resources/textures/lakitu.png")
                         },
                         -1, new BufferedImage[]{
-                                ResourceManager.getTexture("textures/lakitu-.png"),
-                                ResourceManager.getTexture("textures/lakitu-.png"),
-                                ResourceManager.getTexture("textures/lakitu-.png"),
-                                ResourceManager.getTexture("textures/lakitu-.png")
+                                ResourceManager.getTexture("resources/textures/lakitu-.png"),
+                                ResourceManager.getTexture("resources/textures/lakitu-.png"),
+                                ResourceManager.getTexture("resources/textures/lakitu-.png"),
+                                ResourceManager.getTexture("resources/textures/lakitu-.png")
                         }
                 );
             } catch (IOException _) {

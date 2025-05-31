@@ -15,102 +15,102 @@ public enum ETile {
     /**
      * Represents a stone tile. Hex color: #808080.
      */
-    STONE(new Color(0x808080), "textures/stone.png"),
+    STONE(new Color(0x808080), "resources/textures/stone.png"),
 
     /**
      * Represents a hard block tile. Hex color: #808000.
      */
-    HARD_BLOCK(new Color(0x808000), "textures/hard_block.png"),
+    HARD_BLOCK(new Color(0x808000), "resources/textures/hard_block.png"),
 
     /**
      * Represents a lava tile. Hex color: #FF9900.
      */
-    LAVA(new Color(0xFF9900), "textures/lava_up.png"),
+    LAVA(new Color(0xFF9900), "resources/textures/lava_up.png"),
 
     /**
      * Represents a wood tile. Hex color: #963204.
      */
-    WOOD(new Color(0x963204), "textures/wood.png"),
+    WOOD(new Color(0x963204), "resources/textures/wood.png"),
 
     /**
      * Represents a brick tile. Hex color: #CD5C5C.
      */
-    BRICK(new Color(0xCD5C5C), "textures/brick.png"),
+    BRICK(new Color(0xCD5C5C), "resources/textures/brick.png"),
 
     /**
      * Represents the player spawn point. Hex color: #FFFF00.
      */
-    PLAYER_SPAWN(new Color(0xFFFF00), "textures/sky.png"),
+    PLAYER_SPAWN(new Color(0xFFFF00), "resources/textures/sky.png"),
 
     /**
      * Represents an empty, transparent tile. Hex color: #FFFFFF.
      */
-    EMPTY(new Color(0xFFFFFF), "textures/sky.png"),
+    EMPTY(new Color(0xFFFFFF), "resources/textures/sky.png"),
 
     /**
      * Represents a background grass tile. Hex color: #228B22.
      */
-    BACKGROUND_GRASS(new Color(0x228B22), "textures/grass.png"),
+    BACKGROUND_GRASS(new Color(0x228B22), "resources/textures/grass.png"),
 
     /**
      * Represents a background stone tile. Hex color: #708090.
      */
-    BACKGROUND_STONE(new Color(0x708090), "textures/stone.png"),
+    BACKGROUND_STONE(new Color(0x708090), "resources/textures/stone.png"),
 
     /**
      * Represents a background dirt tile. Hex color: #8B451A.
      */
-    BACKGROUND_DIRT(new Color(0x8B451A), "textures/dirt.png"),
+    BACKGROUND_DIRT(new Color(0x8B451A), "resources/textures/dirt.png"),
 
     /**
      * Represents a spike hazard tile. Hex color: #AFAEFF.
      */
-    SPIKE(new Color(0xAFAEFF), "textures/spike.png"),
+    SPIKE(new Color(0xAFAEFF), "resources/textures/spike.png"),
 
     /**
      * Represents a cloud tile. Hex color: #E6CBFF.
      */
-    CLOUD(new Color(0xE6CBFF), "textures/cloud.png"),
+    CLOUD(new Color(0xE6CBFF), "resources/textures/cloud.png"),
 
     /**
      * Represents a dirt tile. Hex color: #67201A.
      */
-    DIRT(new Color(0x67201a), "textures/dirt.png"),
+    DIRT(new Color(0x67201a), "resources/textures/dirt.png"),
 
     /**
      * Represents a grass tile. Hex color: #049625.
      */
-    GRASS(new Color(0x049625), "textures/grass.png"),
+    GRASS(new Color(0x049625), "resources/textures/grass.png"),
 
     /**
      * Represents a slime tile. Hex color: #B8860B.
      */
-    SLIME(new Color(0xB8860B), "textures/slime.png"),
+    SLIME(new Color(0xB8860B), "resources/textures/slime.png"),
 
     /**
      * Represents a vine tile, typically used for climbing. Hex color: #00BFFF.
      */
-    VINE(new Color(0x00BFFF), "textures/vine.png"),
+    VINE(new Color(0x00BFFF), "resources/textures/vine.png"),
 
     /**
      * Represents a plant tile, typically used for climbing. Hex color: #00FFFF.
      */
-    PLANT(new Color(0x00FFFF), "textures/plant.png"),
+    PLANT(new Color(0x00FFFF), "resources/textures/plant.png"),
 
     /**
      * Represents a pushable box tile. Hex color: #8B4513.
      */
-    BOX(new Color(0x8B4513), "textures/box.png"),
+    BOX(new Color(0x8B4513), "resources/textures/box.png"),
 
     /**
      * Represents an unknown or unmapped tile. Hex color: #FF00FF.
      */
-    UNKNOWN(new Color(0xFF00FF), "textures/sky.png"),
+    UNKNOWN(new Color(0xFF00FF), "resources/textures/sky.png"),
 
     /**
      * Represents a spring tile, providing a jump boost. Hex color: #FF0000.
      */
-    SPRING(new Color(0xFF0000), "textures/spring.png"),
+    SPRING(new Color(0xFF0000), "resources/textures/spring.png"),
 
     /**
      * Represents a generic enemy spawn point. Hex color: #FF1050.
@@ -132,35 +132,35 @@ public enum ETile {
     /**
      * Represents a checkpoint tile. Hex color: #9F09FF.
      */
-    CHECKPOINT(new Color(0x9F09FF), "textures/checkpoint.png"),
+    CHECKPOINT(new Color(0x9F09FF), "resources/textures/checkpoint.png"),
 
     /**
      * Represents a blue teleport tile. Hex color: #0000FF.
      */
-    TELEPORT_BLUE(new Color(0x0000FF), "textures/teleport_blue.png"),
+    TELEPORT_BLUE(new Color(0x0000FF), "resources/textures/teleport_blue.png"),
 
     /**
      * Represents a purple teleport tile. Hex color: #C800FF.
      */
-    TELEPORT_PURPLE(new Color(0xC800FF), "textures/teleport_purple.png"),
+    TELEPORT_PURPLE(new Color(0xC800FF), "resources/textures/teleport_purple.png"),
 
     /**
      * Represents a red teleport tile. Hex color: #FF0033.
      */
-    TELEPORT_RED(new Color(0xFF0033), "textures/teleport_red.png"),
+    TELEPORT_RED(new Color(0xFF0033), "resources/textures/teleport_red.png"),
     /**
      * Represents the first part of an end-of-level marker. Hex color: #FC38D8.
      */
-    END1(new Color(0xFC38D8), "textures/end1.png"),
+    END1(new Color(0xFC38D8), "resources/textures/end1.png"),
     /**
      * Represents the second part of an end-of-level marker. Hex color: #FF009D.
      */
-    END2(new Color(0xFF009D), "textures/end2.png"),
+    END2(new Color(0xFF009D), "resources/textures/end2.png"),
 
     /**
      * Represents a falling platform tile. Hex color: #00FF99.
      */
-    FALLING_PLATFORM(new Color(0x00FF99), "textures/falling_platform.png"),
+    FALLING_PLATFORM(new Color(0x00FF99), "resources/textures/falling_platform.png"),
     ;
 
     private final Color color;

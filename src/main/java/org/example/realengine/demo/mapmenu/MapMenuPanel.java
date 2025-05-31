@@ -48,18 +48,18 @@ public class MapMenuPanel extends JPanel {
     public MapMenuPanel(JFrame parentFrame, GamePanel gamePanel) {
         this.parentFrame = parentFrame;
         this.gamePanel = gamePanel;
-        setLayout(new BorderLayout());
-        setBackground(new Color(20, 20, 50));
-        setPreferredSize(parentFrame.getSize());
-        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        this.setLayout(new BorderLayout());
+        this.setBackground(new Color(20, 20, 50));
+        this.setPreferredSize(parentFrame.getSize());
+        this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         final JPanel titlePanel = new TitlePanel();
         final JScrollPane scrollPane = createMapListScrollPane();
         final JPanel instructionsPanel = new InstructionsPanel();
-        add(titlePanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(instructionsPanel, BorderLayout.SOUTH);
-        setFocusable(true);
-        addKeyListener(new MapMenuControl(mapList, mapPaths, this, gamePanel));
+        this.add(titlePanel, BorderLayout.NORTH);
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.add(instructionsPanel, BorderLayout.SOUTH);
+        this.setFocusable(true);
+        this.addKeyListener(new MapMenuControl(mapList, mapPaths, this, gamePanel));
         loadMapList();
     }
 

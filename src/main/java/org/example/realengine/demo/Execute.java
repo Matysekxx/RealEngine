@@ -15,10 +15,9 @@ public final class Execute {
      */
     public final static Runnable run = () -> {
         final JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
-        frame.setResizable(true);
+        frame.setResizable(false);
         GamePanel gamePanel;
         gamePanel = new GamePanel(frame);
         frame.add(gamePanel);

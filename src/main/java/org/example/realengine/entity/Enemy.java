@@ -43,16 +43,16 @@ public non-sealed class Enemy extends Entity {
         try {
             this.texturesFromDirection = Map.of(
                     -1, new BufferedImage[]{
-                            ResourceManager.getTexture("textures/spiny1.png"),
-                            ResourceManager.getTexture("textures/spiny1.png"),
-                            ResourceManager.getTexture("textures/spiny1.png"),
-                            ResourceManager.getTexture("textures/spiny2.png")
+                            ResourceManager.getTexture("resources/textures/spiny1.png"),
+                            ResourceManager.getTexture("resources/textures/spiny1.png"),
+                            ResourceManager.getTexture("resources/textures/spiny1.png"),
+                            ResourceManager.getTexture("resources/textures/spiny2.png")
                     },
                     1, new BufferedImage[]{
-                            ResourceManager.getTexture("textures/spiny-1.png"),
-                            ResourceManager.getTexture("textures/spiny-1.png"),
-                            ResourceManager.getTexture("textures/spiny-1.png"),
-                            ResourceManager.getTexture("textures/spiny-2.png")
+                            ResourceManager.getTexture("resources/textures/spiny-1.png"),
+                            ResourceManager.getTexture("resources/textures/spiny-1.png"),
+                            ResourceManager.getTexture("resources/textures/spiny-1.png"),
+                            ResourceManager.getTexture("resources/textures/spiny-2.png")
                     }
             );
         } catch (IOException _) {

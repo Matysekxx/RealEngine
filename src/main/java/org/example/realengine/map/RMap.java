@@ -45,7 +45,7 @@ public class RMap {
      * Collision map determining solid and passable areas.
      */
     private EObject[][] collisionMap;
-    private String path = "resources\\maps\\defaultmap.png";
+    private String path;
 
     /**
      * Creates a new empty map with the specified dimensions.

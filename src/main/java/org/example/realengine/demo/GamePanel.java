@@ -127,7 +127,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.frame = frame;
         this.render = new Render();
         try {
-            this.map = RMap.loadFromPng("resources\\maps\\defaultmap.png");
+            this.map = RMap.loadFromPng("resources/maps/defaultmap.png");
             WORLD_WIDTH = map.getWidth() * TILE_SIZE;
             WORLD_HEIGHT = map.getHeight() * TILE_SIZE;
         } catch (IOException e) {
@@ -294,7 +294,7 @@ public class GamePanel extends JPanel implements Runnable {
         render.renderScene(g, map, camera);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Use arrow or wsad to move and jump", 10, 30);
+        g.drawString("Use arrow or wsad to move and jump and use shift for mini jump", 10, 30);
         g.drawString("Time: " + time + " seconds", 10, 60);
         g.drawString("Best time: " + recordTime.getBestTime(map.getPath()), 10, 90);
     }

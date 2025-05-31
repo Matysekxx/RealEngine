@@ -46,18 +46,6 @@ public class EntityManager {
     }
 
     /**
-     * Adds an entity to the game map if it's not already present.
-     *
-     * @param entity The entity to add.
-     */
-    public void addEntity(Entity entity) {
-        if (entity != null && !map.getEntities().contains(entity)) {
-            map.getEntities().add(entity);
-            map.addEntity(entity);
-        }
-    }
-
-    /**
      * Removes an entity from the game map.
      *
      * @param entity The entity to remove.

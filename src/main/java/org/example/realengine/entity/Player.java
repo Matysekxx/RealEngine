@@ -61,16 +61,16 @@ public non-sealed class Player extends Entity {
         try {
             texturesFromDirection = Map.of(
                     1, new BufferedImage[]{
-                            ResourceManager.getTexture("textures/mario-IDLE.png"),
-                            ResourceManager.getTexture("textures/mario-Jump.png"),
-                            ResourceManager.getTexture("textures/mario-Walking.png"),
-                            ResourceManager.getTexture("textures/mario-IDLE.png")
+                            ResourceManager.getTexture("resources/textures/mario-IDLE.png"),
+                            ResourceManager.getTexture("resources/textures/mario-Jump.png"),
+                            ResourceManager.getTexture("resources/textures/mario-Walking.png"),
+                            ResourceManager.getTexture("resources/textures/mario-IDLE.png")
                     },
                     -1, new BufferedImage[]{
-                            ResourceManager.getTexture("textures/marioIDLE.png"),
-                            ResourceManager.getTexture("textures/marioJump.png"),
-                            ResourceManager.getTexture("textures/marioWalking.png"),
-                            ResourceManager.getTexture("textures/marioIDLE.png")
+                            ResourceManager.getTexture("resources/textures/marioIDLE.png"),
+                            ResourceManager.getTexture("resources/textures/marioJump.png"),
+                            ResourceManager.getTexture("resources/textures/marioWalking.png"),
+                            ResourceManager.getTexture("resources/textures/marioIDLE.png")
                     }
             );
         } catch (IOException _) {
