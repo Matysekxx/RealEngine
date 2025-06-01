@@ -26,7 +26,7 @@ public class EntityManager {
     /**
      * Constructs a new EntityManager.
      *
-     * @param rMap The initial game map.
+     * @param rMap   The initial game map.
      * @param camera The game camera.
      * @param player The player entity.
      */

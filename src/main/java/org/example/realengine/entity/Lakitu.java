@@ -19,25 +19,6 @@ public non-sealed class Lakitu extends Entity {
      * The player entity that Lakitu targets.
      */
     private Player player;
-
-    /**
-     * Gets the current target player of Lakitu.
-     *
-     * @return The Player entity that Lakitu is targeting.
-     */
-    public Player getTarget() {
-        return player;
-    }
-
-    /**
-     * Sets the target player for Lakitu.
-     *
-     * @param player The Player entity to set as the target.
-     */
-    public void setTarget(Player player) {
-        this.player = player;
-    }
-
     /**
      * Cooldown timer for throwing enemies.
      */
@@ -50,7 +31,6 @@ public non-sealed class Lakitu extends Entity {
      * The maximum speed at which Lakitu moves.
      */
     private float maxSpeed = 200f;
-
     /**
      * Constructs a new Lakitu entity.
      *
@@ -80,8 +60,7 @@ public non-sealed class Lakitu extends Entity {
             } catch (IOException _) {
                 System.err.println("error loading textures");
             }
-        }
-        else {
+        } else {
             try {
                 this.texturesFromDirection = Map.of(
                         1, new BufferedImage[]{
@@ -104,10 +83,28 @@ public non-sealed class Lakitu extends Entity {
     }
 
     /**
+     * Gets the current target player of Lakitu.
+     *
+     * @return The Player entity that Lakitu is targeting.
+     */
+    public Player getTarget() {
+        return player;
+    }
+
+    /**
+     * Sets the target player for Lakitu.
+     *
+     * @param player The Player entity to set as the target.
+     */
+    public void setTarget(Player player) {
+        this.player = player;
+    }
+
+    /**
      * Updates Lakitu's state, including movement towards the player and throwing enemies.
      *
      * @param deltaTime The time elapsed since the last frame.
-     * @param map The current game map.
+     * @param map       The current game map.
      */
     @Override
     public void update(float deltaTime, RMap map) {
@@ -115,7 +112,7 @@ public non-sealed class Lakitu extends Entity {
         final float desiredDistance = 2 * TILE_SIZE;
         final float catchUpSpeed = maxSpeed * 2;
         if (Math.abs(this.x - player.getX()) <= desiredDistance) {
-            this.x = player.getX() + (float)Math.sin(gameTime * 2.0f) * TILE_SIZE * 1.5f;
+            this.x = player.getX() + (float) Math.sin(gameTime * 2.0f) * TILE_SIZE * 1.5f;
         } else {
             if (this.x - player.getX() > 0) {
                 this.x -= catchUpSpeed * deltaTime;
@@ -163,5 +160,6 @@ public non-sealed class Lakitu extends Entity {
      * @param collisionMap The map representing tile collisions.
      */
     @Override
-    void handleSpecialTiles(EObject[][] collisionMap) {}
+    void handleSpecialTiles(EObject[][] collisionMap) {
+    }
 }

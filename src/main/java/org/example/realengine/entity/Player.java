@@ -46,8 +46,8 @@ public non-sealed class Player extends Entity {
     /**
      * Constructs a new Player entity.
      *
-     * @param x The initial x-coordinate of the player.
-     * @param y The initial y-coordinate of the player.
+     * @param x         The initial x-coordinate of the player.
+     * @param y         The initial y-coordinate of the player.
      * @param gamePanel The game panel instance.
      */
     public Player(float x, float y, GamePanel gamePanel) {
@@ -101,7 +101,7 @@ public non-sealed class Player extends Entity {
      * Updates the player's state, including movement, collisions, and interactions.
      *
      * @param deltaTime The time elapsed since the last frame.
-     * @param map The current game map.
+     * @param map       The current game map.
      */
     @Override
     public void update(float deltaTime, RMap map) {
@@ -290,8 +290,9 @@ public non-sealed class Player extends Entity {
                 centerTileX >= 0 && centerTileX < collisionMap.length &&
                 centerTileY + 1 >= 0 && centerTileY + 1 < collisionMap[0].length) {
             if (collisionMap[centerTileX][centerTileY + 1] == EObject.FALLING_PLATFORM) {
-                gamePanel.getObjectManager().updateFallingPlatforms(
-                        gamePanel.getMap(), centerTileX, centerTileY + 1);
+                gamePanel.getObjectManager()
+                        .updateFallingPlatforms(gamePanel.getMap(),
+                        centerTileX, centerTileY + 1);
             }
         }
     }
@@ -320,9 +321,9 @@ public non-sealed class Player extends Entity {
      *
      * @param collisionMap The map representing tile collisions.
      * @param teleportType The type of teleport tile.
-     * @param fromX The x-coordinate of the current teleport tile.
-     * @param fromY The y-coordinate of the current teleport tile.
-     * @param TILE_SIZE The size of a single tile.
+     * @param fromX        The x-coordinate of the current teleport tile.
+     * @param fromY        The y-coordinate of the current teleport tile.
+     * @param TILE_SIZE    The size of a single tile.
      */
     private void teleportToNext(EObject[][] collisionMap, EObject teleportType, int fromX, int fromY, int TILE_SIZE) {
         for (int x = 0; x < collisionMap.length; x++) {

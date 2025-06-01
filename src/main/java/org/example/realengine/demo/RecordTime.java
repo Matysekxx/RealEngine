@@ -22,6 +22,7 @@ public class RecordTime {
     /**
      * Constructs a new {@code RecordTime} instance and attempts to load existing best times from the specified file path.
      * <p>If the file does not exist or an {@code IOException} occurs during loading, a {@code RuntimeException} is thrown.
+     *
      * @param filePath The absolute or relative path to the file where the best times are stored or will be saved.
      * @throws RuntimeException if an {@code IOException} occurs during the initial loading of data from the file.
      */
@@ -37,6 +38,7 @@ public class RecordTime {
     /**
      * Saves a new time for a given map path if it is better (lower) than the currently recorded best time for that map.
      * <p> If no time is recorded for the map, the new time is set as the best time.
+     *
      * @param mapPath The unique identifier or path of the game map.
      * @param seconds The time in seconds to be recorded for the map.
      */
@@ -49,6 +51,7 @@ public class RecordTime {
     /**
      * Retrieves the best recorded time for a specific game map.
      * <p>If no time is recorded for the given map path, {@code Integer.MAX_VALUE} is returned, indicating no best time has been set.
+     *
      * @param mapPath The unique identifier or path of the game map.
      * @return The best time in seconds for the specified map, or {@code Integer.MAX_VALUE} if no time is recorded.
      */
@@ -74,6 +77,7 @@ public class RecordTime {
      * Loads best times data from the file specified by {@code filePath} into the {@code bestTimes} map.
      * <p>The map is cleared before loading new data. Each line in the file is expected to be in the format "mapPath,seconds".
      * <p>Lines that do not conform to this format or contain invalid number formats are skipped.
+     *
      * @param filePath The path to the file from which to load the best times.
      * @throws IOException if an I/O error occurs during reading from the file.
      */

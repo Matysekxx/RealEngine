@@ -34,10 +34,10 @@ public final class MapMenuControl extends KeyAdapter {
     /**
      * Constructs a new {@code MapMenuControl}.
      *
-     * @param mapList The {@link JList} component displaying the maps.
-     * @param mapPaths A list of file paths for the maps.
+     * @param mapList      The {@link JList} component displaying the maps.
+     * @param mapPaths     A list of file paths for the maps.
      * @param mapMenuPanel The {@link MapMenuPanel} instance.
-     * @param gamePanel The {@link GamePanel} instance.
+     * @param gamePanel    The {@link GamePanel} instance.
      */
     public MapMenuControl(JList<String> mapList, List<String> mapPaths, MapMenuPanel mapMenuPanel, GamePanel gamePanel) {
         this.mapList = mapList;

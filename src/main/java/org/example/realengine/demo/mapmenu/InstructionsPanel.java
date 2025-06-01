@@ -20,7 +20,8 @@ public class InstructionsPanel extends JPanel {
     /**
      * Statically paints a solid color background onto the given Graphics context.
      * This method is used by various panels to draw their backgrounds consistently.
-     * @param g The Graphics context to paint on.
+     *
+     * @param g     The Graphics context to paint on.
      * @param color The `Color` to fill the background with.
      */
     static void paintBackground(Graphics g, Color color) {
@@ -32,6 +33,7 @@ public class InstructionsPanel extends JPanel {
     /**
      * Overrides the `paintComponent` method to draw the custom gradient background.
      * Calls the superclass method first, then uses `paintBackground` to draw a dark blue background.
+     *
      * @param g The `Graphics` context used for painting.
      */
     @Override

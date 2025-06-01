@@ -31,19 +31,19 @@ public class MapMenuPanel extends JPanel {
      */
     private final List<String> mapPaths = new ArrayList<>();
     /**
-     * The {@link JList} component that displays the names of the available maps.
-     */
-    private JList<String> mapList;
-    /**
      * A {@link Vector} containing the names of the maps to be displayed in the {@code mapList}.
      */
     private final Vector<String> mapNames = new Vector<>();
+    /**
+     * The {@link JList} component that displays the names of the available maps.
+     */
+    private JList<String> mapList;
 
     /**
      * Constructs a new {@code MapMenuPanel}.
      *
      * @param parentFrame The main application frame.
-     * @param gamePanel The game panel instance to interact with.
+     * @param gamePanel   The game panel instance to interact with.
      */
     public MapMenuPanel(JFrame parentFrame, GamePanel gamePanel) {
         this.parentFrame = parentFrame;
@@ -92,7 +92,7 @@ public class MapMenuPanel extends JPanel {
     public void loadMapList() {
         mapNames.clear();
         mapPaths.clear();
-        final File customMapsDir = new File("resources\\maps");
+        final File customMapsDir = new File("resources/maps");
         if (!customMapsDir.exists()) throw new RuntimeException("maps directory does not exist");
         loadMapsFromDirectory(customMapsDir);
         if (mapNames.isEmpty()) {

@@ -28,7 +28,7 @@ public class ObjectManager {
      * This method checks if the player is on a falling platform to initiate its fall,
      * manages the falling timer, and handles the respawn of fallen platforms.
      *
-     * @param rMap The current game map, used to access and modify the collision map.
+     * @param rMap    The current game map, used to access and modify the collision map.
      * @param playerX The player's current X-coordinate.
      * @param playerY The player's current Y-coordinate.
      */

@@ -172,7 +172,7 @@ public enum ETile {
      * The texture is loaded and cached using {@link ResourceManager#getTexture(String)}.
      *
      * @param color The {@link Color} associated with this tile.
-     * @param path The file path to the tile's texture image, or null if no texture.
+     * @param path  The file path to the tile's texture image, or null if no texture.
      */
     ETile(Color color, String path) {
         this.rgb = color.getRGB();

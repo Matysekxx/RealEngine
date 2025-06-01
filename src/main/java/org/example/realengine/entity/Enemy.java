@@ -30,10 +30,10 @@ public non-sealed class Enemy extends Entity {
     /**
      * Constructs a new Enemy entity.
      *
-     * @param x The initial x-coordinate of the enemy.
-     * @param y The initial y-coordinate of the enemy.
+     * @param x               The initial x-coordinate of the enemy.
+     * @param y               The initial y-coordinate of the enemy.
      * @param infinityJumping If true, the enemy will continuously jump.
-     * @param type The type identifier for the enemy.
+     * @param type            The type identifier for the enemy.
      */
     public Enemy(float x, float y, boolean infinityJumping, String type) {
         super(x, y, TILE_SIZE, TILE_SIZE, type, 10);
@@ -64,7 +64,7 @@ public non-sealed class Enemy extends Entity {
      * If {@code infinityJumping} is true, the enemy will continuously jump.
      *
      * @param deltaTime The time elapsed since the last frame.
-     * @param map The current game map.
+     * @param map       The current game map.
      */
     @Override
     public void update(float deltaTime, RMap map) {
@@ -122,7 +122,7 @@ public non-sealed class Enemy extends Entity {
                 onDead();
             }
             if (currentObject == EObject.SPRING && isOnGround && velocityY == 0) {
-                velocityY = jumpVelocity*1.5f;
+                velocityY = jumpVelocity * 1.5f;
 
                 isOnGround = false;
             }

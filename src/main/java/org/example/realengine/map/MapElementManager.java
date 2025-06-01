@@ -100,7 +100,7 @@ public final class MapElementManager {
      * This establishes the physical properties of a tile within the game world.
      * If an {@link EObject} does not yet have a primary {@link ETile} mapping, this method also sets it.
      *
-     * @param tile The {@link ETile} to map.
+     * @param tile   The {@link ETile} to map.
      * @param object The {@link EObject} it should map to.
      */
     public void mapTileToObject(final ETile tile, final EObject object) {

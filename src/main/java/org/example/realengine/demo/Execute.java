@@ -28,7 +28,7 @@ public final class Execute {
     };
 
     /**
-     * Private constructor to prevent instantiation of this utility class.
+     * Private constructor to prevent instantiation of this class.
      */
     private Execute() {
     }

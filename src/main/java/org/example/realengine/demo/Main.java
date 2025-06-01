@@ -12,6 +12,7 @@ public class Main {
      * <p>The main method that starts the RealEngine demo game.</p>
      * <p>It ensures that the game's initialization and execution occur on the Swing event dispatch thread
      * to maintain thread safety for UI operations.</p>
+     *
      * @param args Command line arguments.
      */
     public static void main(String[] args) {

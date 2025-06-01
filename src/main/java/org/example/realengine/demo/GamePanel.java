@@ -120,6 +120,7 @@ public class GamePanel extends JPanel implements Runnable {
      * <p>Constructs a new {@code GamePanel}.</p>
      * <p>Initializes game components such as the renderer, map, player, camera, and entity/object managers.</p>
      * <p>Attempts to load the default map and find the player spawn point.</p>
+     *
      * @param frame The parent {@code JFrame} for this panel.
      * @throws RuntimeException if the default map cannot be loaded.
      */
@@ -151,6 +152,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * Retrieves the {@code RecordTime} instance used for managing best times.
+     *
      * @return The {@code RecordTime} instance.
      */
     public RecordTime getRecordTime() {
@@ -180,6 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * Retrieves the {@code EntityManager} instance responsible for managing game entities.
+     *
      * @return The {@code EntityManager} instance.
      */
     public EntityManager getEntityManager() {
@@ -188,6 +191,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * Retrieves the {@code ObjectManager} instance responsible for managing game objects.
+     *
      * @return The {@code ObjectManager} instance.
      */
     public ObjectManager getObjectManager() {
@@ -206,8 +210,10 @@ public class GamePanel extends JPanel implements Runnable {
         camera.setFollowOffsetX(-screenWidth / 4.0f);
     }
 
-    /**+
+    /**
+     * +
      * Finds the first occurrence of {@code PLAYER_SPAWN} in the map's collision layer.
+     *
      * @param mapToSearch The {@code RMap} to search within.
      * @return A {@code Point} representing the top-left pixel coordinates of the spawn tile, or {@code null} if not found.
      */
@@ -249,6 +255,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * Retrieves the current game map.
+     *
      * @return The current {@code RMap} instance.
      */
     public RMap getMap() {
@@ -286,6 +293,7 @@ public class GamePanel extends JPanel implements Runnable {
     /**
      * Renders the current game state using the Renderer.
      * Called by repaint().
+     *
      * @param g Graphics context (automatically provided by Swing).
      */
     @Override
@@ -328,6 +336,7 @@ public class GamePanel extends JPanel implements Runnable {
     /**
      * Loads a new map, replacing the current one. Updates camera bounds and player position.
      * Resets game time and audio.
+     *
      * @param newMap The new {@code RMap} instance to load.
      */
     public void loadMap(final @NotNull RMap newMap) {
@@ -367,6 +376,7 @@ public class GamePanel extends JPanel implements Runnable {
     /**
      * Resets the player's position, health, and velocity to the given spawn point.
      * If the provided spawn point is null, a default spawn point is used.
+     *
      * @param playerSpawn The {@code Point} representing the desired spawn coordinates for the player.
      */
     private void resetPlayer(Point playerSpawn) {
@@ -417,6 +427,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /**
      * Retrieves the current {@code Audio} instance being used by the game panel.
+     *
      * @return The current {@code Audio} instance.
      */
     public Audio getAudio() {
