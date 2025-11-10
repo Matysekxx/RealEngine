@@ -55,7 +55,7 @@ public non-sealed class Enemy extends Entity {
                             ResourceManager.getTexture("resources/textures/spiny-2.png")
                     }
             );
-        } catch (IOException _) {
+        } catch (IOException e) {
         }
     }
 

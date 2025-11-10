@@ -30,7 +30,7 @@ public class RecordTime {
         this.filePath = filePath;
         try {
             loadFromFile(filePath);
-        } catch (IOException _) {
+        } catch (IOException e) {
             throw new RuntimeException();
         }
     }
@@ -69,7 +69,7 @@ public class RecordTime {
                 writer.write(entry.getKey() + "," + entry.getValue());
                 writer.newLine();
             }
-        } catch (IOException _) {
+        } catch (IOException e) {
         }
     }
 
@@ -91,7 +91,7 @@ public class RecordTime {
                     String mapPath = parts[0];
                     try {
                         bestTimes.put(mapPath, Integer.parseInt(parts[1]));
-                    } catch (NumberFormatException _) {
+                    } catch (NumberFormatException e) {
                     }
                 }
             }

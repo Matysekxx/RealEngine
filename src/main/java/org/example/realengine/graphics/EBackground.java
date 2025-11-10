@@ -64,7 +64,7 @@ public enum EBackground {
     EBackground(String background) {
         try {
             this.background = ResourceManager.getTexture(background);
-        } catch (IOException _) {
+        } catch (IOException e) {
             throw new RuntimeException("Error loading background: " + background);
         }
     }

@@ -109,7 +109,7 @@ public class MapMenuPanel extends JPanel {
      */
     private void loadMapsFromDirectory(File directory) {
         if (directory.exists() && directory.isDirectory()) {
-            final File[] mapFiles = directory.listFiles((_, name) -> name.endsWith(".png"));
+            final File[] mapFiles = directory.listFiles((n, name) -> name.endsWith(".png"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
                     final String mapName = mapFile.getName();

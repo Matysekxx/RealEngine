@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    kotlin("jvm")
+    kotlin("jvm") version "2.0.0"
 }
 
 group = "org.example"
@@ -8,11 +8,11 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.google.code.gson:gson:2.10.1")
 }
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(21)
 }

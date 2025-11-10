@@ -73,7 +73,7 @@ public non-sealed class Player extends Entity {
                             ResourceManager.getTexture("resources/textures/marioIDLE.png")
                     }
             );
-        } catch (IOException _) {
+        } catch (IOException e) {
         }
     }
 

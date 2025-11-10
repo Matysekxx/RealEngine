@@ -57,7 +57,7 @@ public non-sealed class Lakitu extends Entity {
                                 ResourceManager.getTexture("resources/textures/angry_lakitu-.png")
                         }
                 );
-            } catch (IOException _) {
+            } catch (IOException e) {
                 System.err.println("error loading textures");
             }
         } else {
@@ -76,7 +76,7 @@ public non-sealed class Lakitu extends Entity {
                                 ResourceManager.getTexture("resources/textures/lakitu-.png")
                         }
                 );
-            } catch (IOException _) {
+            } catch (IOException e) {
                 System.err.println("error loading textures");
             }
         }

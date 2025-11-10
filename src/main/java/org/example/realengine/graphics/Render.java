@@ -136,7 +136,7 @@ public class Render {
                         entity.getY() + entity.getHeight() >= camY && entity.getY() <= camY + camH) {
                     try {
                         renderEntity(g, entity, camera);
-                    } catch (IOException _) {
+                    } catch (IOException e) {
                     }
                 }
             }

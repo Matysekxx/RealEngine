@@ -114,7 +114,7 @@ public class GamePanel extends JPanel implements Runnable {
     /**
      * Timer for tracking game time.
      */
-    private final Timer timer = new Timer(1000, _ -> time++);
+    private final Timer timer = new Timer(1000, n -> time++);
 
     /**
      * <p>Constructs a new {@code GamePanel}.</p>

@@ -179,7 +179,7 @@ public enum ETile {
         this.color = color;
         if (path != null) try {
             this.texture = ResourceManager.getTexture(path);
-        } catch (IOException _) {
+        } catch (IOException e) {
         }
     }
 
